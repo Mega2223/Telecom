@@ -1,10 +1,12 @@
 
-function Route(beggining, end, path)
+function Route(first, last, path)
     if path == nil then
         
     end
 
     return {
-        path = path
+        path = path,
+        first = first,
+        last = last
     }
 end
