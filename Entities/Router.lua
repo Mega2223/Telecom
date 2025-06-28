@@ -16,8 +16,8 @@ local function transmitMessage(self, msg)
     self.wrapper:transmitMessage(msg)
 end
 
-local function doTick(self, iteration)
-
+local function doTick(self)
+    self.memory.iteration = self.memory.iteration + 1
 end
 
 local function onReceive(self, message)
@@ -29,7 +29,7 @@ local function onStart(self)
 end
 
 function Router(name)
-    return {
+    local ret = {
         transmitionQueue = {},
         doTick = doTick,
         transmit = transmitMessage,
@@ -38,16 +38,19 @@ function Router(name)
         name = name,
         wrapper = nil,
         memory = {
+            iteration = 0,
             adjacent_routers = {},
             awaiting_replies = {},
-            network = {},
-            endpoints = {}
+            network_state = nil,
         },
         properties = {
             name = name,
-            supports_endpoints = true
+            supports_endpoints = true,
+            router_refresh_tick_max = 6000
         }
     }
+    ret.memory.network_state = NetworkState(ret)
+    return ret
 end
 
 function RouterInfo(name, dist, path)

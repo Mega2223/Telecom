@@ -28,13 +28,8 @@ function Route(route_str)
         clone = clone,
         getUpdated = getUpdated
     }
-    -- for nd in string.gmatch(route_str,"%[.-]") do print("f:"..nd) end
     for nd in string.gmatch(route_str,"%->%[(.-)]") do
         table.insert(nodes,nd)
     end
     return nodes
 end
-
-print(Route("->[A]->[B]->[C]"):toString())
-print("bye")
-print(Route("->[A]->[B]->[C]"):getUpdated():toString())

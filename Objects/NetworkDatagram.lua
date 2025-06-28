@@ -1,5 +1,5 @@
 local function getNextRouter(self)
-    
+    -- TODO
 end
 
 local function toString(self)
@@ -32,15 +32,16 @@ end
 --- print(string.match("eu sou o 12-13-14 da silva","%d+%-%d+%-%d+"))
 --- print(string.match("NDT-2-oi-(ocasci)","NDT%-(%d+)%-(%w+)%-%((.*)%)"))
 --- 
-function ParsedNetworkDatagram(data)
+function ParseDatagramComponents(data)
     local time_to_die, route, type, message = string.match(data,"%[NDT%-(%d+)%-%((.*)%)%-(%w+)%-%((.*)%)%]")
     if time_to_die == nil then
         error("could not parse string for datagram:\n"..data)
     end
-
+    time_to_die = tonumber(time_to_die)
+    return time_to_die, route, type, message
 end
 
-function NetworkDatagram(content, route, type, routerObject, time_to_die, updateFunction, dieFunction)
+function NetworkDatagram(content, route, type, routerObject, time_to_die, updateFunction, dieFunction, arrivalFunction)
     return {
         content = content,
         time_to_die = time_to_die or 90,
@@ -50,9 +51,11 @@ function NetworkDatagram(content, route, type, routerObject, time_to_die, update
         next = getNextRouter,
         routerObject = routerObject,
         getUpdated = updateFunction or update,
-        onDie = dieFunction or dieFunction
+        onDie = dieFunction or function(self) end,
+        onDestination = arrivalFunction or function(self) end
     }
 end
 
-DatagramType = DatagramType or require('DatagramType')
+ParsedDatagram = ParsedDatagram or require('DatagramType')
+
 return NetworkDatagram

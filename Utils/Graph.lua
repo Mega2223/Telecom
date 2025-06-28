@@ -26,3 +26,5 @@ function Graph()
         end
     }
 end
+
+return Graph
