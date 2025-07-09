@@ -25,11 +25,15 @@ end
 local function begin(self,delay)
     delay = delay or 0.1
     self.router:onStart()
+    self.modem.open(self.channel)
     
     local monitor = peripheral.find("monitor")
     if peripheral ~= nil then
         self.output_stream("Redirecting all output to connected monitor")
         term.redirect(monitor)
+        monitor.setCursorPos(1,1)
+        term.setCursorPos(1,1)
+        term.clear()
     end
     self.output_stream("STARTING ROUTER " .. self.router.name .. " ON CHANNEL " .. self.channel)
 
@@ -41,10 +45,13 @@ local function begin(self,delay)
     self.output_stream("ENDED ROUTER " .. self.router.name)
 end
 
+---@class RouterWrapper
+---@field transmitMessage fun(self: RouterWrapper, message: string)
+---@field router Router
+---@field begin fun(self: RouterWrapper)
+---@field iteration integer
 function RouterWrapper(router_object, channel, output_stream)
     local modem = peripheral.find("modem")
-    modem.open(channel)
-    
     local wrapper = {
         transmitMessage = transmitMessage,
         modem = modem,

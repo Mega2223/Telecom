@@ -49,3 +49,5 @@ function NetworkState(router_object)
         type = 'NetworkState'
     }
 end
+
+return NetworkState

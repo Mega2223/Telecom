@@ -2,7 +2,9 @@ listaglobal com todos os pacotes e cada vez q  uma dependencia é carregada colo
 
 NETWORK
 
-NetworkDatagram
+(Datagramas de comunicação interna da rede)
+
+NetworkDatagram (É aceito vindo de clients)
 [NDT-%TTD%-(%ROUTE%)-%TYPE%-(%DATA%)] 
 -- verificar roteadores, se não existir verificar conexões
 -- na array de protocolos de rede colocar um listener de mensagens para todas as interfaces
@@ -11,6 +13,12 @@ NetworkDatagram
 DiscoveryDatagram
 [DDT-%TTD%-(%ROUTE%)-%TYPE%-%REPLY_BOOL%]
 -- Usado no mapeamento de rede, REPLY_BOOL é true se ele está respondendo alguma requisição
+
+MulticastDatagram
+
+BroadcastDatagram
+
+(Datagramas de contato com clientes)
 
 TransportDatagram
 [TDT-%DEST_NAME%-(%DATA%)]
