@@ -1,0 +1,28 @@
+listaglobal com todos os pacotes e cada vez q  uma dependencia é carregada colocar ela na lista
+
+NETWORK
+
+NetworkDatagram
+[NDT-%TTD%-(%ROUTE%)-%TYPE%-(%DATA%)] 
+-- verificar roteadores, se não existir verificar conexões
+-- na array de protocolos de rede colocar um listener de mensagens para todas as interfaces
+-- É bom colocar o remetente também, já que a rota vai diminuindo
+
+DiscoveryDatagram
+[DDT-%TTD%-(%ROUTE%)-%TYPE%-%REPLY_BOOL%]
+-- Usado no mapeamento de rede, REPLY_BOOL é true se ele está respondendo alguma requisição
+
+TransportDatagram
+[TDT-%DEST_NAME%-(%DATA%)]
+-- É criado quando a mensagem deve sair da rede
+
+TRANSPORT
+
+SingleMessagePacket
+[SMP-%DEST%-(%DATA%)]
+-- Meio que um UDP
+
+APPLICATION
+
+Routers:
+PingMessage

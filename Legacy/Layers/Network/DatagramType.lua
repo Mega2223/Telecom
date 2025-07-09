@@ -2,16 +2,22 @@ NetworkDatagram = NetworkDatagram or require('NetworkDatagram')
 
 DATAGRAM_TYPES = {
     MESSAGE_DATAGRAM = "MESSAGE_DATAGRAM",
-    PING_DATAGRAM = "PING_DATAGRAM",
     DISCOVERY_DATAGRAM = "DISCOVERY_DATAGRAM",
-    MSG_CONFIRMATION_DATAGRAM = "MSG_CONFIRMATION_DATAGRAM",
-    LOST_DATAGRAM_ALERT = "LOST_DATAGRAM_ALERT",
-    ASK_ENDPOINTS_DATAGRAM = "ASK_ENDPOINTS_DATAGRAM"
+    --- MSG_CONFIRMATION_DATAGRAM = "MSG_CONFIRMATION_DATAGRAM",
+    -- LOST_DATAGRAM_ALERT = "LOST_DATAGRAM_ALERT",
+    -- ASK_ENDPOINTS_DATAGRAM = "ASK_ENDPOINTS_DATAGRAM"
 }
 
 function ParsedDatagram(str)
     local time_to_die, route, type, message = ParseDatagramComponents(str)
-    
+
+    if type == 'DISCOVERY_DATAGRAM' then
+        local id, sub_msg = string.match(message, "(%d+)(%w+)")
+        local reply_name = string.match(sub_msg,"REPLY(%w+)")
+
+        return DiscoveryDatagram()
+    end
+    return nil
 end
 
 function MessageDatagram(content, route, routerObject, time_to_die, alert_on_die)

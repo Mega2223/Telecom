@@ -5,7 +5,7 @@ local function workPendencies(self)
 end
 
 local function updateConnectedRouters(self)
-    self.wrapper:transmitMessage("RR-PING")
+    self:transmitMessage("RR-PING")
 end
 
 local function mapWeb(self)
@@ -21,7 +21,7 @@ local function doTick(self)
 end
 
 local function onReceive(self, message)
-    
+    local datagram = ParsedDatagram(message)
 end
 
 local function onStart(self)
@@ -53,9 +53,3 @@ function Router(name)
     return ret
 end
 
-function RouterInfo(name, dist, path)
-    return {
-        name = name, dist = dist, path = path,
-        type = 'RouterInfo'
-    }
-end

@@ -1,4 +1,4 @@
-Router = Router or require('Entities.Router')
+Router = Router or require('Router')
 
 local function onTick(self)
     self.router:doTick() -- timekeeping maybe?
@@ -66,3 +66,5 @@ function RouterWrapperSetup()
         Router("RT-"..math.random(10000), 223, nil)
     )
 end
+
+return RouterWrapper

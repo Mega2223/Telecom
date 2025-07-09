@@ -1,4 +1,4 @@
-NetworkDatagram = NetworkDatagram or require('NetworkDatagram')
+NetworkDatagram = NetworkDatagram or require('Objects.Layers.NetworkDatagram')
 
 local function toString(self)
     return "[TDT-" .. "]"
