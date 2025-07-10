@@ -5,7 +5,8 @@ local function onTick(self)
     self.iteration = self.iteration + 1
 end
 
-local function onMessageReceived(self, event, side, channel, replyChannel, message, distance)
+---@param self RouterWrapper
+local function onMessageReceived(self,  event, side, channel, replyChannel, message, distance)
     self.router:onReceive(message)
 end
 
@@ -14,7 +15,7 @@ local function nextEvent(self)
     if event == 'alarm' then
         onTick(self)
     elseif event == 'modem_message' then
-        onMessageReceived(self,b,c,d,e,f,g)
+        onMessageReceived(self,event,b,c,d,e,f,g)
     end
 end
 
@@ -22,8 +23,10 @@ local function transmitMessage(self, message)
     self.modem.transmit(self.channel,self.channel,message)
 end
 
+--- @param self RouterWrapper
 local function begin(self,delay)
     delay = delay or 0.1
+    self.router.wrapper = self
     self.router:onStart()
     self.modem.open(self.channel)
     
@@ -66,12 +69,6 @@ function RouterWrapper(router_object, channel, output_stream)
     router_object.wrapper = wrapper
 
     return wrapper
-end
-
-function RouterWrapperSetup()
-    return RouterWrapper(
-        Router("RT-"..math.random(10000), 223, nil)
-    )
 end
 
 return RouterWrapper

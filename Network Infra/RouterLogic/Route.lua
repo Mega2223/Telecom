@@ -34,6 +34,14 @@ local function getLast(self)
     return self[i-1]
 end
 
+--- @class Route
+--- @field toString fun(self: Route): string
+--- @field clone fun(self: Route): Route
+--- @field getUpdated fun(self: Route): Route
+--- @field getFirst fun(self: Route): string
+--- @field getLast fun(self:Route): string
+--- @param route_str string
+--- @return Route
 function Route(route_str)
     local route = {
         toString = toString,

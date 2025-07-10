@@ -1,23 +1,27 @@
-if DiscoveryDatagram then return DiscoveryDatagram end
-
-NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
+require('Datagram')
 
 -- The discovery datagram is made for routers to find out adjacent routers through a ping
 local function toString(self)
-    --print("SELF = ")
-    --print(self)
-    --the = self
-    --print(textutils.serialise(self))
-    return "[NDT-" .. self.time_to_die .. "-" ..
+    return "[DDT-" .. self.time_to_die .. "-" ..
     "(" .. self.route ..")" ..
     "-" .. self.type .. -- Redundante
-    "-(" .. tostring(self.reply_bool) .. ")]"
+    "-(" .. tostring(self.isReply) .. ")]"
 end
 
-function DiscoveryDatagram(time_to_die,reply_bool,broadcaster_name)
+---@class DiscoveryDatagram
+---@field time_to_die integer
+---@field isReply boolean
+---@field broadcaster_name string stored in the Route field
+---@field toString fun(self: DiscoveryDatagram): string
+
+---@param time_to_die integer
+---@param isReply boolean
+---@param broadcaster_name string
+---@return DiscoveryDatagram
+function DiscoveryDatagram(time_to_die,isReply,broadcaster_name)
     return {
         time_to_die = time_to_die,
-        reply_bool = reply_bool,
+        isReply = isReply,
         type = 'DiscoveryDatagram',
         route = broadcaster_name,
         toString = toString
@@ -25,33 +29,39 @@ function DiscoveryDatagram(time_to_die,reply_bool,broadcaster_name)
 end
 
 local function parseDiscoveryDatagram(data)
-    local time_to_die, broadcaster_name, type, reply_bool = string.match(data,"%[DDT%-(%d+)%-%((.*)%)%-(%w+)%-%((.*)%)%]")
+    local time_to_die, broadcaster_name, type, isReply = string.match(data,"%[DDT%-(%d+)%-%((.*)%)%-(%w+)%-%((.*)%)%]")
     if not time_to_die then return false end
     time_to_die = tonumber(time_to_die)
-    reply_bool = reply_bool == 'true'
-    return time_to_die, broadcaster_name, reply_bool
+    isReply = isReply ~= 'false'
+    return time_to_die, broadcaster_name, isReply
 end
 
+---@param data string
+---@param router Router
+---@return boolean
 local function onMessageReceived(data, router)
-    local time_to_die, broadcaster_name, reply_bool = parseDiscoveryDatagram(data)
+    local time_to_die, broadcaster_name, isReply = parseDiscoveryDatagram(data)
     if not time_to_die then return false end
-    if reply_bool then
+    if isReply then
         table.insert(
             router.memory.adjacent_routers, broadcaster_name
         )
     else
         local answer = DiscoveryDatagram(1,true,router.name)
-        router.transmit(answer:toString())
+        router:transmit(answer:toString())
     end
+    return true
 end
 
 local function onDie()
-    -- What to do in case the message dies in the net
+    -- Do nothing
 end
 
+---@type DatagramParser
 local discovery = {
     onDie = onDie,
-    onMessageReceived = onMessageReceived
+    onMessageReceived = onMessageReceived,
+    type = 'DiscoveryDatagramParser'
 }
 
 table.insert(NETWORK_DATAGRAM_PROT,discovery)

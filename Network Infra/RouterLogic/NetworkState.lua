@@ -1,6 +1,11 @@
-Graph = Graph or require('Graph')
-if not Graph then error('Graph constructor not found') end
+Graph = require('Graph')
 
+---@class KnownEndpoint
+function KnownEndpoint(parent_router, address)
+
+end
+
+---@class KnownConnection
 function KnownConnection(to, weight)
     return {
         to = to,
@@ -9,6 +14,7 @@ function KnownConnection(to, weight)
     }
 end
 
+---@class KnownRouter
 function KnownRouter(name,connections)
     local con = {}
     local i = 1
@@ -26,6 +32,14 @@ function KnownRouter(name,connections)
     }
 end
 
+---@class NetworkState
+---@field routers table<integer,KnownRouter>
+---@field connections table<integer, KnownConnection>
+---@field endpoints table<integer, KnownEndpoint>
+---@field addConnection fun(self: NetworkState, from_name: string, to_name: string, weight: number | nil, is_bidirectional: boolean | nil): nil
+---@field getRouter fun(self: NetworkState, router_name: string): KnownRouter | nil
+---@param router_object Router
+---@return NetworkState
 function NetworkState(router_object)
     return{
         routers = {},

@@ -13,7 +13,13 @@ end
 
 local template_parser = {
     onDie = onDie,
-    onMessageReceived = onMessageReceived
+    onMessageReceived = onMessageReceived,
+    type = 'TemplateDatagramParser'
 }
+
+---@class DatagramParser
+---@field onMessageReceived fun(msg: string, router: Router): boolean | nil
+---@field onDie fun(): nil
+---@field type string
 
 table.insert(NETWORK_DATAGRAM_PROT,template_parser)

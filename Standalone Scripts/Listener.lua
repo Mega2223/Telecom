@@ -3,6 +3,8 @@ modem = peripheral.find('modem')
 
 modem.open(1)
 term.redirect(monitor)
+term.setCursorPos(1,1)
+term.clear()
 
 while true do
     os.setAlarm(.01)

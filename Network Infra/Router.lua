@@ -1,8 +1,9 @@
-Router = 1
+---@type table<integer,DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
-DiscoveryDatagram = DiscoveryDatagram or require('DiscoveryDatagram')
-NetworkState = NetworkState or require('NetworkState')
+require('DiscoveryDatagram')
+require('NetworkState')
+require('RouterMemory')
 
 local function updateConnectedRouters(self)
     self.memory.adjacent_routers = {}
@@ -10,6 +11,8 @@ local function updateConnectedRouters(self)
     self:transmit(ask:toString())
 end
 
+--- @param self Router
+--- @param msg string
 local function transmitMessage(self, msg)
     return self.wrapper:transmitMessage(msg)
 end
@@ -21,8 +24,13 @@ end
 local function onReceive(self, message)
     local datagram = message
     for i = 1, #NETWORK_DATAGRAM_PROT do
-        if NETWORK_DATAGRAM_PROT[i].onMessageReceived(datagram,self) then break end
+        local k = NETWORK_DATAGRAM_PROT[i]
+        if NETWORK_DATAGRAM_PROT[i].onMessageReceived(datagram,self) then 
+            return true
+        end
     end
+    print('Could not find fitting template for message:\n' .. message )
+    return false
 end
 
 local function onStart(self)
@@ -38,7 +46,7 @@ end
 ---@field updatedConnectedRouters fun(self: Router): nil triggers an update chain for this router
 ---@field name string
 ---@field wrapper RouterWrapper 
----@field memory table
+---@field memory RouterMemory
 ---@param name string
 ---@return Router
 function Router(name)
@@ -51,12 +59,7 @@ function Router(name)
         updateConnectedRouters = updateConnectedRouters,
         name = name,
         wrapper = nil,
-        memory = {
-            iteration = 0,
-            adjacent_routers = {},
-            awaiting_replies = {},
-            network_state = nil,
-        },
+        memory = RouterMemory(),
         properties = {
             name = name,
             supports_endpoints = true,
