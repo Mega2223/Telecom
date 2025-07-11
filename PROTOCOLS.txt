@@ -14,6 +14,13 @@ DiscoveryDatagram
 [DDT-%TTD%-(%ROUTE%)-%TYPE%-%REPLY_BOOL%]
 -- Usado no mapeamento de rede, REPLY_BOOL é true se ele está respondendo alguma requisição
 
+ConnectionsDatagram
+[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]
+--- Usado no mapeamento de rede, uma vez que um roteador conhece seus vizinhos ele deve fazer
+--- broadcast de toda a sua área conhecida peara o resto da rede
+--- %VISITED_ROUTERS% = (A)(B)(C)
+--- %KNOWN_ROUTER_CONNECTIONS% = (A)(B)(C)
+
 MulticastDatagram
 
 BroadcastDatagram

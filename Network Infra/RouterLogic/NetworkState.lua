@@ -1,11 +1,12 @@
-Graph = require('Graph')
+require('Graph')
 
----@class KnownEndpoint
+--[[
+---@ class KnownEndpoint
 function KnownEndpoint(parent_router, address)
 
 end
 
----@class KnownConnection
+---@ class KnownConnection
 function KnownConnection(to, weight)
     return {
         to = to,
@@ -13,8 +14,14 @@ function KnownConnection(to, weight)
         type = 'KnownConnection'
     }
 end
+]]
 
 ---@class KnownRouter
+---@field name string
+---@field connections table<integer,KnownRouter>
+---@field addConnection fun(self:KnownRouter,router:KnownRouter): nil
+---@param name string
+---@param connections table<integer,KnownRouter>|nil
 function KnownRouter(name,connections)
     local con = {}
     local i = 1
@@ -34,31 +41,45 @@ end
 
 ---@class NetworkState
 ---@field routers table<integer,KnownRouter>
----@field connections table<integer, KnownConnection>
----@field endpoints table<integer, KnownEndpoint>
----@field addConnection fun(self: NetworkState, from_name: string, to_name: string, weight: number | nil, is_bidirectional: boolean | nil): nil
----@field getRouter fun(self: NetworkState, router_name: string): KnownRouter | nil
+-- ---@field endpoints table<integer, KnownEndpoint>
+---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownRouter | nil
+---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownRouter
+---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>): nil
 ---@param router_object Router
 ---@return NetworkState
 function NetworkState(router_object)
     return{
         routers = {},
         connections = {},
-        endpoints = {},
+        --endpoints = {},
         router = router_object,
-        addConnection = function(self, from_name, to_name, weight, is_bidirectional)
-            is_bidirectional = is_bidirectional or true
-            local from = self:getRouter(from_name) or KnownRouter(from_name)
-            local to = self:getRouter(to_name) or KnownRouter(to_name)
-            from:addConnection(to); to:addConnection(from)
-        end,
-        getRouter = function(self,router_name)
+        getRouter = function(self,router_name,force_router)
             for router in self.routers do
                 if router.name == router_name then
                     return router
                 end
             end
+            if force_router then
+                local router = KnownRouter(router_name)
+                table.insert(self.routers,router)
+                return router
+            end
             return nil
+        end,
+        getRouterSafe = function(self, router_name)
+            return self:getRouter(router_name,true)
+        end,
+        ---@param self NetworkState
+        ---@param router_name string
+        ---@param connections table<integer, string>
+        setRouterState = function(self, router_name, connections)
+            ---@type KnownRouter
+            local router = self:getRouterSafe(router_name)
+            for i = 1, #connections do
+                router:addConnection(
+                    self:getRouterSafe(connections[i])
+                )
+            end
         end,
         type = 'NetworkState'
     }
