@@ -1,7 +1,7 @@
+require('Route')
+
 local function findPath(self, from, to)
-    local r = Route or require('Route')
-    
-    return Route(from, to, nil)
+    return Route(from, to, nil) --TODO FIXME seila
 end
 
 function Node(name)

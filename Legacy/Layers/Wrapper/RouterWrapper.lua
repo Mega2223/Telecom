@@ -27,7 +27,7 @@ local function begin(self,delay)
     self.router:onStart()
     
     local monitor = peripheral.find("monitor")
-    if peripheral ~= nil then
+    if monitor ~= nil then
         self.output_stream("Redirecting all output to connected monitor")
         term.redirect(monitor)
     end
@@ -63,7 +63,7 @@ end
 
 function RouterWrapperSetup()
     return RouterWrapper(
-        Router("RT-"..math.random(10000), 223, nil)
+        Router("RT-"..math.random(10000))
     )
 end
 

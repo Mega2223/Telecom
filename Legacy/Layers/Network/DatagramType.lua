@@ -45,7 +45,7 @@ end
 function DiscoveryDatagram(id,routerObject,is_reply)
     return NetworkDatagram(id,nil,'DISCOVERY_DATAGRAM',routerObject,0,nil,nil,
         function (self)
-            if is_isReply then
+            if is_reply then
                 self.routerObject:transmit(
                     self.id + "REPLY" + routerObject.name
                 )
