@@ -20,8 +20,6 @@ require('Utils.Utils')
 ---@field to Node
 ---@field weight number
 
----@class Path: table<number,Node>
-
 ---@param self Graph
 ---@return string
 local function graphToString(self)
@@ -48,13 +46,12 @@ end
 ---@param self Graph
 ---@param from Node | string
 ---@param to Node | string
----@return table<integer,Node>
+---@return table<integer,Node> | nil
 local function findPath(self, from, to)
-
     local from = self:getNode(from)
     local to = self:getNode(to)
 
-    if not (from and to) then return path end
+    if not (from and to) then return {} end
     
     ---@type table <string,PathfindingNode>
     local unvisited = {}
@@ -115,10 +112,10 @@ local function findPath(self, from, to)
     end
 end
 
----Creates a link object, does not to anything else
+---Creates a link object, does not do anything else
 ---@param from Node
 ---@param to Node
----@param weight number
+---@param weight number | nil
 ---@return Link
 function Link(from, to, weight)
     ---@type Link
@@ -127,13 +124,16 @@ function Link(from, to, weight)
     }
 end
 
+---Creates a node object
+---@param name string
+---@return Node
 function Node(name)
     ---@type Node
     return {
         name = name,
         connections = {},
         addConnection = function (self, to, weight)
-            table.insert(self.connections,Link(self,to,weight or 1))
+            table.insert(self.connections,Link(self,to,weight))
         end,
         removeConnection = function (self, to)
             for i = 1, #self.connections do

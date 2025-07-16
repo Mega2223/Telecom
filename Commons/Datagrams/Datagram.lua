@@ -1,3 +1,6 @@
+-- This file is a template for datagram types
+
+---@type table<string, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 -- This is ran inside of the router logic

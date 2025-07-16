@@ -1,4 +1,4 @@
-require('Graph')
+require('Utils.Graph')
 
 --[[
 ---@ class KnownEndpoint
@@ -20,6 +20,8 @@ end
 ---@field name string
 ---@field connections table<integer,KnownRouter>
 ---@field addConnection fun(self:KnownRouter,router:KnownRouter): nil
+---@field removeAllConnections fun(self:KnownRouter)
+---@field type 'KnownRouter'
 ---@param name string
 ---@param connections table<integer,KnownRouter>|nil
 function KnownRouter(name,connections)
@@ -29,12 +31,18 @@ function KnownRouter(name,connections)
         table.insert(con,connections[i])
         i = i + 1
     end
+    ---@type KnownRouter
     return{
         name = name,
         connections = con,
         type = 'KnownRouter',
         addConnection = function (self,knownRouterObject)
             table.insert(self.connections,knownRouterObject)
+        end,
+        removeAllConnections = function (self)
+            for i = 1, #self.connections do
+                self.connections[i] = nil
+            end
         end
     }
 end
@@ -75,6 +83,7 @@ function NetworkState(router_object)
         setRouterState = function(self, router_name, connections)
             ---@type KnownRouter
             local router = self:getRouterSafe(router_name)
+            router:removeAllConnections()
             for i = 1, #connections do
                 router:addConnection(
                     self:getRouterSafe(connections[i])

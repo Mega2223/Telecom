@@ -1,9 +1,8 @@
----@type table<integer,DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
-require('DiscoveryDatagram')
-require('NetworkState')
-require('RouterMemory')
+require('Datagrams.DiscoveryDatagram')
+require('Datagrams.NetworkState')
+require('Datagrams.RouterMemory')
 
 local function updateConnectedRouters(self)
     self.memory.adjacent_routers = {}
@@ -59,13 +58,14 @@ function Router(name)
         updateConnectedRouters = updateConnectedRouters,
         name = name,
         wrapper = nil,
-        memory = RouterMemory(),
+        memory = 0,
         properties = {
             name = name,
             supports_endpoints = true,
             router_refresh_tick_max = 6000
         }
     }
+    ret.memory = RouterMemory(ret)
     ret.memory.network_state = NetworkState(ret)
     return ret
 end

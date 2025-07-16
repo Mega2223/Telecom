@@ -10,16 +10,6 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 ---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]
 
----@param self ConnectionsDatagram
----@return string
-local function toString(self)
-    return "[CDT-" .. self.time_to_die ..
-            "-(" .. self.routers_traveled_string ..
-            ")-" .. self.origin_name .. 
-            "-(" .. self.connections ..
-            "]"   
-end
-
 ---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]
 ---[CDT-1-(ABC)-ORIGIN-(CONNECTIONS)]
 
@@ -46,12 +36,39 @@ local function parseConnections(data)
 end
 
 ---@param data string
----@return nil | integer,string | nil,string | nil,string | nil
+---@return integer,string,string,string
 local function parseConnectionsDatagram(data)
     local time_to_die, visited_routers, origin_name, connections = string.match(data,"%[CDT%-(%d+)%-%((.+)%)%-(.+)%-%((.+)%)]")
-    if time_to_die then 
-        return tonumber(time_to_die), visited_routers, origin_name, connections
+    return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections
+end
+
+---converts a list of connections into a string that goes into the datagram string form
+---@param data table<integer,string>
+---@return string
+local function connectionsToString(data)
+    local ret = ""
+    for i = 1, #data do
+        ret = ret .. "(" .. data[i] .. ")"
     end
+    return ret
+end
+
+---@param self ConnectionsDatagram
+---@return string
+local function toString(self)
+    return "[CDT-" .. self.time_to_die ..
+            "-(" .. self.routers_traveled_string ..
+            ")-" .. self.origin_name .. 
+            "-(" .. connectionsToString(self.connections) ..
+            ")]"
+end
+
+---parses a connection datagram given from a string
+---@param data string
+---@return ConnectionsDatagram
+function ParsedConnectionsDatagram(data)
+    local time_to_die, visited_routers, origin_name, connections = parseConnectionsDatagram(data)
+    return ConnectionsDatagram(time_to_die,visited_routers,origin_name,connections)
 end
 
 ---ConnectionsDatagram constructor
