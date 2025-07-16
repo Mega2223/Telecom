@@ -16,9 +16,8 @@ local function getUpdated(self)
             self.route,
             self.type,
             self.routerObject,
-            self.time_to_die - 1,
-            self.updateFunction
-        )
+            self.time_to_die - 1
+            )
     else
         self:dieFunction()
         return nil
@@ -67,7 +66,7 @@ end
 
 local function onMessageReceived(data)
     local time_to_die, route_str, type, message = ParseDatagramComponents(data)
-    if not time_to_die then return false end
+    if not time_to_die or not route_str then return false end
 
     local route = Route(route_str)
     -- TODO

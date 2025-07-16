@@ -11,11 +11,11 @@ local function onMessageReceived(self,  event, side, channel, replyChannel, mess
 end
 
 local function nextEvent(self)
-    local event, b, c, d, e, f, g = os.pullEvent()
+    local event, b, c, d, e, f = os.pullEvent()
     if event == 'alarm' then
         onTick(self)
     elseif event == 'modem_message' then
-        onMessageReceived(self,event,b,c,d,e,f,g)
+        onMessageReceived(self,event,b,c,d,e,f)
     end
 end
 
