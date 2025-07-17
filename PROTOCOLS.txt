@@ -21,6 +21,12 @@ ConnectionsDatagram
 --- %VISITED_ROUTERS% = (A)(B)(C)
 --- %KNOWN_ROUTER_CONNECTIONS% = (A)(B)(C)
 
+NetworkStateDatagram
+[NSD-%ROUTER_NAME%-(%DATA%)]
+(%DATA%) =
+    (REQUEST) ||
+    (MEMORY=(%ROUTER_MEMORY%) CONFIG=(%ROUTER_CONFIG%))
+
 MulticastDatagram
 
 BroadcastDatagram

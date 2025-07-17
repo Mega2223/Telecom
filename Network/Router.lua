@@ -1,6 +1,8 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 require('Commons.Datagrams.DiscoveryDatagram')
+require('Commons.Datagrams.NetworkStateDatagram')
+
 require('Network.RouterLogic.NetworkState')
 require('Network.RouterLogic.RouterMemory')
 require('Network.RouterLogic.RouterConfig')

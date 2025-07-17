@@ -31,6 +31,7 @@ end
 --- @field routerObject Router
 --- @field time_to_die integer
 --- @field toString fun(param:self): string
+
 --- @param content string
 --- @param route string
 --- @param type string

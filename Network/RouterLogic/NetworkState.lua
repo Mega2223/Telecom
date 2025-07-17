@@ -53,13 +53,15 @@ end
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownRouter
 ---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>): nil
----@field Type "NetworkState"
+---@field toString fun(self: NetworkState): string
+---@field type "NetworkState"
 ---@param router_object Router
 ---@return NetworkState
 function NetworkState(router_object)
+    ---@type NetworkState
     return{
         routers = {},
-        connections = {},
+        --connections = {},
         --endpoints = {},
         router = router_object,
         getRouter = function(self,router_name,force_router)
@@ -76,6 +78,7 @@ function NetworkState(router_object)
             return nil
         end,
         getRouterSafe = function(self, router_name)
+            ---@diagnostic disable-next-line: return-type-mismatch
             return self:getRouter(router_name,true)
         end,
         ---@param self NetworkState
@@ -91,7 +94,20 @@ function NetworkState(router_object)
                 )
             end
         end,
-        type = 'NetworkState'
+        type = 'NetworkState',
+        toString = function (self)
+            local ret = 'routers=(\n'
+            for i =1, #self.routers do
+                local router = self.routers[i]
+                ret = ret .. 'router ' .. router.name .. ' -> [ '
+                for j =1, #router.connections do
+                    ret = ret .. router.connections[j].name .. ' '
+                end
+                ret = ret .. ']\n'
+            end
+            ret = ret .. ')\n'
+            return ret
+        end
     }
 end
 
