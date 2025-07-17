@@ -1,7 +1,8 @@
-Router = Router or require('Router')
-
+require('Network.Router')
+---@todo debugwrapper :3
+---@param self RouterWrapper
 local function onTick(self)
-    self.router:doTick() -- timekeeping maybe?
+    self.router:doTick(os.epoch()) -- timekeeping maybe?
     self.iteration = self.iteration + 1
 end
 
@@ -10,10 +11,11 @@ local function onMessageReceived(self,  event, side, channel, replyChannel, mess
     self.router:onReceive(message)
 end
 
-local function nextEvent(self)
+local function nextEvent(self,delay)
     local event, b, c, d, e, f = os.pullEvent()
-    if event == 'alarm' then
+    if event == 'timer' then
         onTick(self)
+        os.startTimer(delay)
     elseif event == 'modem_message' then
         onMessageReceived(self,event,b,c,d,e,f)
     end
@@ -41,8 +43,8 @@ local function begin(self,delay)
     self.output_stream("STARTING ROUTER " .. self.router.name .. " ON CHANNEL " .. self.channel)
 
     while self.should_be_running do
-        os.setAlarm(delay)
-        nextEvent(self)
+        os.startTimer(delay)
+        nextEvent(self,delay)
     end
 
     self.output_stream("ENDED ROUTER " .. self.router.name)
@@ -53,17 +55,24 @@ end
 ---@field router Router
 ---@field begin fun(self: RouterWrapper)
 ---@field iteration integer
+
+---Creates a RouterWrapper object
+---@param router_object Router
+---@param channel integer | nil
+---@param output_stream fun(string) | nil
+---@return RouterWrapper
 function RouterWrapper(router_object, channel, output_stream)
     local modem = peripheral.find("modem")
+    ---@type RouterWrapper
     local wrapper = {
         transmitMessage = transmitMessage,
         modem = modem,
         router = router_object,
-        channel = channel,
+        channel = channel or 1,
         begin = begin,
         should_be_running = true,
         output_stream = output_stream or function(msg) print(msg) end,
-        iteration = 0
+        iteration = 1
     }
     
     router_object.wrapper = wrapper

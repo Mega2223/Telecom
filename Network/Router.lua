@@ -1,13 +1,16 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
-require('Datagrams.DiscoveryDatagram')
-require('Datagrams.NetworkState')
-require('Datagrams.RouterMemory')
+require('Commons.Datagrams.DiscoveryDatagram')
+require('Network.RouterLogic.NetworkState')
+require('Network.RouterLogic.RouterMemory')
+require('Network.RouterLogic.RouterConfig')
 
-local function updateConnectedRouters(self)
-    self.memory.adjacent_routers = {}
-    local ask = DiscoveryDatagram(1,false,self.name)
+---@param self Router
+---@param time integer
+local function updateConnectedRouters(self, time)
+    local ask = DiscoveryDatagram(1,false,self.configs.name)
     self:transmit(ask:toString())
+    self.memory.adjacent_routers.last_updated = time
 end
 
 --- @param self Router
@@ -16,10 +19,17 @@ local function transmitMessage(self, msg)
     return self.wrapper:transmitMessage(msg)
 end
 
-local function doTick(self)
+---@param self Router
+---@param time integer
+local function doTick(self, time)
     self.memory.iteration = self.memory.iteration + 1
+    if time - self.memory.adjacent_routers.last_updated > self.configs.adjacency_update_milis then
+        self:updateConnectedRouters(time)
+    end
 end
 
+---@param self Router
+---@param message string
 local function onReceive(self, message)
     local datagram = message
     for i = 1, #NETWORK_DATAGRAM_PROT do
@@ -32,23 +42,26 @@ local function onReceive(self, message)
     return false
 end
 
+---@param self Router
 local function onStart(self)
-    self.table = {} -- god bless the garbage collector
-    self:updateConnectedRouters()
+    --self:updateConnectedRouters()
 end
 
 ---@class Router Describes a router entity, which must be bound to a Wrapper entity
 ---@field transmit fun(self: Router,data: string): boolean
----@field doTick fun(self: Router): nil
+---@field doTick fun(self: Router, time: integer): nil
 ---@field onReceive fun(self: Router,data: string): boolean
 ---@field onStart fun(self: Router): nil
----@field updatedConnectedRouters fun(self: Router): nil triggers an update chain for this router
+---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
 ---@field name string
 ---@field wrapper RouterWrapper 
 ---@field memory RouterMemory
----@param name string
+---@field configs RouterConfig
+---@param configs table | nil
 ---@return Router
-function Router(name)
+function Router(configs)
+    local configs = RouterConfig(configs or {})
+    assert(type(configs) == "table","invalid parameter for router constructor: " .. tostring(configs))
     local ret = {
         transmitionQueue = {},
         doTick = doTick,
@@ -56,14 +69,10 @@ function Router(name)
         onReceive = onReceive,
         onStart = onStart,
         updateConnectedRouters = updateConnectedRouters,
-        name = name,
+        name = configs.name,
         wrapper = nil,
-        memory = 0,
-        properties = {
-            name = name,
-            supports_endpoints = true,
-            router_refresh_tick_max = 6000
-        }
+        memory = nil,
+        configs = configs
     }
     ret.memory = RouterMemory(ret)
     ret.memory.network_state = NetworkState(ret)

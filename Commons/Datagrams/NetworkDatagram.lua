@@ -1,4 +1,4 @@
-Route = Route or require('Route')
+Route = Route or require('Network.RouterLogic.Route')
 
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 

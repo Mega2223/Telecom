@@ -53,6 +53,7 @@ end
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownRouter
 ---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>): nil
+---@field Type "NetworkState"
 ---@param router_object Router
 ---@return NetworkState
 function NetworkState(router_object)
