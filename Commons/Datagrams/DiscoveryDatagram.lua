@@ -2,62 +2,71 @@ require('Commons.Datagrams.Datagram')
 
 -- The discovery datagram is made for routers to find out adjacent routers through a ping
 
+NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
+
 ---@param self DiscoveryDatagram
+---@return string
+---@nodiscard
 local function toString(self)
-    return "[DDT-" .. self.time_to_die .. "-" ..
+    --[[return "[DDT-" .. self.time_to_die .. "-" ..
     "(" .. self.route ..")" ..
     "-" .. self.type .. -- Redundante
     "-(" .. tostring(self.isReply) .. ")]"
+    ]]
+    return string.format("[DDT-(%s)-(%s)-(%s)]",self.asker_name,self.replier_name,self.identifier)
 end
 
 ---@class DiscoveryDatagram
----@field time_to_die integer
 ---@field isReply boolean
----@field broadcaster_name string stored in the Route field
+---@field asker_name string stored in the Route field
+---@field replier_name string | 'nil'
+---@field identifier string
 ---@field toString fun(self: DiscoveryDatagram): string
----@field route string
+---@field type 'DiscoveryDatagram'
 
----@param time_to_die integer
----@param isReply boolean
----@param broadcaster_name string
+---@param asker_name string
+---@param replier_name string
+---@param identifier string
 ---@return DiscoveryDatagram
-function DiscoveryDatagram(time_to_die,isReply,broadcaster_name)
-    if not time_to_die or isReply == nil or not broadcaster_name then
+function DiscoveryDatagram(asker_name, replier_name, identifier)
+    if not asker_name or not replier_name or not identifier then
         error('Could not make DiscoveryDatagram object due to missing params: '..
-            tostring(time_to_die) .. '|' .. tostring(isReply) .. '|' .. tostring(broadcaster_name), 2
+            tostring(asker_name) .. '|' .. tostring(replier_name) .. '|' .. tostring(identifier), 2
         )
     end
     ---@type DiscoveryDatagram
     return {
-        time_to_die = time_to_die,
-        isReply = isReply,
-        type = 'DiscoveryDatagram',
-        route = broadcaster_name,
-        broadcaster_name = broadcaster_name,
-        toString = toString
+        asker_name = asker_name,
+        replier_name = replier_name,
+        identifier = identifier,
+        toString = toString,
+        isReply = replier_name ~= 'nil',
+        type = 'DiscoveryDatagram'
     }
 end
 
+---@param data string
+---@return string, string, string
 local function parseDiscoveryDatagram(data)
-    local time_to_die, broadcaster_name, type, isReply = string.match(data,"%[DDT%-(%d+)%-%((.*)%)%-(%w+)%-%((.*)%)%]")
-    if not time_to_die then return false end
-    time_to_die = tonumber(time_to_die)
-    isReply = isReply ~= 'false'
-    return time_to_die, broadcaster_name, isReply
+    --local time_to_die, broadcaster_name, type, isReply = string.match(data,"%[DDT%-(%d+)%-%((.*)%)%-(%w+)%-%((.*)%)%]")
+    local ask, reply, identifier = string.match(data,"%[DDT%-%((.+)%)%-%((.+)%)%-%((.+)%)%]")
+    return ask, reply, identifier
 end
 
 ---@param data string
 ---@param router Router
 ---@return boolean
 local function onMessageReceived(data, router)
-    local time_to_die, broadcaster_name, isReply = parseDiscoveryDatagram(data)
-    if not time_to_die then return false end
-    if isReply then
-        table.insert(
-            router.memory.adjacent_routers, broadcaster_name
-        )
-    else
-        local answer = DiscoveryDatagram(1,true,router.configs.name)
+    local asker_name, replier_name, identifier = parseDiscoveryDatagram(data)
+    if not asker_name then return false end
+    --print(router.configs.name, 'rc', asker_name)
+    local datagram = DiscoveryDatagram(asker_name,replier_name,identifier)
+    if datagram.isReply and datagram.asker_name == router.configs.name then
+        table.insert(router.memory.adjacent_routers, datagram.replier_name)
+        print(data,router.configs.name .. ' AWARE')
+    elseif datagram.asker_name ~= router.configs.name and not datagram.isReply then
+        local answer = DiscoveryDatagram(asker_name,router.configs.name,identifier)
+        print(data, '->', answer:toString())
         router:transmit(answer:toString())
     end
     return true

@@ -65,7 +65,8 @@ function NetworkState(router_object)
         --endpoints = {},
         router = router_object,
         getRouter = function(self,router_name,force_router)
-            for router in self.routers do
+            for i = 1, #self.routers do
+                local router = self.routers[i]
                 if router.name == router_name then
                     return router
                 end
@@ -81,17 +82,13 @@ function NetworkState(router_object)
             ---@diagnostic disable-next-line: return-type-mismatch
             return self:getRouter(router_name,true)
         end,
-        ---@param self NetworkState
-        ---@param router_name string
-        ---@param connections table<integer, string>
         setRouterState = function(self, router_name, connections)
-            ---@type KnownRouter
             local router = self:getRouterSafe(router_name)
             router:removeAllConnections()
             for i = 1, #connections do
-                router:addConnection(
-                    self:getRouterSafe(connections[i])
-                )
+                if connections[i] ~= router_name then
+                    router:addConnection(self:getRouterSafe(connections[i]))
+                end
             end
         end,
         type = 'NetworkState',

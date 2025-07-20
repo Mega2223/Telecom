@@ -10,7 +10,7 @@ require('Network.RouterLogic.RouterConfig')
 ---@param self Router
 ---@param time integer
 local function updateConnectedRouters(self, time)
-    local ask = DiscoveryDatagram(1,false,self.configs.name)
+    local ask = DiscoveryDatagram(self.configs.name,'nil','ASK'..tostring(time))
     self:transmit(ask:toString())
     self.memory.adjacent_routers.last_updated = time
 end
@@ -18,7 +18,8 @@ end
 --- @param self Router
 --- @param msg string
 local function transmitMessage(self, msg)
-    return self.wrapper:transmitMessage(msg)
+    --return self.wrapper:transmitMessage(msg)
+    table.insert(self.transmition_queue,msg)
 end
 
 ---@param self Router
@@ -28,6 +29,11 @@ local function doTick(self, time)
     if time - self.memory.adjacent_routers.last_updated > self.configs.adjacency_update_milis then
         self:updateConnectedRouters(time)
     end
+
+    if self.transmition_queue[1] then
+        self.wrapper:transmitMessage(self.transmition_queue[1])
+        table.remove(self.transmition_queue,1)
+    end
 end
 
 ---@param self Router
@@ -36,11 +42,11 @@ local function onReceive(self, message)
     local datagram = message
     for i = 1, #NETWORK_DATAGRAM_PROT do
         local k = NETWORK_DATAGRAM_PROT[i]
-        if NETWORK_DATAGRAM_PROT[i].onMessageReceived(datagram,self) then 
+        if k.onMessageReceived(datagram,self) then 
             return true
         end
     end
-    print('Could not find fitting template for message:\n' .. message )
+    print(self.name .. ' could not find fitting template for message:\n' .. message )
     return false
 end
 
@@ -56,16 +62,17 @@ end
 ---@field onStart fun(self: Router): nil
 ---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
 ---@field name string
+---@field transmition_queue table<integer, string>
 ---@field wrapper RouterWrapper 
 ---@field memory RouterMemory
 ---@field configs RouterConfig
----@param configs table | nil
+---@param configs ?table
 ---@return Router
 function Router(configs)
     local configs = RouterConfig(configs or {})
     assert(type(configs) == "table","invalid parameter for router constructor: " .. tostring(configs))
     local ret = {
-        transmitionQueue = {},
+        transmition_queue = {},
         doTick = doTick,
         transmit = transmitMessage,
         onReceive = onReceive,

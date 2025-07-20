@@ -3,7 +3,6 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@class ConnectionsDatagram
 ---@field time_to_die integer
 ---@field routers_traveled table<integer,string>
----@field routers_traveled_string string
 ---@field origin_name string
 ---@field connections table<integer,string>
 ---@field toString fun(self: ConnectionsDatagram): string
@@ -57,7 +56,7 @@ end
 ---@return string
 local function toString(self)
     return "[CDT-" .. self.time_to_die ..
-            "-(" .. self.routers_traveled_string ..
+            "-(" .. connectionsToString(self.routers_traveled) ..
             ")-" .. self.origin_name .. 
             "-(" .. connectionsToString(self.connections) ..
             ")]"
@@ -82,7 +81,6 @@ function ConnectionsDatagram(time_to_die, visited_routers, origin_name, connecti
         toString = toString,
         time_to_die = time_to_die,
         routers_traveled = parseVisitedRouters(visited_routers),
-        routers_traveled_string = visited_routers,
         origin_name = origin_name,
         connections = parseConnections(connections)
     }
@@ -96,18 +94,16 @@ local function onMessageReceived(msg, router)
     -- Returns false if message does not parse into this type of datagram
     local time_to_die, visited_routers, origin_name, connections = parseConnectionsDatagram(msg)
     if time_to_die and visited_routers and origin_name and connections then
-        local connections_datagram = ConnectionsDatagram(time_to_die,visited_routers,origin_name,connections)
+        local connections_datagram = ConnectionsDatagram(time_to_die-1,visited_routers,origin_name,connections)
         local is_already_visited = false
 
-        for i = 1, #connections_datagram.connections do
-            if connections_datagram.connections[i] == router.name then is_already_visited = true end
-            router.memory.network_state:setRouterState(origin_name,parseVisitedRouters(visited_routers))
-            --TODO eu parei aqui
+        router.memory.network_state:setRouterState(origin_name,parseVisitedRouters(connections))
+        
+        for i = 1, #connections_datagram.routers_traveled do
+            if connections_datagram.routers_traveled[i] == router.name then is_already_visited = true end
         end
 
-       
-
-        if not is_already_visited then
+        if (not is_already_visited) and time_to_die > 0 then
             table.insert(connections_datagram.routers_traveled,router.name)
             router:transmit(connections_datagram:toString())
         end

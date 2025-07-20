@@ -11,8 +11,11 @@ NetworkDatagram (É aceito vindo de clients)
 -- É bom colocar o remetente também, já que a rota vai diminuindo
 
 DiscoveryDatagram
-[DDT-%TTD%-(%ROUTE%)-%TYPE%-%REPLY_BOOL%]
--- Usado no mapeamento de rede, REPLY_BOOL é true se ele está respondendo alguma requisição
+[DDT-%ASK%-%REPLY%-%IDENTIFIER%]
+-- Usado no mapeamento de rede
+ASK = roteador que está mapeando
+REPLY = nil | roteador que responde
+IDENTIFIER = id unico
 
 ConnectionsDatagram
 [CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]

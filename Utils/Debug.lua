@@ -1,5 +1,7 @@
-GLOBAL_DEBUG_LEVEL = 0 -- per object?
+---@type debug_constant
+GLOBAL_DEBUG_LEVEL = 0
 
+---@enum debug_constant
 DEBUG_CONSTANTS = {
     NOTHING = 0,
     IMPORTANT = 1,
@@ -12,7 +14,7 @@ DEBUG_CONSTANTS = {
 ---@field write fun(self: StreamWriter, data: string)
 
 ---Creates a StreamWriter
----@param onWrite fun(self: StreamWriter, data: string) | nil what to do on write, prints by default
+---@param onWrite ?fun(self: StreamWriter, data: string) what to do on write, prints by default
 function StreamWriter(onWrite)
     ---@type StreamWriter
     return {
@@ -21,5 +23,6 @@ function StreamWriter(onWrite)
 end
 
 function debugVerbose()
+    --todo
     --warning?
 end
