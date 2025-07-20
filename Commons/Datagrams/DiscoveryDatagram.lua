@@ -62,12 +62,13 @@ local function onMessageReceived(data, router)
     --print(router.configs.name, 'rc', asker_name)
     local datagram = DiscoveryDatagram(asker_name,replier_name,identifier)
     if datagram.isReply and datagram.asker_name == router.configs.name then
-        table.insert(router.memory.adjacent_routers, datagram.replier_name)
-        print(data,router.configs.name .. ' AWARE')
+        --router.memory.adjacent_routers[replier_name] = KnownNeighbor(datagram.replier_name,router.current_time_milis)
+        router.memory:updateAdjacecy(datagram.replier_name,router.current_time_milis)
+        --print(data,router.configs.name .. ' AWARE')
     elseif datagram.asker_name ~= router.configs.name and not datagram.isReply then
         local answer = DiscoveryDatagram(asker_name,router.configs.name,identifier)
-        print(data, '->', answer:toString())
-        router:transmit(answer:toString())
+        --print(data, '->', answer:toString())
+        router:transmit(answer:toString(),2500+math.random(5000))
     end
     return true
 end

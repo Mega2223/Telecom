@@ -2,22 +2,28 @@ require('Network.RouterLogic.NetworkState')
 
 ---@class RouterMemory
 ---@field iteration integer
----@field adjacent_routers table<integer | 'last_updated', string | integer>
+---@field adjacent_routers table<string, KnownNeighbor>
 ---@field type string
 ---@field router Router
 ---@field network_state NetworkState
----@field updateAdjacencies fun(self: RouterMemory, adjacencies: table<integer, string>)
+---@field updateAdjacecy fun(self: RouterMemory, name: string, time_milis: integer)
+---@field clearAdjacencies fun(self: RouterMemory)
 ---@field toString fun(self: RouterMemory): string
+---@field last_adjacency_ping integer
 
----@param self RouterMemory
----@param adjacencies table<integer, string>
-local function updateAdjacencies(self, adjacencies)
-    self.adjacent_routers = {
-        last_updated = os.epoch()
+---@class KnownNeighbor
+---@field last_updated integer
+---@field name string
+
+---@param name string
+---@param last_updated integer
+---@return KnownNeighbor
+function KnownNeighbor(name, last_updated)
+    ---@type KnownNeighbor
+    return {
+        name = name,
+        last_updated = last_updated
     }
-    for i = 1, #adjacencies do
-        table.insert(self.adjacent_routers,adjacencies[i])
-    end
 end
 
 ---Converts object to string
@@ -42,12 +48,21 @@ function RouterMemory(router)
     local r = {
         iteration = 1,
         router = router,
-        adjacent_routers = {
-            last_updated = 0
-        },
+        adjacent_routers = {},
+        last_adjacency_ping = 0,
         network_state = NetworkState(router),
         type = 'RouterMemory',
-        updateAdjacencies = updateAdjacencies,
+        clearAdjacencies = function(self)
+            local n = #self.adjacent_routers
+            for i = 1, n do
+                self.adjacent_routers[i] = nil
+            end
+        end,
+        updateAdjacecy = function (self, name, time)
+            local r = self.adjacent_routers[name] or KnownNeighbor(name,time)
+            r.last_updated = time
+            self.adjacent_routers[name] = r
+        end,
         toString = toString
     }
     return r

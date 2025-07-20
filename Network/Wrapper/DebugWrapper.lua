@@ -45,7 +45,8 @@ function DebugWrapper(router_object, message_output_fun)
         output_stream = print,
         iteration = 1,
         runTick = onTick,
-        receiveMessage = onMessageReceived
+        receiveMessage = onMessageReceived,
+        last_transmition = 0
     }
     
     router_object.wrapper = wrapper

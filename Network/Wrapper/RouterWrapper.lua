@@ -4,11 +4,31 @@ require('Network.Router')
 local function onTick(self)
     self.router:doTick(os.epoch()) -- timekeeping maybe?
     self.iteration = self.iteration + 1
+    if self.iteration % 1000 ~= 0 then return end
+    term.setCursorPos(1,1)
+    term.clear()
+    term.write('NAME ' .. self.router.configs.name .. '\n')
+    term.setCursorPos(1,2)
+    term.write('TIMER ' .. self.router.current_time_milis .. '\n')
+    term.setCursorPos(1,3)
+    term.write('NEXT_REFRESH '.. (
+        self.router.current_time_milis -
+        self.router.memory.last_adjacency_ping - 
+        self.router.configs.adjacency_update_milis
+    ) .. '\n')
+    term.setCursorPos(1,4)
+    local pretty = require('cc.pretty')
+    term.write('ADJACENCIES:\n')
+    pretty.pretty_print(self.router.memory.adjacent_routers)
 end
 
 ---@param self RouterWrapper
 local function onMessageReceived(self,  event, side, channel, replyChannel, message, distance)
-    self.router:onReceive(message)
+    if self.router:onReceive(message) then
+        print('PROCESSED')
+        print(message)
+        --self.router:transmit('AAAAAAAAHH')
+    end
 end
 
 local function nextEvent(self,delay)
@@ -21,13 +41,23 @@ local function nextEvent(self,delay)
     end
 end
 
-local function transmitMessage(self, message)
-    self.modem.transmit(self.channel,self.channel,message)
+---@param self RouterWrapper
+---@param message string
+---@param milis_from_now ?integer
+---@return boolean
+local function transmitMessage(self, message, milis_from_now)
+    milis_from_now = milis_from_now or 0
+    local time = os.epoch()
+    if time - self.last_transmition > 500 then
+        self.modem.transmit(self.channel,self.channel,message)
+        return true
+    end
+    return false
 end
 
 --- @param self RouterWrapper
 local function begin(self,delay)
-    delay = delay or 0.1
+    delay = delay or 0.5
     self.router.wrapper = self
     self.router:onStart()
     self.modem.open(self.channel)
@@ -51,10 +81,11 @@ local function begin(self,delay)
 end
 
 ---@class RouterWrapper
----@field transmitMessage fun(self: RouterWrapper, message: string)
+---@field transmitMessage fun(self: RouterWrapper, message: string): boolean
 ---@field router Router
 ---@field begin fun(self: RouterWrapper)
 ---@field iteration integer
+---@field last_transmition integer
 
 ---Creates a RouterWrapper object
 ---@param router_object Router
@@ -72,7 +103,8 @@ function RouterWrapper(router_object, channel, output_stream)
         begin = begin,
         should_be_running = true,
         output_stream = output_stream or function(msg) print(msg) end,
-        iteration = 1
+        iteration = 1,
+        last_transmition = 1
     }
     
     router_object.wrapper = wrapper

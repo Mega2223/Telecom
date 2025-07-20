@@ -6,16 +6,16 @@ require('Network.Wrapper.DebugWrapper')
 local wrappers = {}
 
 local function onSent(dat)
-    print('MSG_STREAM',dat)
+    --print('MSG_STREAM:',dat)
     for i = 1, #wrappers do
         wrappers[i]:receiveMessage(dat)
     end
 end
 
-for i = 1, 2 do
+for i = 1, 4 do
     wrappers[i] = DebugWrapper(
         Router({
-            name = 'RT0' .. tostring(i)
+            
         }),
         onSent
     )

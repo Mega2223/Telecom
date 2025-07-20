@@ -13,10 +13,10 @@ local function toString(self)
 end
 
 ---RouterConfig object constructor
----@param configs RouterConfig | string | nil
+---@param configs RouterConfig | table | string | nil
 ---@return RouterConfig
 function RouterConfig(configs)
-    ---@type any
+    ---@type table | string | nil
     local configs = configs
     if type(configs) == "nil" then configs = {} 
     elseif type(configs) == "string" then configs = getConfigFromData(configs) end
@@ -25,8 +25,8 @@ function RouterConfig(configs)
     local r = {
         type = 'RouterConfig',
         toString = toString,
-        name = 'RT-' .. tostring(math.random(9999)),
-        adjacency_update_milis = 10000 * 30
+        name = string.format('RT-%04d', math.random(9999)),
+        adjacency_update_milis = 1000 * 30 * 30
     }
 
     for key, value in pairs(configs) do
