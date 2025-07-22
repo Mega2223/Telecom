@@ -11,11 +11,15 @@ require('Network.RouterLogic.TransmitionQueue')
 ---@param self Router
 ---@param time integer
 local function updateConnectedRouters(self, time)
-    --self.memory:clearAdjacencies()
     self.memory.last_adjacency_ping = time
     local ask = DiscoveryDatagram(self.configs.name,'nil','ASK'..tostring(time))
     self:transmit(ask:toString())
-    --self.memory.adjacent_routers.last_updated = time
+    
+    for router_name, known_neighbor in pairs(self.memory.adjacent_routers) do
+        if time - known_neighbor.last_updated < self.configs.adjacency_unresponsive_removal_milis then
+            self.memory.adjacent_routers[router_name] = nil
+        end
+    end
 end
 
 --- @param self Router
@@ -32,15 +36,11 @@ end
 local function doTick(self, time)
     self.memory.iteration = self.memory.iteration + 1
     self.current_time_milis = time
-    if time - self.memory.last_adjacency_ping > self.configs.adjacency_update_milis then
+    --print('t',time,self.memory.last_adjacency_ping,self.configs.adjacency_update_milis)
+    if time - self.memory.last_adjacency_ping >= self.configs.adjacency_update_milis then
         self:updateConnectedRouters(time)
     end
     self.transmition_queue:refresh(self.current_time_milis,1)
-    --[[if self.transmition_queue[1] then
-        if self.wrapper:transmitMessage(self.transmition_queue[1]) then
-            table.remove(self.transmition_queue,1)
-        end
-    end]]
 end
 
 ---@param self Router
@@ -98,7 +98,6 @@ function Router(configs)
     }
     ret.transmition_queue = TransmitionQueue(ret)
     ret.memory = RouterMemory(ret)
-    ret.memory.network_state = NetworkState(ret)
     return ret
 end
 

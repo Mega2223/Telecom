@@ -68,7 +68,7 @@ local function onMessageReceived(data, router)
     elseif datagram.asker_name ~= router.configs.name and not datagram.isReply then
         local answer = DiscoveryDatagram(asker_name,router.configs.name,identifier)
         --print(data, '->', answer:toString())
-        router:transmit(answer:toString(),2500+math.random(5000))
+        router:transmit(answer:toString(),500+math.random(1500))
     end
     return true
 end

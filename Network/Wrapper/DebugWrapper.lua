@@ -1,8 +1,10 @@
 require('Network.Router')
+socket = require('socket')
 
 ---@param self RouterWrapper
 local function onTick(self)
-    self.router:doTick(os.time()*1000) -- timekeeping maybe?
+    local time = math.floor(socket.gettime()*1000)
+    self.router:doTick(time) -- timekeeping maybe?
     self.iteration = self.iteration + 1
 end
 
@@ -15,6 +17,7 @@ end
 local function transmitMessage(self, message)
     self.output_stream(self.router.configs.name ..' TRANSMIT: ' .. message)
     self.message_output_fun(message)
+    return true
 end
 
 --- @param self RouterWrapper
@@ -54,4 +57,4 @@ function DebugWrapper(router_object, message_output_fun)
     return wrapper
 end
 
-return RouterWrapper
+return DebugWrapper

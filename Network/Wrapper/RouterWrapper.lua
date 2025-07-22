@@ -57,7 +57,7 @@ end
 
 --- @param self RouterWrapper
 local function begin(self,delay)
-    delay = delay or 0.5
+    delay = delay or 1
     self.router.wrapper = self
     self.router:onStart()
     self.modem.open(self.channel)
