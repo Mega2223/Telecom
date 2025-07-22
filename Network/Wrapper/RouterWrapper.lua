@@ -1,10 +1,15 @@
 require('Network.Router')
 ---@todo debugwrapper :3
+
+last_render = 0
+
 ---@param self RouterWrapper
 local function onTick(self)
-    self.router:doTick(os.epoch()) -- timekeeping maybe?
+    local time = math.floor(1000*os.clock())
+    self.router:doTick(time) -- timekeeping maybe?
     self.iteration = self.iteration + 1
-    if self.iteration % 1000 ~= 0 then return end
+    if time - last_render < 1000 * .5 then return end
+    last_render = time
     term.setCursorPos(1,1)
     term.clear()
     term.write('NAME ' .. self.router.configs.name .. '\n')
@@ -17,6 +22,10 @@ local function onTick(self)
         self.router.configs.adjacency_update_milis
     ) .. '\n')
     term.setCursorPos(1,4)
+    term.write('MAX_ADJ: ' .. self.router.configs.adjacency_unresponsive_removal_milis)
+    term.setCursorPos(1,5)
+    term.write('TICK: ' .. self.iteration)
+    term.setCursorPos(1,6)
     local pretty = require('cc.pretty')
     term.write('ADJACENCIES:\n')
     pretty.pretty_print(self.router.memory.adjacent_routers)
@@ -31,11 +40,14 @@ local function onMessageReceived(self,  event, side, channel, replyChannel, mess
     end
 end
 
+next_timer_id = 0
+
 local function nextEvent(self,delay)
     local event, b, c, d, e, f = os.pullEvent()
     if event == 'timer' then
         onTick(self)
-        os.startTimer(delay)
+        print('timer',next_timer_id)
+        next_timer_id = os.startTimer(delay)
     elseif event == 'modem_message' then
         onMessageReceived(self,event,b,c,d,e,f)
     end
@@ -47,17 +59,13 @@ end
 ---@return boolean
 local function transmitMessage(self, message, milis_from_now)
     milis_from_now = milis_from_now or 0
-    local time = os.epoch()
-    if time - self.last_transmition > 500 then
-        self.modem.transmit(self.channel,self.channel,message)
-        return true
-    end
-    return false
+    self.modem.transmit(self.channel,self.channel,message)
+    return true
 end
 
 --- @param self RouterWrapper
 local function begin(self,delay)
-    delay = delay or 1
+    delay = delay or 0.5
     self.router.wrapper = self
     self.router:onStart()
     self.modem.open(self.channel)
@@ -72,8 +80,9 @@ local function begin(self,delay)
     end
     self.output_stream("STARTING ROUTER " .. self.router.name .. " ON CHANNEL " .. self.channel)
 
+    os.startTimer(delay)
+
     while self.should_be_running do
-        os.startTimer(delay)
         nextEvent(self,delay)
     end
 

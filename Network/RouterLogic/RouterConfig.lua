@@ -30,9 +30,9 @@ function RouterConfig(configs)
         toString = toString,
         name = string.format('RT-%04d', math.random(9999)),
         adjacency_update_milis = 1000 * 10,
-        adjacency_unresponsive_removal_milis = 1000 * 30,
-        adjacency_broadcast_milis = 1000 * 15,
-        known_router_unresponsive_removal_milis = 1000 * 60
+        adjacency_unresponsive_removal_milis = 1000 * 40,
+        adjacency_broadcast_milis = 1000 * 30,
+        known_router_unresponsive_removal_milis = 1000 * 80
     }
 
     for key, value in pairs(configs) do

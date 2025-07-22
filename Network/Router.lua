@@ -15,12 +15,6 @@ local function updateConnectedRouters(self, time)
     self.memory.last_adjacency_ping = time
     local ask = DiscoveryDatagram(self.configs.name,'nil','ASK'..tostring(time))
     self:transmit(ask:toString())
-    
-    for router_name, known_neighbor in pairs(self.memory.adjacent_routers) do
-        if time - known_neighbor.last_updated < self.configs.adjacency_unresponsive_removal_milis then
-            self.memory.adjacent_routers[router_name] = nil
-        end
-    end
 end
 
 --- @param self Router
@@ -39,12 +33,18 @@ end
 local function doTick(self, time)
     self.memory.iteration = self.memory.iteration + 1
     self.current_time_milis = time
-    --print('t',time,self.memory.last_adjacency_ping,self.configs.adjacency_update_milis)
+
     if time - self.memory.last_adjacency_ping >= self.configs.adjacency_update_milis then
         self:updateConnectedRouters(time)
     end
-    --print(time,self.memory.last_adjacency_broadcast)
-    --print(time - self.memory.last_adjacency_broadcast)
+
+    for router_name, known_neighbor in pairs(self.memory.adjacent_routers) do
+        if time - known_neighbor.last_updated >= self.configs.adjacency_unresponsive_removal_milis then
+            print('EXCEEDED',time,known_neighbor.last_updated,self.configs.adjacency_unresponsive_removal_milis)
+            self.memory.adjacent_routers[router_name] = nil
+        end
+    end
+
     if time - self.memory.last_adjacency_broadcast >= self.configs.adjacency_broadcast_milis then
         local broadcast = ConnectionsDatagram(
             40,
