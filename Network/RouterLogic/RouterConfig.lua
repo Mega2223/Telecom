@@ -6,6 +6,8 @@ require('Utils.Utils')
 ---@field name string
 ---@field adjacency_update_milis integer
 ---@field adjacency_unresponsive_removal_milis integer
+---@field adjacency_broadcast_milis integer
+---@field known_router_unresponsive_removal_milis integer
 
 ---@param self RouterConfig
 ---@return string
@@ -28,7 +30,9 @@ function RouterConfig(configs)
         toString = toString,
         name = string.format('RT-%04d', math.random(9999)),
         adjacency_update_milis = 1000 * 10,
-        adjacency_unresponsive_removal_milis = 1000 * 30
+        adjacency_unresponsive_removal_milis = 1000 * 30,
+        adjacency_broadcast_milis = 1000 * 15,
+        known_router_unresponsive_removal_milis = 1000 * 60
     }
 
     for key, value in pairs(configs) do

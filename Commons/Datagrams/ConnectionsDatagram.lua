@@ -1,13 +1,11 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
----@class ConnectionsDatagram
+---@class ConnectionsDatagram Gives all known connections from a known router in the network
 ---@field time_to_die integer
 ---@field routers_traveled table<integer,string>
 ---@field origin_name string
 ---@field connections table<integer,string>
 ---@field toString fun(self: ConnectionsDatagram): string
-
----[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]
 
 ---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]
 ---[CDT-1-(ABC)-ORIGIN-(CONNECTIONS)]
@@ -37,7 +35,7 @@ end
 ---@param data string
 ---@return integer,string,string,string
 local function parseConnectionsDatagram(data)
-    local time_to_die, visited_routers, origin_name, connections = string.match(data,"%[CDT%-(%d+)%-%((.+)%)%-(.+)%-%((.+)%)]")
+    local time_to_die, visited_routers, origin_name, connections = string.match(data,"%[CDT%-(%d+)%-%((.+)%)%-%[(.+)%]%-%((.*)%)]")
     return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections
 end
 
@@ -57,8 +55,8 @@ end
 local function toString(self)
     return "[CDT-" .. self.time_to_die ..
             "-(" .. connectionsToString(self.routers_traveled) ..
-            ")-" .. self.origin_name .. 
-            "-(" .. connectionsToString(self.connections) ..
+            ")-[" .. self.origin_name .. 
+            "]-(" .. connectionsToString(self.connections) ..
             ")]"
 end
 
@@ -84,6 +82,16 @@ function ConnectionsDatagram(time_to_die, visited_routers, origin_name, connecti
         origin_name = origin_name,
         connections = parseConnections(connections)
     }
+end
+
+---@param known_adjacencies table<string,KnownNeighbor>
+---@return string
+function compileConnectionsIntoString(known_adjacencies)
+    local ret = ""
+    for key, value in pairs(known_adjacencies) do
+        ret = ret .. '(' .. key .. ')'
+    end
+    return ret
 end
 
 ---@param msg string

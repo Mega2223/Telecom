@@ -2,6 +2,7 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 require('Commons.Datagrams.DiscoveryDatagram')
 require('Commons.Datagrams.NetworkStateDatagram')
+require('Commons.Datagrams.ConnectionsDatagram')
 
 require('Network.RouterLogic.NetworkState')
 require('Network.RouterLogic.RouterMemory')
@@ -25,10 +26,12 @@ end
 --- @param self Router
 --- @param msg string
 --- @param time_from_now ?integer
+--- @return boolean
 local function transmitMessage(self, msg, time_from_now)
     --return self.wrapper:transmitMessage(msg)
     ---table.insert(self.transmition_queue,msg)
     self.transmition_queue:scheduleMessage(msg,self.current_time_milis + (time_from_now or 0))
+    return true
 end
 
 ---@param self Router
@@ -40,6 +43,22 @@ local function doTick(self, time)
     if time - self.memory.last_adjacency_ping >= self.configs.adjacency_update_milis then
         self:updateConnectedRouters(time)
     end
+    --print(time,self.memory.last_adjacency_broadcast)
+    --print(time - self.memory.last_adjacency_broadcast)
+    if time - self.memory.last_adjacency_broadcast >= self.configs.adjacency_broadcast_milis then
+        local broadcast = ConnectionsDatagram(
+            40,
+            string.format("(%s)", self.configs.name),
+            self.configs.name,
+            compileConnectionsIntoString(self.memory.adjacent_routers)
+        )
+        local success = self:transmit(broadcast:toString())
+        --print(success)
+        if success then
+            self.memory.last_adjacency_broadcast = time
+        end
+    end
+
     self.transmition_queue:refresh(self.current_time_milis,1)
 end
 

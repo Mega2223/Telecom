@@ -18,7 +18,7 @@ REPLY = nil | roteador que responde
 IDENTIFIER = id unico
 
 ConnectionsDatagram
-[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)]
+[CDT-%TTD%-(%VISITED_ROUTERS%)-[%ORIGIN_NAME%]-(%ROUTER_KNOWN_CONNECTIONS%)]
 --- Usado no mapeamento de rede, uma vez que um roteador conhece seus vizinhos ele deve fazer
 --- broadcast de toda a sua área conhecida peara o resto da rede
 --- %VISITED_ROUTERS% = (A)(B)(C)

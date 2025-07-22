@@ -10,6 +10,7 @@ require('Network.RouterLogic.NetworkState')
 ---@field clearAdjacencies fun(self: RouterMemory)
 ---@field toString fun(self: RouterMemory): string
 ---@field last_adjacency_ping integer
+---@field last_adjacency_broadcast integer
 
 ---@class KnownNeighbor
 ---@field last_updated integer
@@ -32,7 +33,7 @@ end
 local function toString(self)
     local ret = 'ROUTER_OBJ ' .. self.router.configs.name .. ':\n'
     ret = ret .. 'NETWORK = (\n' .. self.network_state:toString() .. ')\n'
-    ret = ret .. 'ADJACENCIES'.. '(last_updated = ' .. self.adjacent_routers.last_updated ..') = (\n' 
+    ret = ret .. 'ADJACENCIES'.. '(last_updated = ' .. self.last_adjacency_ping ..') = (\n' 
     for i = 1, #self.adjacent_routers do
         ret = ret .. self.adjacent_routers[i] .. ' '
     end
@@ -50,6 +51,7 @@ function RouterMemory(router)
         router = router,
         adjacent_routers = {},
         last_adjacency_ping = 0,
+        last_adjacency_broadcast = 0,
         network_state = NetworkState(router),
         type = 'RouterMemory',
         clearAdjacencies = function(self)
