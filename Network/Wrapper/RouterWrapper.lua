@@ -8,24 +8,30 @@ local function onTick(self)
     local time = math.floor(1000*os.clock())
     self.router:doTick(time) -- timekeeping maybe?
     self.iteration = self.iteration + 1
+
     if time - last_render < 1000 * .5 then return end
     last_render = time
-    term.setCursorPos(1,1)
     term.clear()
-    term.write('NAME ' .. self.router.configs.name .. '\n')
+
+    local s = self.router.memory.network_state:toString()
+    local x,y = term.getSize()
+    term.setCursorPos(1,y/2)
+    print(s)
     term.setCursorPos(1,2)
-    term.write('TIMER ' .. self.router.current_time_milis .. '\n')
+    term.write('NAME ' .. self.router.configs.name .. '\n')
     term.setCursorPos(1,3)
+    term.write('TIMER ' .. self.router.current_time_milis .. '\n')
+    term.setCursorPos(1,4)
     term.write('NEXT_REFRESH '.. (
         self.router.current_time_milis -
         self.router.memory.last_adjacency_ping - 
         self.router.configs.adjacency_update_milis
     ) .. '\n')
-    term.setCursorPos(1,4)
-    term.write('MAX_ADJ: ' .. self.router.configs.adjacency_unresponsive_removal_milis)
     term.setCursorPos(1,5)
-    term.write('TICK: ' .. self.iteration)
+    term.write('MAX_ADJ: ' .. self.router.configs.adjacency_unresponsive_removal_milis)
     term.setCursorPos(1,6)
+    term.write('TICK: ' .. self.iteration)
+    term.setCursorPos(1,8)
     local pretty = require('cc.pretty')
     term.write('ADJACENCIES:\n')
     pretty.pretty_print(self.router.memory.adjacent_routers)
@@ -46,7 +52,7 @@ local function nextEvent(self,delay)
     local event, b, c, d, e, f = os.pullEvent()
     if event == 'timer' then
         onTick(self)
-        print('timer',next_timer_id)
+        --print('timer',next_timer_id)
         next_timer_id = os.startTimer(delay)
     elseif event == 'modem_message' then
         onMessageReceived(self,event,b,c,d,e,f)
@@ -71,6 +77,7 @@ local function begin(self,delay)
     self.modem.open(self.channel)
     
     local monitor = peripheral.find("monitor")
+    monitor.setTextScale(.5)
     if peripheral ~= nil then
         self.output_stream("Redirecting all output to connected monitor")
         term.redirect(monitor)

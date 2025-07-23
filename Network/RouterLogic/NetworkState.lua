@@ -21,10 +21,15 @@ end
 ---@field connections table<integer,KnownRouter>
 ---@field addConnection fun(self:KnownRouter,router:KnownRouter): nil
 ---@field removeAllConnections fun(self:KnownRouter)
+---@field isActive fun(self: KnownRouter, context: Router): boolean
 ---@field type 'KnownRouter'
+---@field remote_last_update integer
+---@field last_update integer
 ---@param name string
----@param connections table<integer,KnownRouter>|nil
-function KnownRouter(name,connections)
+---@param remote_last_update integer
+---@param current_time integer
+---@param connections table<string,string>
+function KnownRouter(name,connections,remote_last_update,current_time)
     local con = {}
     local i = 1
     while connections ~= nil and connections[i] ~= nil do
@@ -36,24 +41,31 @@ function KnownRouter(name,connections)
         name = name,
         connections = con,
         type = 'KnownRouter',
+        remote_last_update = remote_last_update,
+        last_update = current_time,
         addConnection = function (self,knownRouterObject)
-            table.insert(self.connections,knownRouterObject)
+            self.connections[knownRouterObject.name] = knownRouterObject.name
         end,
         removeAllConnections = function (self)
             for i = 1, #self.connections do
                 self.connections[i] = nil
             end
+        end,
+        isActive = function (self, context)
+            return context.current_time_milis - self.last_update >= context.configs.known_router_unresponsive_removal_milis
         end
     }
 end
 
 ---@class NetworkState
 ---@field routers table<integer,KnownRouter>
+---@field router Router
 -- ---@field endpoints table<integer, KnownEndpoint>
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownRouter
----@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>): nil
+---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer): nil
 ---@field toString fun(self: NetworkState): string
+---@field updateSelf fun(self: NetworkState)
 ---@field type "NetworkState"
 ---@param router_object Router
 ---@return NetworkState
@@ -72,7 +84,7 @@ function NetworkState(router_object)
                 end
             end
             if force_router then
-                local router = KnownRouter(router_name)
+                local router = KnownRouter(router_name,nil,-1000,router_object.current_time_milis)
                 table.insert(self.routers,router)
                 return router
             end
@@ -82,8 +94,10 @@ function NetworkState(router_object)
             ---@diagnostic disable-next-line: return-type-mismatch
             return self:getRouter(router_name,true)
         end,
-        setRouterState = function(self, router_name, connections)
+        setRouterState = function(self, router_name, connections, time, remote_time)
             local router = self:getRouterSafe(router_name)
+            router.last_update = time
+            router.remote_last_update = remote_time
             router:removeAllConnections()
             for i = 1, #connections do
                 if connections[i] ~= router_name then
@@ -91,12 +105,24 @@ function NetworkState(router_object)
                 end
             end
         end,
+        updateSelf = function(self)
+            local self_in_network = self:getRouterSafe(self.router.configs.name)
+            self_in_network.last_update = self.router.current_time_milis
+            self_in_network.remote_last_update = self.router.current_time_milis
+            self_in_network:removeAllConnections()
+            for key, value in pairs(self.router.memory.adjacent_routers) do
+                self_in_network:addConnection(
+                    self:getRouterSafe(key)
+                )
+            end
+        end,
         type = 'NetworkState',
         toString = function (self)
-            local ret = 'routers=(\n'
+            local ret = 'routers = (\n'
             for i =1, #self.routers do
                 local router = self.routers[i]
-                ret = ret .. 'router ' .. router.name .. ' -> [ '
+                local activity = 'INACTIVE'; if router:isActive(self.router) then activity = 'ACTIVE' end
+                ret = ret .. '  router ' .. router.name ..' [' .. activity .. '] -> L('.. router.last_update ..') R(' .. router.remote_last_update ..') [ '
                 for j =1, #router.connections do
                     ret = ret .. router.connections[j].name .. ' '
                 end

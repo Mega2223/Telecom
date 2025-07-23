@@ -50,12 +50,19 @@ local function doTick(self, time)
             40,
             string.format("(%s)", self.configs.name),
             self.configs.name,
-            compileConnectionsIntoString(self.memory.adjacent_routers)
+            compileConnectionsIntoString(self.memory.adjacent_routers),
+            self.current_time_milis
         )
         local success = self:transmit(broadcast:toString())
-        --print(success)
         if success then
             self.memory.last_adjacency_broadcast = time
+        end
+        self.memory.network_state:updateSelf()
+    end
+
+    for key, value in pairs(self.memory.network_state.routers) do
+        if not value:isActive(self) then
+            self.memory.network_state.routers[key] = nil
         end
     end
 

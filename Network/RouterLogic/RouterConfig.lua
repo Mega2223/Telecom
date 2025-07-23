@@ -28,7 +28,7 @@ function RouterConfig(configs)
     local r = {
         type = 'RouterConfig',
         toString = toString,
-        name = string.format('RT-%04d', math.random(9999)),
+        name = string.format('RT-%05d', math.random(99999)),
         adjacency_update_milis = 1000 * 10,
         adjacency_unresponsive_removal_milis = 1000 * 40,
         adjacency_broadcast_milis = 1000 * 30,
