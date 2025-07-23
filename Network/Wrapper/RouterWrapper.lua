@@ -10,12 +10,14 @@ local function onTick(self)
     self.iteration = self.iteration + 1
 
     if time - last_render < 1000 * .5 then return end
+    local pretty = require('cc.pretty')
     last_render = time
     term.clear()
 
     local s = self.router.memory.network_state:toString()
     local x,y = term.getSize()
     term.setCursorPos(1,y/2)
+    --pretty.pretty_print(self.router.memory.network_state.routers[1])
     print(s)
     term.setCursorPos(1,2)
     term.write('NAME ' .. self.router.configs.name .. '\n')
@@ -32,7 +34,7 @@ local function onTick(self)
     term.setCursorPos(1,6)
     term.write('TICK: ' .. self.iteration)
     term.setCursorPos(1,8)
-    local pretty = require('cc.pretty')
+    
     term.write('ADJACENCIES:\n')
     pretty.pretty_print(self.router.memory.adjacent_routers)
 end
