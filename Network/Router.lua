@@ -60,12 +60,6 @@ local function doTick(self, time)
         self.memory.network_state:updateSelf()
     end
 
-    for key, value in pairs(self.memory.network_state.routers) do
-        if not value:isActive(self) then
-            self.memory.network_state.routers[key] = nil
-        end
-    end
-
     self.transmition_queue:refresh(self.current_time_milis,1)
 end
 

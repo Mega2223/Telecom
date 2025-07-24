@@ -117,6 +117,7 @@ local function onMessageReceived(msg, router)
         if (not is_already_visited) and time_to_die > 0 then
             table.insert(connections_datagram.routers_traveled,router.name)
             router:transmit(connections_datagram:toString())
+            --print(connections,'->',parseVisitedRouters(connections)[1])
             router.memory.network_state:setRouterState(
                 origin_name,
                 parseVisitedRouters(connections),

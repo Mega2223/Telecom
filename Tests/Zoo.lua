@@ -12,7 +12,7 @@ local function onSent(dat)
     end
 end
 
-for i = 1, 2 do
+for i = 1, 4 do
     wrappers[i] = DebugWrapper(
         Router({}),
         onSent
