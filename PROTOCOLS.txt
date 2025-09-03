@@ -36,6 +36,23 @@ BroadcastDatagram
 
 (Datagramas de contato com clientes)
 
+EndpointContractDatagram
+[ECD-[%TASK%]-[%DESTINATION%]-(%TASK_DATA%)]
+%TASK% = 'ASK_CONNECTION'|'CONFIRM_CONNECTION'|'RENEW_CONNECTION'|'PING_NEARBY'|'NEARBY_ROUTER'|'ASK_ADDRESSES'|'REPLY_ADDRESSES'|'STILL_VALID'
+%TASK_DATA% =
+    %TASK% = 'ASK_CONNECTION' -> Prefixo requerido
+           = 'CONFIRM_CONNECTION' -> Endereço do endpoint na rede
+           = 'RENEW_CONNECTION' -> Nada
+           = 'PING_NEARBY' -> Nada
+           = 'NEARBY_ROUTER' -> Nome do roteador
+           = 'ASK_ADDRESSES' -> Nada
+           = 'REPLY_ADDRESSES' -> '(R1)(R2)...'
+           = 'STILL_VALID' -> Nome do endpoint
+
+%DESTINATION% = O roteador / cliente de destino
+    Durante o estabelecimento de conexão o cliente terá um ID único temporário
+    No PING_NEARBY, NEARBY_ROUTER esse parâmetro é vazio
+
 TransportDatagram
 [TDT-%DEST_NAME%-(%DATA%)]
 -- É criado quando a mensagem deve sair da rede

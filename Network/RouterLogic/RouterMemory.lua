@@ -3,6 +3,7 @@ require('Network.RouterLogic.NetworkState')
 ---@class RouterMemory
 ---@field iteration integer
 ---@field adjacent_routers table<string, KnownNeighbor>
+---@field known_endpoints table<string, KnownEndpoint>
 ---@field type string
 ---@field router Router
 ---@field network_state NetworkState
@@ -11,6 +12,30 @@ require('Network.RouterLogic.NetworkState')
 ---@field toString fun(self: RouterMemory): string
 ---@field last_adjacency_ping integer
 ---@field last_adjacency_broadcast integer
+---@field connection_manager ConnectionManager
+
+--[[
+---@class KnownEndpoint
+---@field address string
+---@field last_updated integer
+---@field isActive fun(self: KnownEndpoint): boolean
+---@field router Router
+
+
+---@param self RouterMemory
+---@param address string
+---@return KnownEndpoint
+function KnownEndpoint(self,address)
+    ---@type KnownEndpoint
+    return {
+        address = address,
+        last_updated = self.router.current_time_milis,
+        router = self.router,
+        isActive = function(self)
+            return self.router.current_time_milis - self.last_updated <= self.router.configs.endpoint_unresponsive_milis
+        end
+    }
+end]]
 
 ---@class KnownNeighbor
 ---@field last_updated integer
@@ -34,8 +59,12 @@ local function toString(self)
     local ret = 'ROUTER_OBJ ' .. self.router.configs.name .. ':\n'
     ret = ret .. 'NETWORK = (\n' .. self.network_state:toString() .. ')\n'
     ret = ret .. 'ADJACENCIES'.. '(last_updated = ' .. self.last_adjacency_ping ..') = (\n' 
-    for i = 1, #self.adjacent_routers do
-        ret = ret .. self.adjacent_routers[i] .. ' '
+    for name, router in pairs(self.adjacent_routers) do
+        ret = ret .. name .. ' '
+    end
+    ret = ret .. ')\nENDPOINTS = ('
+    for name, endpoint in pairs(self.known_endpoints) do
+        ret = ret .. name .. ' ' 
     end
     ret = ret .. ')\n'
     return ret
@@ -50,9 +79,11 @@ function RouterMemory(router)
         iteration = 1,
         router = router,
         adjacent_routers = {},
+        known_endpoints = {},
         last_adjacency_ping = 0,
         last_adjacency_broadcast = 0,
         network_state = NetworkState(router),
+        connection_manager = ConnectionManager(router),
         type = 'RouterMemory',
         clearAdjacencies = function(self)
             local n = #self.adjacent_routers

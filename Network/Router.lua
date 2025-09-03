@@ -45,6 +45,12 @@ local function doTick(self, time)
         end
     end
 
+    for endpoint_name, endpoint in pairs(self.memory.known_endpoints) do
+        if not endpoint:isActive() then
+            self.memory.known_endpoints[endpoint_name] = nil
+        end
+    end
+
     if time - self.memory.last_adjacency_broadcast >= self.configs.adjacency_broadcast_milis then
         local broadcast = ConnectionsDatagram(
             40,

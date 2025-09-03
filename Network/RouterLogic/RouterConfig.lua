@@ -8,6 +8,7 @@ require('Utils.Utils')
 ---@field adjacency_unresponsive_removal_milis integer
 ---@field adjacency_broadcast_milis integer
 ---@field known_router_unresponsive_removal_milis integer
+---@field endpoint_unresponsive_milis integer
 
 ---@param self RouterConfig
 ---@return string
@@ -32,7 +33,8 @@ function RouterConfig(configs)
         adjacency_update_milis = 1000 * 10,
         adjacency_unresponsive_removal_milis = 1000 * 30,
         adjacency_broadcast_milis = 1000 * 30,
-        known_router_unresponsive_removal_milis = 1000 * 60
+        known_router_unresponsive_removal_milis = 1000 * 60,
+        endpoint_unresponsive_milis = 1000 * 15
     }
 
     for key, value in pairs(configs) do
