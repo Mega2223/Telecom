@@ -1,21 +1,19 @@
 require('Commons.Datagrams.Datagram')
 
--- The discovery datagram is made for routers to find out adjacent routers through a ping
-
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 ---@enum ENDPOINT_CONTRACT_TASK
 ENDPOINT_CONTRACT_TASKS = {
-    ASK_CONNECTION='ASK_CONNECTION',
-    CONFIRM_CONNECTION='CONFIRM_CONNECTION',
-    RENEW_CONNECTION='RENEW_CONNECTION',
-    PING_NEARBY='PING_NEARBY',
-    NEARBY_ROUTER='NEARBY_ROUTER',
-    ASK_ADDRESSES='ASK_ADDRESSES',
-    REPLY_ADDRESSES='REPLY_ADDRESSES'
+    ASK_CONNECTION='ASK_CONNECTION', --- Endpoint asks for connection
+    CONFIRM_CONNECTION='CONFIRM_CONNECTION', --- Router confirms connection
+    RENEW_CONNECTION='RENEW_CONNECTION', --- Router asks for connection renew / endpoint answers
+    PING_NEARBY='PING_NEARBY', --- Endpoint asks for nearby router names
+    NEARBY_ROUTER='NEARBY_ROUTER', --- Router answers name request
+    ASK_ADDRESSES='ASK_ADDRESSES', --- Asks router for all endpoints in the network that matches the pattern
+    REPLY_ADDRESSES='REPLY_ADDRESSES' --- Router answers endpoint name request
 }
 
----@param self EndpointContractDatagram
+---@param self EndpointContractDatagram The endpoint contract datagram is a datagram that regulates endpoint to router connections
 ---@return string
 local function toString(self)
     --[ECD-[%TASK%]-[%DESTINATION%]-(%TASK_DATA%)]
