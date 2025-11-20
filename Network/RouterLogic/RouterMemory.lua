@@ -3,7 +3,7 @@ require('Network.RouterLogic.NetworkState')
 ---@class RouterMemory
 ---@field iteration integer
 ---@field adjacent_routers table<string, KnownNeighbor>
----@field known_endpoints table<string, KnownEndpoint>
+-- @field known_endpoints table<string, KnownEndpoint>
 ---@field type string
 ---@field router Router
 ---@field network_state NetworkState

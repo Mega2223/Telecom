@@ -3,7 +3,7 @@ require('Network.Router')
 
 last_render = 0
 
----@param self RouterWrapper
+---@param self ModemWrapper
 local function onTick(self)
     local time = math.floor(1000*os.clock())
     self.router:doTick(time) -- timekeeping maybe?
@@ -39,7 +39,7 @@ local function onTick(self)
     pretty.pretty_print(self.router.memory.adjacent_routers)
 end
 
----@param self RouterWrapper
+---@param self ModemWrapper
 local function onMessageReceived(self,  event, side, channel, replyChannel, message, distance)
     if self.router:onReceive(message) then
         print('PROCESSED')
@@ -61,7 +61,7 @@ local function nextEvent(self,delay)
     end
 end
 
----@param self RouterWrapper
+---@param self ModemWrapper
 ---@param message string
 ---@param milis_from_now ?integer
 ---@return boolean
@@ -71,7 +71,7 @@ local function transmitMessage(self, message, milis_from_now)
     return true
 end
 
---- @param self RouterWrapper
+--- @param self ModemWrapper
 local function begin(self,delay)
     delay = delay or 0.5
     self.router.wrapper = self
@@ -98,21 +98,21 @@ local function begin(self,delay)
     self.output_stream("ENDED ROUTER " .. self.router.name)
 end
 
----@class RouterWrapper
----@field transmitMessage fun(self: RouterWrapper, message: string): boolean
+---@class ModemWrapper
+---@field transmitMessage fun(self: ModemWrapper, message: string): boolean
 ---@field router Router
----@field begin fun(self: RouterWrapper)
+---@field begin fun(self: ModemWrapper)
 ---@field iteration integer
 ---@field last_transmition integer
 
----Creates a RouterWrapper object
+---Creates a ModemWrapper object
 ---@param router_object Router
 ---@param channel integer | nil
 ---@param output_stream fun(string) | nil
----@return RouterWrapper
-function RouterWrapper(router_object, channel, output_stream)
+---@return ModemWrapper
+function ModemWrapper(router_object, channel, output_stream)
     local modem = peripheral.find("modem")
-    ---@type RouterWrapper
+    ---@type ModemWrapper
     local wrapper = {
         transmitMessage = transmitMessage,
         modem = modem,
@@ -130,4 +130,4 @@ function RouterWrapper(router_object, channel, output_stream)
     return wrapper
 end
 
-return RouterWrapper
+return ModemWrapper

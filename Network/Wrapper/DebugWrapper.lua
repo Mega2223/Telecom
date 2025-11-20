@@ -1,14 +1,14 @@
 require('Network.Router')
 socket = require('socket')
 
----@param self RouterWrapper
+---@param self ModemWrapper
 local function onTick(self)
     local time = math.floor(socket.gettime()*1000)
     self.router:doTick(time) -- timekeeping maybe?
     self.iteration = self.iteration + 1
 end
 
----@param self RouterWrapper
+---@param self ModemWrapper
 local function onMessageReceived(self, message)
     self.router:onReceive(message)
 end
@@ -20,19 +20,19 @@ local function transmitMessage(self, message)
     return true
 end
 
---- @param self RouterWrapper
+--- @param self ModemWrapper
 local function begin(self)
     self.router.wrapper = self
     self.router:onStart()
     self.output_stream("STARTING ROUTER " .. self.router.name .. " AS DEBUG")
 end
 
----@class DebugWrapper: RouterWrapper
+---@class DebugWrapper: ModemWrapper
 ---@field runTick fun(self: DebugWrapper)
 ---@field receiveMessage fun(self: DebugWrapper, message: string)
 ---@field message_output_fun fun(string)
 
----Creates a RouterWrapper object
+---Creates a ModemWrapper object
 ---@param router_object Router
 ---@param message_output_fun ?fun(string) where messagens will be sent
 ---@return DebugWrapper

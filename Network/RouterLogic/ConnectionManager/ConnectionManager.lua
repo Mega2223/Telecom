@@ -1,11 +1,8 @@
--- The connection manager manages connections with endpoints
-
----@class KnownEndpoint
----@field name string
----@field last_updated integer
+-- The connection manager manages connections with adjacent routers
+require('KnownAdjacentRouter')
 
 ---@class ConnectionManager
----@field endpoints table<string,KnownEndpoint>
+---@field endpoints table<string,KnownAdjacentRouter>
 ---@field update fun(self:ConnectionManager, time_milis: integer)
 ---@field router Router
 

@@ -96,7 +96,7 @@ end
 ---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
 ---@field name string
 ---@field transmition_queue TransmitionQueue
----@field wrapper RouterWrapper 
+---@field wrapper ModemWrapper 
 ---@field memory RouterMemory
 ---@field configs RouterConfig
 ---@field current_time_milis integer

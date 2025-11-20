@@ -1,7 +1,7 @@
-require('Network.Wrapper.RouterWrapper')
+require('Network.Wrapper.ModemWrapper')
 require('Network.Router')
 
-wrapper = RouterWrapper(
+wrapper = ModemWrapper(
     Router()
 )
 

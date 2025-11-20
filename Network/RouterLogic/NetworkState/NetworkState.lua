@@ -1,72 +1,12 @@
+require('KnownNetworkRouter')
 require('Utils.Graph')
 
---[[
----@ class KnownEndpoint
-function KnownEndpoint(parent_router, address)
-
-end
-
----@ class KnownConnection
-function KnownConnection(to, weight)
-    return {
-        to = to,
-        weight = weight,
-        type = 'KnownConnection'
-    }
-end
-]]
-
----@class KnownRouter
----@field name string
----@field connections table<string,string>
----@field addConnection fun(self:KnownRouter,router:string): nil
----@field removeAllConnections fun(self:KnownRouter)
----@field isActive fun(self: KnownRouter, context: Router): boolean
----@field type 'KnownRouter'
----@field remote_last_update integer
----@field last_update integer
-
----@param name string
----@param remote_last_update integer
----@param current_time integer
----@param connections ?table<string,string>
-function KnownRouter(name,connections,remote_last_update,current_time)
-    
-    local con = {}
-    if connections then
-        for key, value in pairs(connections) do
-            con[key] = value
-        end
-    end
-
-    ---@type KnownRouter
-    return{
-        name = name,
-        connections = con,
-        type = 'KnownRouter',
-        remote_last_update = remote_last_update,
-        last_update = current_time,
-        addConnection = function (self,router_name)
-            self.connections[router_name] = router_name
-        end,
-        removeAllConnections = function (self)
-            for key, value in pairs(self.connections) do
-                self.connections[key] = nil
-            end
-        end,
-        isActive = function (self, context)
-            return context.current_time_milis - self.last_update < context.configs.known_router_unresponsive_removal_milis
-        end
-    }
-end
-
 ---@class NetworkState
----@field protected routers table<string,KnownRouter>
+---@field protected routers table<string,KnownNetworkRouter>
 ---@diagnostic disable: invisible
 ---@field router Router
--- ---@field endpoints table<integer, KnownEndpoint>
----@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownRouter | nil
----@field getRouterSafe fun(self: NetworkState, router_name: string): KnownRouter
+---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil
+---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownNetworkRouter
 ---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer): nil
 ---@field toString fun(self: NetworkState): string
 ---@field updateSelf fun(self: NetworkState)
@@ -85,7 +25,7 @@ function NetworkState(router_object)
                 return self.routers[router_name]
             end
             if force_router then
-                local router = KnownRouter(router_name,nil,-1000,router_object.current_time_milis)
+                local router = KnownNetworkRouter(router_name,nil,-1000,router_object.current_time_milis)
                 self.routers[router_name] = router
                 return router
             end
