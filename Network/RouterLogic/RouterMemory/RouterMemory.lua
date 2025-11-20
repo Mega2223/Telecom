@@ -1,9 +1,11 @@
 require('Network.RouterLogic.NetworkState')
+require('KnownNeighbor')
+require('KnownEndpoint')
 
 ---@class RouterMemory
 ---@field iteration integer
 ---@field adjacent_routers table<string, KnownNeighbor>
--- @field known_endpoints table<string, KnownEndpoint>
+---@field known_endpoints table<string, KnownEndpoint>
 ---@field type string
 ---@field router Router
 ---@field network_state NetworkState
@@ -13,44 +15,6 @@ require('Network.RouterLogic.NetworkState')
 ---@field last_adjacency_ping integer
 ---@field last_adjacency_broadcast integer
 ---@field connection_manager ConnectionManager
-
---[[
----@class KnownEndpoint
----@field address string
----@field last_updated integer
----@field isActive fun(self: KnownEndpoint): boolean
----@field router Router
-
-
----@param self RouterMemory
----@param address string
----@return KnownEndpoint
-function KnownEndpoint(self,address)
-    ---@type KnownEndpoint
-    return {
-        address = address,
-        last_updated = self.router.current_time_milis,
-        router = self.router,
-        isActive = function(self)
-            return self.router.current_time_milis - self.last_updated <= self.router.configs.endpoint_unresponsive_milis
-        end
-    }
-end]]
-
----@class KnownNeighbor
----@field last_updated integer
----@field name string
-
----@param name string
----@param last_updated integer
----@return KnownNeighbor
-function KnownNeighbor(name, last_updated)
-    ---@type KnownNeighbor
-    return {
-        name = name,
-        last_updated = last_updated
-    }
-end
 
 ---Converts object to string
 ---@param self RouterMemory

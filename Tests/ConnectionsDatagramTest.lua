@@ -1,4 +1,4 @@
-require('Commons.Datagrams.ConnectionsDatagram')
+require('Network.RouterLogic.Datagrams.ConnectionsDatagram')
 require('Network.Wrapper.DebugWrapper')
 
 local dat = ConnectionsDatagram(10,"(RT-12)(RT-13)","RT-13","(RT-14)(RT-11)(RT-15)",3)

@@ -1,13 +1,13 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
-require('Commons.Datagrams.DiscoveryDatagram')
-require('Commons.Datagrams.NetworkStateDatagram')
-require('Commons.Datagrams.ConnectionsDatagram')
+require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
+require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
+require('Network.RouterLogic.Datagrams.ConnectionsDatagram')
 
-require('Network.RouterLogic.NetworkState')
-require('Network.RouterLogic.RouterMemory')
-require('Network.RouterLogic.RouterConfig')
-require('Network.RouterLogic.TransmitionQueue')
+require('NetworkState')
+require('RouterMemory')
+require('RouterConfig')
+require('TransmitionQueue')
 
 ---@param self Router
 ---@param time integer

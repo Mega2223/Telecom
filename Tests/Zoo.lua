@@ -1,4 +1,4 @@
-require('Commons.Datagrams.DiscoveryDatagram')
+require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
 require('Network.Router')
 require('Network.Wrapper.DebugWrapper')
 

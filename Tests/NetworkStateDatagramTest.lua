@@ -1,4 +1,4 @@
-require('Commons.Datagrams.NetworkStateDatagram')
+require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
 
 local nsd = NetworkStateDatagram('RT-NIL')
 

@@ -1,7 +1,8 @@
+---@diagnostic disable: undefined-global, undefined-field
 require('Network.Router')
 ---@todo debugwrapper :3
 
-last_render = 0
+LAST_RENDER = 0
 
 ---@param self ModemWrapper
 local function onTick(self)
@@ -9,9 +10,9 @@ local function onTick(self)
     self.router:doTick(time) -- timekeeping maybe?
     self.iteration = self.iteration + 1
 
-    if time - last_render < 1000 * .5 then return end
+    if time - LAST_RENDER < 1000 * .5 then return end
     local pretty = require('cc.pretty')
-    last_render = time
+    LAST_RENDER = time
     term.clear()
 
     local s = self.router.memory.network_state:toString()
@@ -48,14 +49,14 @@ local function onMessageReceived(self,  event, side, channel, replyChannel, mess
     end
 end
 
-next_timer_id = 0
+NEXT_TIMER_ID = 0
 
 local function nextEvent(self,delay)
     local event, b, c, d, e, f = os.pullEvent()
     if event == 'timer' then
         onTick(self)
         --print('timer',next_timer_id)
-        next_timer_id = os.startTimer(delay)
+        NEXT_TIMER_ID = os.startTimer(delay)
     elseif event == 'modem_message' then
         onMessageReceived(self,event,b,c,d,e,f)
     end

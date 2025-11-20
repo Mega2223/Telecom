@@ -1,6 +1,6 @@
 require('Commons.Datagrams.Datagram')
 
--- The discovery datagram is made for routers to find out adjacent routers through a ping
+-- The discovery datagram is made for routers to find out adjacent routers through ping messages
 
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
