@@ -1,6 +1,6 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
----@class ConnectionsDatagram Gives all known connections from a known router in the network
+---@class ConnectionsDatagram Has the information of a given router's neighboring routers, is sent through the network via a broadcast algorithm.
 ---@field time_to_die integer
 ---@field routers_traveled table<integer,string>
 ---@field origin_name string
@@ -33,6 +33,9 @@ local function parseConnections(data)
     return ret
 end
 
+---gets the parameters from the datagram's string form
+---
+---time_to_die, visited_routers, origin_name, connections, local_time
 ---@param data string
 ---@return integer,string,string,string,integer
 local function parseConnectionsDatagram(data)

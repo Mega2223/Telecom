@@ -2,6 +2,14 @@ Route = Route or require('Network.RouterLogic.Route')
 
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
+--- @class NetworkDatagram
+--- @field content string
+--- @field route string talvez Route?
+--- @field type string
+--- @field routerObject Router
+--- @field time_to_die integer
+--- @field toString fun(param:self): string
+
 local function toString(self)
     return "[NDT-" .. self.time_to_die .. "-" ..
     "(" .. self.route ..")" ..
@@ -17,20 +25,12 @@ local function getUpdated(self)
             self.type,
             self.routerObject,
             self.time_to_die - 1
-            )
+        )
     else
         self:dieFunction()
         return nil
     end
 end
-
---- @class NetworkDatagram
---- @field content string
---- @field route string talvez Route?
---- @field type string
---- @field routerObject Router
---- @field time_to_die integer
---- @field toString fun(param:self): string
 
 --- @param content string
 --- @param route string

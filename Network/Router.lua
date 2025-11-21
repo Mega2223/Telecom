@@ -9,6 +9,20 @@ require('RouterMemory')
 require('RouterConfig')
 require('TransmitionQueue')
 
+
+---@class Router Describes a router entity, which must be bound to a Wrapper entity
+---@field transmit fun(self: Router,data: string, time_from_now: integer | nil): boolean
+---@field doTick fun(self: Router, time: integer): nil
+---@field onReceive fun(self: Router,data: string): boolean
+---@field onStart fun(self: Router): nil
+---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
+---@field name string
+---@field transmition_queue TransmitionQueue
+---@field wrapper ModemWrapper 
+---@field memory RouterMemory
+---@field configs RouterConfig
+---@field current_time_milis integer
+
 ---@param self Router
 ---@param time integer
 local function updateConnectedRouters(self, time)
@@ -88,18 +102,6 @@ local function onStart(self)
     --self:updateConnectedRouters()
 end
 
----@class Router Describes a router entity, which must be bound to a Wrapper entity
----@field transmit fun(self: Router,data: string, time_from_now: integer | nil): boolean
----@field doTick fun(self: Router, time: integer): nil
----@field onReceive fun(self: Router,data: string): boolean
----@field onStart fun(self: Router): nil
----@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
----@field name string
----@field transmition_queue TransmitionQueue
----@field wrapper ModemWrapper 
----@field memory RouterMemory
----@field configs RouterConfig
----@field current_time_milis integer
 ---@param configs ?table
 ---@return Router
 function Router(configs)

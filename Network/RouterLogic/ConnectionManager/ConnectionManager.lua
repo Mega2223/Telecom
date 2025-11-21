@@ -1,7 +1,7 @@
 -- The connection manager manages connections with adjacent routers
 require('KnownAdjacentRouter')
 
----@class ConnectionManager
+---@class ConnectionManager Managers connections between adjacent routers
 ---@field endpoints table<string,KnownAdjacentRouter>
 ---@field update fun(self:ConnectionManager, time_milis: integer)
 ---@field router Router
