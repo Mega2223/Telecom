@@ -3,6 +3,11 @@
 ---@type table<integer, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
+---@class DatagramParser
+---@field onMessageReceived fun(msg: string, router: Router): boolean | nil
+---@field onDie fun(): nil
+---@field type string
+
 -- This is ran inside of the router logic
 
 local function onMessageReceived(msg, router)
@@ -20,9 +25,5 @@ local template_parser = {
     type = 'TemplateDatagramParser'
 }
 
----@class DatagramParser
----@field onMessageReceived fun(msg: string, router: Router): boolean | nil
----@field onDie fun(): nil
----@field type string
 
 table.insert(NETWORK_DATAGRAM_PROT,template_parser)

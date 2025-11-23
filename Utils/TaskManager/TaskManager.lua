@@ -1,4 +1,4 @@
-require('Task')
+require('Utils.TaskManager.Task')
 --- TODO: parents
 
 ---@class TaskManager
@@ -12,16 +12,19 @@ require('Task')
 ---@param self TaskManager
 ---@param dTMilis integer
 local function doTick(self, dTMilis)
-    time = time + dTMilis
+    self.time = self.time + dTMilis
     for taskName, task in pairs(self.tasks) do
+        if task.parent and not self.tasks[task.parent.name] then
+            task.shouldDie = true
+        end
         if task.shouldDie then
-            task.onDie()
+            task:onDie(self.time)
             self.tasks[taskName] = nil
             goto continue
         end
-        if time - task.lastUpdated > task.maxUpdate or task.lastUpdated < 0 then
-            task.run(time)
-            task.lastUpdated = time
+        if self.time - task.lastUpdated > task.maxUpdate or task.lastUpdated < 0 then
+            task:run(self.time)
+            task.lastUpdated = self.time
         end
         ::continue::
     end

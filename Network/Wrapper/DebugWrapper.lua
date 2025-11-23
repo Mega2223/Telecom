@@ -20,7 +20,7 @@ local function transmitMessage(self, message)
     return true
 end
 
---- @param self ModemWrapper
+--- @param self DebugWrapper
 local function begin(self)
     self.router.wrapper = self
     self.router:onStart()
@@ -31,6 +31,7 @@ end
 ---@field runTick fun(self: DebugWrapper)
 ---@field receiveMessage fun(self: DebugWrapper, message: string)
 ---@field message_output_fun fun(string)
+---@field output_stream fun(string)
 
 ---Creates a ModemWrapper object
 ---@param router_object Router

@@ -1,14 +1,30 @@
+--- A classe ModemWrapper é um wrapper da classe Router para fazer um
+--- enlace usando o peripheral Modem do CCTweaked
+--- A fim de poder tanto conseguir receber mensagens via eventos de modem como
+--- poder executar a lógica periódica, ele usa a lógica interna de eventos do CCT,
+--- onde a cada tick ele dispara um alarme para um tick seguinte e aguarda o próximo evento,
+--- esse pode ser o alarme da iteração seguinte ou um recebimento de mensagem pelo modem, que
+--- é assíncrono em relação ao relógio interno do Router
+
 ---@diagnostic disable: undefined-global, undefined-field
+
 require('Network.Router')
----@todo debugwrapper :3
+
+---@class ModemWrapper
+---@field transmitMessage fun(self: ModemWrapper, message: string): boolean
+---@field router Router
+---@field begin fun(self: ModemWrapper)
+---@field iteration integer
+---@field last_transmition integer
 
 LAST_RENDER = 0
 
 ---@param self ModemWrapper
 local function onTick(self)
     local time = math.floor(1000*os.clock())
-    self.router:doTick(time) -- timekeeping maybe?
+    self.router:doTick(time)
     self.iteration = self.iteration + 1
+    -- A lógica do router acaba aqui, embaixo é só renderização de informação da rede :p
 
     if time - LAST_RENDER < 1000 * .5 then return end
     local pretty = require('cc.pretty')
@@ -98,13 +114,6 @@ local function begin(self,delay)
 
     self.output_stream("ENDED ROUTER " .. self.router.name)
 end
-
----@class ModemWrapper
----@field transmitMessage fun(self: ModemWrapper, message: string): boolean
----@field router Router
----@field begin fun(self: ModemWrapper)
----@field iteration integer
----@field last_transmition integer
 
 ---Creates a ModemWrapper object
 ---@param router_object Router

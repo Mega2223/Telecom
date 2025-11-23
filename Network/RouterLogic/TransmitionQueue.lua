@@ -1,4 +1,3 @@
-
 ---@class TransmitionQueue
 ---@field messages table<integer,ScheduledMessage>
 ---@field scheduleMessage fun(self:TransmitionQueue, message: string,time: integer | nil)
