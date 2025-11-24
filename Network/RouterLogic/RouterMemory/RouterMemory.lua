@@ -1,6 +1,7 @@
-require('Network.RouterLogic.NetworkState')
-require('KnownNeighbor')
-require('KnownEndpoint')
+require('Network.RouterLogic.ConnectionManager.ConnectionManager')
+require('Network.RouterLogic.NetworkState.NetworkState')
+require('Network.RouterLogic.RouterMemory.KnownNeighbor')
+require('Network.EndpointLogic.Endpoint')
 
 ---@class RouterMemory
 ---@field iteration integer

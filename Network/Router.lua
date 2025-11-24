@@ -4,11 +4,12 @@ require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
 require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
 require('Network.RouterLogic.Datagrams.ConnectionsDatagram')
 
-require('NetworkState')
-require('RouterMemory')
-require('RouterConfig')
-require('TransmitionQueue')
+require('Network.RouterLogic.NetworkState.NetworkState')
+require('Network.RouterLogic.RouterMemory.RouterMemory')
+require('Network.RouterLogic.RouterConfig')
+require('Network.RouterLogic.TransmitionQueue')
 
+require('Utils.TaskManager.TaskManager')
 
 ---@class Router Describes a router entity, which must be bound to a Wrapper entity
 ---@field transmit fun(self: Router,data: string, time_from_now: integer | nil): boolean

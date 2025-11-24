@@ -1,5 +1,3 @@
-require('Commons.Datagrams.Datagram')
-
 ---@class DiscoveryDatagram The discovery datagram is made for routers to find out adjacent routers through ping messages
 ---@field isReply boolean
 ---@field asker_name string stored in the Route field
