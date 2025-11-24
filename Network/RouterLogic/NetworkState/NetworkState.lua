@@ -1,4 +1,5 @@
 require('Network.RouterLogic.ConnectionManager.KnownAdjacentRouter')
+require('Network.RouterLogic.NetworkState.KnownNetworkRouter')
 require('Utils.Graph')
 
 ---@class NetworkState
