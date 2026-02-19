@@ -8,7 +8,7 @@
 
 ---@diagnostic disable: undefined-global, undefined-field
 
-require('Network.Router')
+require('Network.RouterLogic.Router')
 
 ---@class ModemWrapper
 ---@field transmitMessage fun(self: ModemWrapper, message: string): boolean
@@ -91,7 +91,7 @@ end
 --- @param self ModemWrapper
 local function begin(self,delay)
     delay = delay or 0.5
-    self.router.wrapper = self
+    self.router.firmware = self
     self.router:onStart()
     self.modem.open(self.channel)
     
@@ -135,7 +135,7 @@ function ModemWrapper(router_object, channel, output_stream)
         last_transmition = 1
     }
     
-    router_object.wrapper = wrapper
+    router_object.firmware = wrapper
 
     return wrapper
 end

@@ -1,3 +1,6 @@
+--- The connections datagram expresses some router and all it's adjacent routers
+--- It is transmitted through the network via a tree broadcast algorithm
+
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 ---@class ConnectionsDatagram Has the information of a given router's neighboring routers, is sent through the network via a broadcast algorithm.

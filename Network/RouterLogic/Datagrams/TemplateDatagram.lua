@@ -1,5 +1,7 @@
 -- This file is a template for datagram types
 
+---@class TemplateDatagram this datagram does nothing
+
 ---@type table<integer, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 

@@ -1,4 +1,4 @@
-require('Network.Router')
+require('Network.RouterLogic.Router')
 socket = require('socket')
 
 ---@param self ModemWrapper
@@ -22,7 +22,7 @@ end
 
 --- @param self DebugWrapper
 local function begin(self)
-    self.router.wrapper = self
+    self.router.firmware = self
     self.router:onStart()
     self.output_stream("STARTING ROUTER " .. self.router.name .. " AS DEBUG")
 end
@@ -53,7 +53,7 @@ function DebugWrapper(router_object, message_output_fun)
         last_transmition = 0
     }
     
-    router_object.wrapper = wrapper
+    router_object.firmware = wrapper
 
     return wrapper
 end

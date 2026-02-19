@@ -32,7 +32,7 @@ function TransmitionQueue(router)
         refresh = function (self, time, max_transmitions)
             for key, message in pairs(self.messages) do
                 if time >= message.transmition_time then
-                    local success = self.router.wrapper:transmitMessage(message.data)
+                    local success = self.router.firmware:transmitMessage(message.data)
                     if success then
                         max_transmitions = max_transmitions - 1
                         self.messages[key] = nil

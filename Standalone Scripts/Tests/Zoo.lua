@@ -1,5 +1,5 @@
 require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
-require('Network.Router')
+require('Network.RouterLogic.Router')
 require('Network.Wrapper.DebugWrapper')
 
 ---@type table<integer,DebugWrapper>

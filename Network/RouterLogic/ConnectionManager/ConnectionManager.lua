@@ -1,6 +1,6 @@
 -- The connection manager manages connections with adjacent routers
 ---@class ConnectionManager Managers connections between adjacent routers
----@field endpoints table<string,KnownAdjacentRouter>
+---@field endpoints table<string,KnownNeighbor>
 ---@field update fun(self:ConnectionManager, time_milis: integer)
 ---@field router Router
 

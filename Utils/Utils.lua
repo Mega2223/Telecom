@@ -32,3 +32,7 @@ function getConfigFromData(data)
     local ret = textutils.unserialise(data)
     return ret
 end
+
+function recursiveCopy(from, to)
+    --- TODO: existe comando CP no CC:T ?
+end

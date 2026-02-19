@@ -12,8 +12,10 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@return string
 ---@nodiscard
 local function toString(self)
-    return string.format("[DDT-(%s)-(%s)-(%s)]",self.asker_name,self.replier_name,self.identifier)
+    return string.format("[DDT-(%s)-(%s)-(%s)]", self.asker_name, self.replier_name, self.identifier)
 end
+
+-- [DDT-(asker_name)-(replier_name|nil)-(identifier)]
 
 ---@param asker_name string
 ---@param replier_name string
