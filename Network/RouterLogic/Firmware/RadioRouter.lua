@@ -78,11 +78,11 @@ local function begin(self,delay)
 
     os.startTimer(delay)
 
-    while self.should_be_running do
+    while true do
         nextEvent(self,delay)
     end
 
-    self.output_stream("ENDED ROUTER " .. self.router.name)
+    -- self.output_stream("ENDED ROUTER " .. self.router.name)
 end
 
 
