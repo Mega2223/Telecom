@@ -8,19 +8,20 @@
 
 ---@diagnostic disable: undefined-global, undefined-field
 
+---@class ModemRouter: RouterFirmware
+---@field channel integer
+---@field iteration integer
+---@field last_transmition integer
+---@field modem ModemPeripheral
+
+---@class (exact) ModemPeripheral
+
 require('Network.RouterLogic.Router')
 require('Utils.CCTUtils')
 
----@class RouterFirmware
----@field transmitMessage fun(self: RouterFirmware, message: string): boolean
----@field router Router
----@field begin fun(self: RouterFirmware)
----@field iteration integer
----@field last_transmition integer
-
 LAST_RENDER = 0
 
----@param self RouterFirmware
+---@param self ModemRouter
 local function onTick(self)
     local time = math.floor(1000*os.clock())
     self.router:doTick(time)
@@ -57,7 +58,7 @@ local function onTick(self)
     pretty.pretty_print(self.router.memory.adjacent_routers)
 end
 
----@param self RouterFirmware
+---@param self ModemRouter
 local function onMessageReceived(self,  event, side, channel, replyChannel, message, distance)
     if self.router:onReceive(message) then
         print('PROCESSED')
@@ -79,7 +80,7 @@ local function nextEvent(self,delay)
     end
 end
 
----@param self RouterFirmware
+---@param self ModemRouter
 ---@param message string
 ---@param milis_from_now ?integer
 ---@return boolean
@@ -89,7 +90,7 @@ local function transmitMessage(self, message, milis_from_now)
     return true
 end
 
---- @param self RouterFirmware
+--- @param self ModemRouter
 local function begin(self,delay)
     delay = delay or 0.5
     self.router.firmware = self
@@ -119,11 +120,11 @@ end
 ---Creates a ModemWrapper object
 ---@param channel ?integer
 ---@param output_stream ?fun(string)
----@return RouterFirmware
+---@return ModemRouter
 function ModemRouter(channel, output_stream)
     local modem = peripheral.find("modem")
     local router_config = getFileOrMakeEmpty("router_config.txt")
-    ---@type RouterFirmware
+    ---@type ModemRouter
     local wrapper = {
         transmitMessage = transmitMessage,
         modem = modem,
