@@ -17,7 +17,7 @@ require('Network.RouterLogic.TransmitionQueue')
 ---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
 ---@field name string
 ---@field transmition_queue TransmitionQueue
----@field firmware ModemWrapper 
+---@field firmware RouterFirmware 
 ---@field memory RouterMemory
 ---@field configs RouterConfig
 ---@field current_time_milis integer
@@ -109,7 +109,7 @@ local function onStart(self)
     --self:updateConnectedRouters()
 end
 
----@param configs ?table
+---@param configs string|table|RouterConfig|nil
 ---@return Router
 function Router(configs)
     local configs = RouterConfig(configs or {})

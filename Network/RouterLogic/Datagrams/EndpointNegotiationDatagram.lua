@@ -1,4 +1,4 @@
--- This file is a template for datagram types
+-- The EndpointNegotiationDatagram class is a datagram intended to represent all possible interactions between an router and a datagram
 
 ---@class EndpointNegotiationDatagram this datagram does nothing
 
@@ -34,8 +34,11 @@ end
 
 local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
-    -- Action taken upon an router receiving this datagram
-    -- Returns false if message does not parse into this type of datagram
+    if not endpoint_address then return false end
+
+    --TODO wlkelçak
+
+    return true
 end
 
 local function onDie()
