@@ -47,7 +47,8 @@ end
 local function nextEvent(self,delay)
     local event, b, c, d = os.pullEvent()
     if event == 'timer' then
-        onTick(self)        
+        onTick(self)
+        os.startTimer(delay)
     elseif event == 'radio_message' then
         onMessageReceived(self,event,b,c,d)
     end
