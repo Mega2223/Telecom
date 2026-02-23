@@ -9,8 +9,6 @@ require('Network.RouterLogic.RouterMemory.RouterMemory')
 require('Network.RouterLogic.RouterConfig')
 require('Network.RouterLogic.TransmitionQueue')
 
-require('Utils.TaskManager.TaskManager')
-
 ---@class Router Describes a router entity, which must be bound to a Wrapper entity
 ---@field transmit fun(self: Router,data: string, time_from_now: integer | nil): boolean
 ---@field doTick fun(self: Router, time: integer): nil
@@ -19,11 +17,11 @@ require('Utils.TaskManager.TaskManager')
 ---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
 ---@field name string
 ---@field transmition_queue TransmitionQueue
----@field wrapper ModemWrapper 
+---@field firmware RouterFirmware 
 ---@field memory RouterMemory
 ---@field configs RouterConfig
 ---@field current_time_milis integer
----@field task_manager TaskManager
+--/-@field task_manager TaskManager (acho q é mais uma responsabilidade do firmware)
 
 ---@param self Router
 ---@param time integer
@@ -38,7 +36,7 @@ end
 --- @param time_from_now ?integer
 --- @return boolean
 local function transmitMessage(self, msg, time_from_now)
-    --return self.wrapper:transmitMessage(msg)
+    --return self.firmware:transmitMessage(msg)
     ---table.insert(self.transmition_queue,msg)
     self.transmition_queue:scheduleMessage(msg,self.current_time_milis + (time_from_now or 0))
     return true
@@ -51,7 +49,7 @@ local function doTick(self, time_milis)
     self.current_time_milis = time_milis
 
     -- Atualiza as tarefas do TaskManager interno
-    self.task_manager:doTick(time_milis)
+    -- self.task_manager:doTick(time_milis)
 
     -- Se faz muito tempo que o roteador pingou os adjacentes, faça isso agora
     if time_milis - self.memory.last_adjacency_ping >= self.configs.adjacency_update_milis then
@@ -111,7 +109,7 @@ local function onStart(self)
     --self:updateConnectedRouters()
 end
 
----@param configs ?table
+---@param configs string|table|RouterConfig|nil
 ---@return Router
 function Router(configs)
     local configs = RouterConfig(configs or {})
@@ -125,14 +123,14 @@ function Router(configs)
         updateConnectedRouters = updateConnectedRouters,
         name = configs.name,
         ---@diagnostic disable-next-line: assign-type-mismatch
-        wrapper = nil,
+        firmware = nil,
         ---@diagnostic disable-next-line: assign-type-mismatch
         memory = nil,
         ---@diagnostic disable-next-line: assign-type-mismatch
         transmition_queue = nil,
         configs = configs,
-        current_time_milis = 0,
-        task_manager = TaskManager()
+        current_time_milis = 0
+        ---task_manager = TaskManager()
     }
     ret.transmition_queue = TransmitionQueue(ret)
     ret.memory = RouterMemory(ret)

@@ -1,5 +1,7 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
+-- TODO: Eu acho bom terminar a lógica cliente/roteador ANTES de fazer isso
+
 ---@class NetworkStateDatagram Algum determinado usuário pode usar este datagrama para pedir o estado atual da rede inteira para um determinado roteador
 ---@field router string
 ---@field data string

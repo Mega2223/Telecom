@@ -61,6 +61,13 @@ function RouterMemory(router)
             r.last_updated = time
             self.adjacent_routers[name] = r
         end,
+        updateEndpoint = function(self, name, time)
+            ---@type RouterMemory
+            local self = self
+            local e = self.known_endpoints[name]
+            --- Caso esse roteador não tenha negociado com o endpoint em questão, ignorar
+            if not e then return nil end
+        end,
         toString = toString
     }
     return r

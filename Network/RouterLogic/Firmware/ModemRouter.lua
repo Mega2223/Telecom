@@ -8,18 +8,20 @@
 
 ---@diagnostic disable: undefined-global, undefined-field
 
-require('Network.Router')
-
----@class ModemWrapper
----@field transmitMessage fun(self: ModemWrapper, message: string): boolean
----@field router Router
----@field begin fun(self: ModemWrapper)
+---@class ModemRouter: RouterFirmware
+---@field channel integer
 ---@field iteration integer
 ---@field last_transmition integer
+---@field modem ModemPeripheral
+
+---@class (exact) ModemPeripheral
+
+require('Network.RouterLogic.Router')
+require('Utils.CCTUtils')
 
 LAST_RENDER = 0
 
----@param self ModemWrapper
+---@param self ModemRouter
 local function onTick(self)
     local time = math.floor(1000*os.clock())
     self.router:doTick(time)
@@ -56,7 +58,7 @@ local function onTick(self)
     pretty.pretty_print(self.router.memory.adjacent_routers)
 end
 
----@param self ModemWrapper
+---@param self ModemRouter
 local function onMessageReceived(self,  event, side, channel, replyChannel, message, distance)
     if self.router:onReceive(message) then
         print('PROCESSED')
@@ -78,7 +80,7 @@ local function nextEvent(self,delay)
     end
 end
 
----@param self ModemWrapper
+---@param self ModemRouter
 ---@param message string
 ---@param milis_from_now ?integer
 ---@return boolean
@@ -88,10 +90,10 @@ local function transmitMessage(self, message, milis_from_now)
     return true
 end
 
---- @param self ModemWrapper
+--- @param self ModemRouter
 local function begin(self,delay)
     delay = delay or 0.5
-    self.router.wrapper = self
+    self.router.firmware = self
     self.router:onStart()
     self.modem.open(self.channel)
     
@@ -116,18 +118,18 @@ local function begin(self,delay)
 end
 
 ---Creates a ModemWrapper object
----@param router_object Router
----@param channel integer | nil
----@param output_stream fun(string) | nil
----@return ModemWrapper
-function ModemWrapper(router_object, channel, output_stream)
+---@param channel ?integer
+---@param output_stream ?fun(string)
+---@return ModemRouter
+function ModemRouter(channel, output_stream)
     local modem = peripheral.find("modem")
-    ---@type ModemWrapper
+    local router_config = getFileOrMakeEmpty("router_config.txt")
+    ---@type ModemRouter
     local wrapper = {
         transmitMessage = transmitMessage,
         modem = modem,
-        router = router_object,
-        channel = channel or 1,
+        router = Router(router_config),
+        channel = channel or 2223,
         begin = begin,
         should_be_running = true,
         output_stream = output_stream or function(msg) print(msg) end,
@@ -135,9 +137,9 @@ function ModemWrapper(router_object, channel, output_stream)
         last_transmition = 1
     }
     
-    router_object.wrapper = wrapper
+    router_object.firmware = wrapper
 
     return wrapper
 end
 
-return ModemWrapper
+return ModemRouter

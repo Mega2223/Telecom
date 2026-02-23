@@ -4,15 +4,15 @@
 ---@field isActive fun(self: KnownEndpoint): boolean
 ---@field router Router
 
----@param self RouterMemory
----@param address string
+---@param router_memory RouterMemory
+---@param network_name string
 ---@return KnownEndpoint
-function KnownEndpoint(self,address)
+function KnownEndpoint(router_memory,network_name)
     ---@type KnownEndpoint
     return {
-        address = address,
-        last_updated = self.router.current_time_milis,
-        router = self.router,
+        address = network_name,
+        last_updated = router_memory.router.current_time_milis,
+        router = router_memory.router,
         isActive = function(self)
             return self.router.current_time_milis - self.last_updated <= self.router.configs.endpoint_unresponsive_milis
         end
