@@ -58,6 +58,7 @@ end
 ---@return boolean
 local function transmitMessage(self, message, milis_from_now)
     milis_from_now = milis_from_now or 0
+    print("SEND: \"".. message .."\"")
     self.radio_tower_peripheral.broadcast(message)
     return true
 end
@@ -94,6 +95,10 @@ end
 ---@param frequency integer
 ---@return RadioRouter
 function RadioRouter(frequency)
+    ---@type RadioPeripheral
+    local radio_tower_p = peripheral.find("radio_tower")
+    radio_tower_p.setFrequency(frequency)
+
     ---@type RadioRouter
     return {
         onTick = onTick,
@@ -102,7 +107,7 @@ function RadioRouter(frequency)
         transmitMessage = transmitMessage,
         begin = begin,
         frequency = frequency,
-        radio_tower_peripheral = peripheral.find("radio_tower"),
+        radio_tower_peripheral = radio_tower_p,
         router = Router(getFileOrMakeEmpty('router.txt')),
         iteration = 0,
         output_stream = print
