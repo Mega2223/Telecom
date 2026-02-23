@@ -2,7 +2,7 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
 require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
-require('Network.RouterLogic.Datagrams.ConnectionsDatagram')
+require('Network.RouterLogic.Datagrams.RouterPropertiesDatagram')
 
 require('Network.RouterLogic.NetworkState.NetworkState')
 require('Network.RouterLogic.RouterMemory.RouterMemory')
@@ -73,7 +73,7 @@ local function doTick(self, time_milis)
 
     -- Mande o status desse roteador para os demais via broadcast
     if time_milis - self.memory.last_adjacency_broadcast >= self.configs.adjacency_broadcast_milis then
-        local broadcast = ConnectionsDatagram( --RouterStatusDatagram?
+        local broadcast = RouterPropertiesDatagram( --RouterStatusDatagram?
             40,
             string.format("(%s)", self.configs.name),
             self.configs.name,
