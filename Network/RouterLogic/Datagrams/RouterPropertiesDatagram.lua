@@ -111,10 +111,13 @@ end
 ---@param origin_name string
 ---@param connections string
 ---@param local_time integer
----@param properties string
+---@param properties ? string | table<string,string|integer>
 ---@return RouterPropertiesDatagram
 function RouterPropertiesDatagram(time_to_die, visited_routers, origin_name, connections, local_time, properties)
     ---@type RouterPropertiesDatagram
+    if type(properties) == "string" then
+        properties = stringToProperties(properties)
+    end
     return {
         toString = toString,
         time_to_die = time_to_die,
@@ -122,7 +125,7 @@ function RouterPropertiesDatagram(time_to_die, visited_routers, origin_name, con
         origin_name = origin_name,
         connections = parseConnections(connections),
         local_time = local_time,
-        properties = stringToProperties(properties)
+        properties = properties or {}
     }
 end
 
