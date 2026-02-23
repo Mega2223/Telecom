@@ -74,7 +74,7 @@ local function begin(self,delay)
         term.setCursorPos(1,1)
         term.clear()
     end
-    self.output_stream("STARTING ROUTER " .. self.router.name .. " ON CHANNEL " .. self.channel)
+    self.output_stream("STARTING ROUTER " .. self.router.name .. " ON CHANNEL " .. self.frequency)
 
     os.startTimer(delay)
 
