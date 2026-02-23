@@ -26,7 +26,7 @@ local function onTick(self)
     self.iteration = self.iteration + 1
     -- A lógica do router acaba aqui, embaixo é só renderização de informação da rede :p
 
-    if time - LAST_RENDER < 1000 * .5 then return end
+    -- if time - LAST_RENDER < 1000 * .5 then return end
     -- render 
 end
 
