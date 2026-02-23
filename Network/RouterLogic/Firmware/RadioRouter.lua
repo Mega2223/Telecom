@@ -21,7 +21,8 @@ require('Network.RouterLogic.Router')
 
 ---@param self RadioRouter
 local function onTick(self)
-    local time = math.floor(1000*os.clock())
+    local time = math.floor(1000 * os.clock())
+    print("time = " .. time)
     self.router:doTick(time)
     self.iteration = self.iteration + 1
 
