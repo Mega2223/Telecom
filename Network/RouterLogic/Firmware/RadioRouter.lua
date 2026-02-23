@@ -25,12 +25,10 @@ local function onTick(self)
     self.router:doTick(time)
     self.iteration = self.iteration + 1
 
-    if self.iteration % 10 == 0 then
-        fs.open("router.txt", "w")
-        fs.write(self.router.configs:toString())
-        fs.close()
-    end
-
+    fs.open("router.txt", "w")
+    fs.write(self.router.configs:toString())
+    fs.close()
+    
     -- A lógica do router acaba aqui, embaixo é só renderização de informação da rede :p
 
     -- if time - LAST_RENDER < 1000 * .5 then return end
