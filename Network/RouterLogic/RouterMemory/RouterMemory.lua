@@ -16,7 +16,7 @@ require('Network.EndpointLogic.Endpoint')
 ---@field last_adjacency_ping integer
 ---@field last_adjacency_broadcast integer
 ---@field connection_manager ConnectionManager
----@field coords ?RouterPosition
+---@field position ?RouterPosition
 
 ---@class RouterPosition
 ---@field x number
@@ -77,7 +77,7 @@ function RouterMemory(router)
         toString = toString
     }
     if router.configs.x and router.configs.y and router.configs.z then
-        r.coords = {
+        r.position = {
             x = router.configs.x, y = router.configs.y, z = router.configs.z
         }
     end
