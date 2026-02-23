@@ -79,7 +79,7 @@ function RouterMemory(router)
     if router.configs.x and router.configs.y and router.configs.z then
         r.coords = {
             x = router.configs.x, y = router.configs.y, z = router.configs.z
-        }        
+        }
     end
     return r
 end
