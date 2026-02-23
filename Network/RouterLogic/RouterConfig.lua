@@ -25,6 +25,9 @@ end
 local function fromString(data)
     local configs = {}
     for key, value in string.gmatch(data, "([%w_ ]+)=([%w_%- ]+)\n") do
+        if tonumber(value) then
+            value = tonumber(value)
+        end
         configs[key] = value
         --print(string.format("MATCH \"%s\"=\"%s\"",key,value))
     end
