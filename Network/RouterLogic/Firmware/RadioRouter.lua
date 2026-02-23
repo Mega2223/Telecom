@@ -25,9 +25,9 @@ local function onTick(self)
     self.router:doTick(time)
     self.iteration = self.iteration + 1
 
-    fs.open("router.txt", "w")
-    fs.write(self.router.configs:toString())
-    fs.close()
+    local file = fs.open("router.txt", "w")
+    file.write(self.router.configs:toString())
+    file.close()
     
     -- A lógica do router acaba aqui, embaixo é só renderização de informação da rede :p
 
