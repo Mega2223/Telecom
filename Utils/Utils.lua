@@ -1,6 +1,8 @@
 ---@diagnostic disable: undefined-global
 require('Utils.Debug')
 
+WORK_PATH =  ""
+
 ---gets the class name of the object if it's a table, otherwise returns the object type
 ---@param obj any
 ---@return string
@@ -31,8 +33,4 @@ end
 function getConfigFromData(data)
     local ret = textutils.unserialise(data)
     return ret
-end
-
-function recursiveCopy(from, to)
-    --- TODO: existe comando CP no CC:T ?
 end
