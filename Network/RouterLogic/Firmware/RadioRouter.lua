@@ -99,6 +99,7 @@ function RadioRouter(frequency)
         frequency = frequency,
         radio_tower_peripheral = peripheral.find("radio_tower"),
         router = Router(getFileOrMakeEmpty('router.txt')),
-        iteration = 0
+        iteration = 0,
+        output_stream = print
     }
 end
