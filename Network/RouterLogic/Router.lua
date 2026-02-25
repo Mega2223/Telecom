@@ -60,7 +60,7 @@ local function doTick(self, time_milis)
     -- Se não houve resposta de um roteador adjacente a muito tempo, o esqueça
     for router_name, known_neighbor in pairs(self.memory.adjacent_routers) do
         if time_milis - known_neighbor.last_updated >= self.configs.adjacency_unresponsive_removal_milis then
-            print('EXCEEDED',time_milis,known_neighbor.last_updated,self.configs.adjacency_unresponsive_removal_milis)
+            print('NEIGHBOR UNRESPONSIVE: ',known_neighbor.name,time_milis,known_neighbor.last_updated,self.configs.adjacency_unresponsive_removal_milis)
             self.memory.adjacent_routers[router_name] = nil
         end
     end

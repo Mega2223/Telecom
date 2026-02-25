@@ -1,3 +1,5 @@
+--- FIXME propriedades entram várias e saem uma
+
 --- The connections datagram expresses some router and all it's adjacent routers
 --- It is transmitted through the network via a tree broadcast algorithm
 
@@ -155,6 +157,9 @@ local function onMessageReceived(msg, router)
                 router.current_time_milis,
                 local_time
             )
+            for property, value in pairs(connections_datagram.properties) do
+                router.memory.network_state:getRouter(origin_name).properties[property] = value
+            end
         end
 
         return true
