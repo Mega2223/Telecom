@@ -20,8 +20,8 @@ function rec(){
             rec "$1/$i" "$2" "$3"
         done
     else
-        tmp="$1"
-        echo $2${tmp#*.}$3
+        tmp="${1#*.}"
+        echo "$2$tmp$3-->$1"
     fi
 }
 
