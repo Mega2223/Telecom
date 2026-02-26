@@ -41,8 +41,9 @@ local function onTick(self)
         
         print(string.format("Current time: %d",time))
         print("Neighbors:")
-        for key, router in pairs(self.router.memory.adjacent_routers) do
-            print(string.format("%s: last seen %d", router.name, router.last_updated))
+        for key, neigh in pairs(self.router.memory.adjacent_routers) do
+            print(string.format("%s: last seen %d/%d", neigh.name, neigh.last_updated,
+                neigh.last_updated + self.router.configs.adjacency_unresponsive_removal_milis))
         end
         print("\nKnown Routers:")
         for key, router in pairs(self.router.memory.network_state.routers) do
