@@ -2,7 +2,7 @@ require('Network.RouterLogic.NetworkState.KnownNetworkRouter')
 require('Utils.Graph')
 
 ---@class NetworkState
----@field protected routers table<string,KnownNetworkRouter>
+---@field routers table<string,KnownNetworkRouter>
 ---@diagnostic disable: invisible
 ---@field router Router
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil

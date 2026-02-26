@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global, lowercase-global, undefined-field
 monitor = peripheral.find('monitor')
 modem = peripheral.find('modem')
 
