@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-global, assign-type-mismatch, param-type-mismatch, need-check-nil
 
 --- Firmware wrapper intended for the Classic Peripherals antennas
 --- not sure why those peripherals are classic but they are pretty cool
@@ -73,9 +73,10 @@ local function begin(self,delay)
     self.router:onStart()
     self.radio_tower_peripheral.setFrequency(self.frequency)
     
+    ---@type ccTweaked.peripherals.Monitor
     local monitor = peripheral.find("monitor")
-    monitor.setTextScale(.5)
-    if peripheral ~= nil then
+    if monitor ~= nil then
+        monitor.setTextScale(.5)
         self.output_stream("Redirecting all output to connected monitor")
         term.redirect(monitor)
         monitor.setCursorPos(1,1)
