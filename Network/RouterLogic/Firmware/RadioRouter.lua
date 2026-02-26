@@ -1,9 +1,8 @@
----@diagnostic disable: undefined-global, assign-type-mismatch, param-type-mismatch, need-check-nil
-
---- Firmware wrapper intended for the Classic Peripherals antennas
---- not sure why those peripherals are classic but they are pretty cool
+---@diagnostic disable: need-check-nil
 
 ---@class (exact) RadioRouter: RouterFirmware
+---Firmware wrapper intended for the Classic Peripherals antennas
+---not sure why those peripherals are classic but they are pretty cool
 ---@field radio_tower_peripheral RadioPeripheral
 ---@field frequency integer
 ---@field iteration integer
@@ -19,6 +18,8 @@
 
 require('Utils.CCTUtils')
 require('Network.RouterLogic.Router')
+
+LAST_RENDER = 0
 
 ---@param self RadioRouter
 local function onTick(self)
@@ -51,8 +52,8 @@ local function onTick(self)
             end
             print(string.format("%s: connections %s",router.name,network_routers))
         end
-
         term.redirect(last_term)
+        LAST_RENDER = time
     end
 end
 
@@ -94,6 +95,7 @@ local function begin(self,delay)
     self.radio_tower_peripheral.setFrequency(self.frequency)
     
     ---@type ccTweaked.peripherals.Monitor
+    ---@diagnostic disable-next-line: assign-type-mismatch
     self.monitor = peripheral.find("monitor")
     if self.monitor then
         STD_OUT("Redirecting all output to connected monitor")
@@ -114,6 +116,7 @@ end
 ---@return RadioRouter
 function RadioRouter(frequency)
     ---@type RadioPeripheral
+    ---@diagnostic disable-next-line: assign-type-mismatch
     local radio_tower_p = peripheral.find("radio_tower")
     radio_tower_p.setFrequency(frequency)
 
