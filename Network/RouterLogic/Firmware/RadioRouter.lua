@@ -51,7 +51,7 @@ local function onTick(self)
             for key, connection in pairs(router.connections) do
                 network_routers = network_routers .. connection .. " "
             end
-            print(string.format("%s: connections %s",router.name,network_routers))
+            print(string.format("%s connections %s -> ",router.name,network_routers))
         end
         term.redirect(last_term)
         LAST_RENDER = time
