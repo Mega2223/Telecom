@@ -7,6 +7,7 @@
 ---@field radio_tower_peripheral RadioPeripheral
 ---@field frequency integer
 ---@field iteration integer
+---@field monitor ?ccTweaked.peripherals.Monitor
 
 ---@class RadioPeripheral
 ---@field broadcast fun(msg: string)
@@ -22,7 +23,6 @@ require('Network.RouterLogic.Router')
 ---@param self RadioRouter
 local function onTick(self)
     local time = math.floor(1000 * os.clock())
-    --print("time = " .. time)
     self.router:doTick(time)
     self.iteration = self.iteration + 1
 
@@ -32,15 +32,35 @@ local function onTick(self)
     
     -- A lógica do router acaba aqui, embaixo é só renderização de informação da rede :p
 
-    -- if time - LAST_RENDER < 1000 * .5 then return end
-    -- render 
+    if time - LAST_RENDER < 1000 * .5 and self.monitor then
+        local last_term = term.current()
+        term.redirect(monitor)
+        term.setCursorPos(1, 1)
+        term.clear()
+        
+        print(string.format("Current time: %d",time))
+        print("Neighbors:")
+        for key, router in pairs(self.router.memory.adjacent_routers) do
+            print(string.format("%s: last seen %d", router.name, router.last_updated))
+        end
+        print("\nKnown Routers:")
+        for key, router in pairs(self.router.memory.network_state.routers) do
+            local network_routers = ""
+            for key, connection in pairs(router.connections) do
+                network_routers = network_routers .. connection .. " "
+            end
+            print(string.format("%s: connections %s",router.name,network_routers))
+        end
+
+        term.redirect(last_term)
+    end
 end
 
 ---@param self RadioRouter
 local function onMessageReceived(self, event, side, message, distance)
     if self.router:onReceive(message) then
-        print('SUCCESSFULLY PROCESSED MESSAGE:')
-        print(message)
+        STD_OUT('SUCCESSFULLY PROCESSED MESSAGE:')
+        STD_OUT(message)
     end
 end
 
@@ -60,7 +80,7 @@ end
 ---@return boolean
 local function transmitMessage(self, message, milis_from_now)
     milis_from_now = milis_from_now or 0
-    print("SEND: \"".. message .."\"")
+    STD_OUT("SENDING MSG: \"".. message .."\"")
     self.radio_tower_peripheral.broadcast(message)
     return true
 end
@@ -74,16 +94,11 @@ local function begin(self,delay)
     self.radio_tower_peripheral.setFrequency(self.frequency)
     
     ---@type ccTweaked.peripherals.Monitor
-    local monitor = peripheral.find("monitor")
-    if monitor ~= nil then
-        monitor.setTextScale(.5)
-        self.output_stream("Redirecting all output to connected monitor")
-        term.redirect(monitor)
-        monitor.setCursorPos(1,1)
-        term.setCursorPos(1,1)
-        term.clear()
+    self.monitor = peripheral.find("monitor")
+    if self.monitor then
+        STD_OUT("Redirecting all output to connected monitor")
     end
-    self.output_stream("STARTING ROUTER " .. self.router.name .. " ON CHANNEL " .. self.frequency)
+    STD_OUT("STARTING ROUTER " .. self.router.name .. " ON FREQUENCY " .. self.frequency)
 
     os.startTimer(delay)
 
