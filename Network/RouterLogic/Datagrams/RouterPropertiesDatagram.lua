@@ -49,7 +49,6 @@ function parseRouterPropertiesDatagram(data)
     ---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)-[%TIME%]-(%PROPERTIES%)]
     local time_to_die, visited_routers, origin_name, connections, local_time, properties =
         string.match(data, "%[CDT%-(%d+)%-%((.+)%)%-%[(.+)%]%-%((.*)%)%-%[(%d+)%]%-%((.*)%)%]")
-    --print("PROPS = ", properties)
     return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections, math.floor(tonumber(local_time) or -1), properties
 end
 
@@ -79,7 +78,7 @@ end
 ---@return table<string,string|integer>
 local function stringToProperties(property_string)
     local ret = {}
-    for key, value in string.gmatch(property_string, "(%w*)=%((%w*)%);") do
+    for key, value in string.gmatch(property_string, "([^;]+)=%(([^;]+)%);") do
         ret[key] = tonumber(value) or value
     end
     return ret
@@ -150,7 +149,6 @@ function onMessageReceived(msg, router)
         if (not is_already_visited) and time_to_die > 0 then
             table.insert(connections_datagram.routers_traveled,router.name)
             router:transmit(connections_datagram:toString())
-            --print(connections,'->',parseVisitedRouters(connections)[1])
             router.memory.network_state:setRouterState(
                 origin_name,
                 parseVisitedRouters(connections),
