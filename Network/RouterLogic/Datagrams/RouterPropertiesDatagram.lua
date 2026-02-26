@@ -45,11 +45,11 @@ end
 ---time_to_die, visited_routers, origin_name, connections, local_time, properties
 ---@param data string
 ---@return integer,string,string,string,integer,string
-local function parseRouterPropertiesDatagram(data)
+function parseRouterPropertiesDatagram(data)
     ---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)-[%TIME%]-(%PROPERTIES%)]
     local time_to_die, visited_routers, origin_name, connections, local_time, properties =
         string.match(data, "%[CDT%-(%d+)%-%((.+)%)%-%[(.+)%]%-%((.*)%)%-%[(%d+)%]%-%((.*)%)%]")
-    print("PROPS = ", properties)
+    --print("PROPS = ", properties)
     return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections, math.floor(tonumber(local_time) or -1), properties
 end
 
@@ -134,7 +134,7 @@ end
 ---@param msg string
 ---@param router Router
 ---@return boolean
-local function onMessageReceived(msg, router)
+function onMessageReceived(msg, router)
     -- Action taken upon an router receiving this datagram
     -- Returns false if message does not parse into this type of datagram
     local time_to_die, visited_routers, origin_name, connections, local_time, properties = parseRouterPropertiesDatagram(msg)
@@ -173,12 +173,12 @@ local function onDie()
 end
 
 ---@type DatagramParser
-local connections = {
+local RouterPropertiesDatagramParser = {
     onDie = onDie,
     onMessageReceived = onMessageReceived,
     type = 'RouterPropertiesDatagramParser'
 }
 
-table.insert(NETWORK_DATAGRAM_PROT,connections)
+table.insert(NETWORK_DATAGRAM_PROT,RouterPropertiesDatagramParser)
 
 return RouterPropertiesDatagram
