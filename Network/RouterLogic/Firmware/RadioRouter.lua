@@ -35,7 +35,7 @@ local function onTick(self)
 
     if self.monitor then
         local last_term = term.current()
-        term.redirect(monitor)
+        term.redirect(self.monitor)
         term.setCursorPos(1, 1)
         term.clear()
         
