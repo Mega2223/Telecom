@@ -33,7 +33,7 @@ local function onTick(self)
     
     -- A lógica do router acaba aqui, embaixo é só renderização de informação da rede :p
 
-    if time - LAST_RENDER < 1000 * .5 and self.monitor then
+    if time - LAST_RENDER < 1 * .5 and self.monitor then
         local last_term = term.current()
         term.redirect(monitor)
         term.setCursorPos(1, 1)
