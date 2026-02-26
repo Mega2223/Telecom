@@ -2,7 +2,7 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
 require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
 require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
-require('Network.RouterLogic.Datagrams.ConnectionsDatagram')
+require('Network.RouterLogic.Datagrams.RouterPropertiesDatagram')
 
 require('Network.RouterLogic.NetworkState.NetworkState')
 require('Network.RouterLogic.RouterMemory.RouterMemory')
@@ -14,6 +14,7 @@ require('Network.RouterLogic.TransmitionQueue')
 ---@field doTick fun(self: Router, time: integer): nil
 ---@field onReceive fun(self: Router,data: string): boolean
 ---@field onStart fun(self: Router): nil
+---@field getPosition fun(self: Router): RouterPosition | nil
 ---@field updateConnectedRouters fun(self: Router, time: integer) triggers an update chain for this router
 ---@field name string
 ---@field transmition_queue TransmitionQueue
@@ -59,7 +60,7 @@ local function doTick(self, time_milis)
     -- Se não houve resposta de um roteador adjacente a muito tempo, o esqueça
     for router_name, known_neighbor in pairs(self.memory.adjacent_routers) do
         if time_milis - known_neighbor.last_updated >= self.configs.adjacency_unresponsive_removal_milis then
-            print('EXCEEDED',time_milis,known_neighbor.last_updated,self.configs.adjacency_unresponsive_removal_milis)
+            print('NEIGHBOR UNRESPONSIVE: ',known_neighbor.name,time_milis,known_neighbor.last_updated,self.configs.adjacency_unresponsive_removal_milis)
             self.memory.adjacent_routers[router_name] = nil
         end
     end
@@ -71,14 +72,24 @@ local function doTick(self, time_milis)
         end
     end
 
+    local position = self:getPosition()
+    local properties = {}
+
+    if position then
+        properties['x'] = position.x
+        properties['y'] = position.y
+        properties['z'] = position.z
+    end
+
     -- Mande o status desse roteador para os demais via broadcast
     if time_milis - self.memory.last_adjacency_broadcast >= self.configs.adjacency_broadcast_milis then
-        local broadcast = ConnectionsDatagram( --RouterStatusDatagram?
+        local broadcast = RouterPropertiesDatagram( --RouterStatusDatagram?
             40,
             string.format("(%s)", self.configs.name),
             self.configs.name,
             compileConnectionsIntoString(self.memory.adjacent_routers), -- Eu a caminho de errar todos os jargons kkk
-            self.current_time_milis
+            self.current_time_milis,
+            properties
         )
         local success = self:transmit(broadcast:toString())
         if success then
@@ -109,6 +120,11 @@ local function onStart(self)
     --self:updateConnectedRouters()
 end
 
+---@param self Router
+local function getPosition(self)
+    return self.memory.position
+end
+
 ---@param configs string|table|RouterConfig|nil
 ---@return Router
 function Router(configs)
@@ -129,7 +145,8 @@ function Router(configs)
         ---@diagnostic disable-next-line: assign-type-mismatch
         transmition_queue = nil,
         configs = configs,
-        current_time_milis = 0
+        current_time_milis = 0,
+        getPosition = getPosition
         ---task_manager = TaskManager()
     }
     ret.transmition_queue = TransmitionQueue(ret)

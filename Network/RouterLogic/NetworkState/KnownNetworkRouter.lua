@@ -7,6 +7,7 @@
 ---@field type 'KnownRouter'
 ---@field remote_last_update integer
 ---@field last_update integer
+---@field properties table<string,string|number>
 
 ---@param name string
 ---@param remote_last_update integer
@@ -38,6 +39,7 @@ function KnownNetworkRouter(name,connections,remote_last_update,current_time)
         end,
         isActive = function (self, context)
             return context.current_time_milis - self.last_update < context.configs.known_router_unresponsive_removal_milis
-        end
+        end,
+        properties = {}
     }
 end

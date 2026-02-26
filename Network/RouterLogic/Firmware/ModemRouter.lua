@@ -12,9 +12,7 @@
 ---@field channel integer
 ---@field iteration integer
 ---@field last_transmition integer
----@field modem ModemPeripheral
-
----@class (exact) ModemPeripheral
+---@field modem ccTweaked.peripherals.Modem
 
 require('Network.RouterLogic.Router')
 require('Utils.CCTUtils')
@@ -98,8 +96,9 @@ local function begin(self,delay)
     self.modem.open(self.channel)
     
     local monitor = peripheral.find("monitor")
-    monitor.setTextScale(.5)
-    if peripheral ~= nil then
+    
+    if monitor ~= nil then
+        monitor.setTextScale(.5)
         self.output_stream("Redirecting all output to connected monitor")
         term.redirect(monitor)
         monitor.setCursorPos(1,1)
@@ -122,6 +121,8 @@ end
 ---@param output_stream ?fun(string)
 ---@return ModemRouter
 function ModemRouter(channel, output_stream)
+    ---@type ccTweaked.peripherals.Modem
+    ---@diagnostic disable-next-line: assign-type-mismatch
     local modem = peripheral.find("modem")
     local router_config = getFileOrMakeEmpty("router_config.txt")
     ---@type ModemRouter

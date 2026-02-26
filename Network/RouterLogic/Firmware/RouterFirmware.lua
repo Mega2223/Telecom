@@ -4,4 +4,4 @@
 ---@field transmitMessage fun(self: RouterFirmware, message: string): boolean
 ---@field router Router
 ---@field begin fun(self: RouterFirmware)
-
+---@field iteration ?integer
