@@ -5,7 +5,7 @@
 ---@type table<integer, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
----[END-endpoint_address-router_name-who_is_sending:R|E-task]
+---[END-endpoint_address-(router_name)-who_is_sending:R|E-task]
 ---
 ---task:
 ---  UPDATE -> "endpoint is still alive"
@@ -27,10 +27,12 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@param data string
 local function parseData(data)
     local endpoint, router, sender, task =
-        string.match(data, "%[END%-(.+)%-(.+)%-(.+)%-(.+)%]")
+        string.match(data, "%[END%-(.+)%-%((.+)%)%-(.+)%-(.+)%]")
     if not endpoint then return nil end
     return endpoint, router, sender == 'R', task
 end
+
+-- TODO é bom ter o objeto para poder mudar o parseamento mais facil
 
 ---@param task_data string
 ---@return string | nil, string | nil
@@ -61,10 +63,10 @@ local function onMessageReceived(msg, router)
             local name = string.format("%s_%5d", prefix, i)
             i = i + 1
             if not network_state:getEndpointWithName(name) then
-                ---[END-endpoint_address-router_name-who_is_sending:R|E-task]
+                ---[END-endpoint_address-(router_name)-who_is_sending:R|E-task]
                 ---  GIVE_NAME<(prefix|name)-(transaction_id)>
                 --name approved, send reply
-                local reply = string.format("[END-%s-%s-R-GIVE_NAME<%s-%s>]",name,router.name,name,id)
+                local reply = string.format("[END-%s-(%s)-R-GIVE_NAME<%s-%s>]",name,router.name,name,id)
                 router:transmit(reply)
                 --TODO: also vc deveria forçar um broadcast na rede
                 -- para o estado desse roteador ser atualizado nos demais
