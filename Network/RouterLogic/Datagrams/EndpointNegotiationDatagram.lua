@@ -84,9 +84,8 @@ end
 local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
     if not endpoint_address then return false end
-    if sent_from_router or router_name ~= router.name then return true end
-
     print"is endpoint tho"
+    if sent_from_router or router_name ~= router.name then return true end
 
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
