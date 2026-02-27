@@ -3,6 +3,7 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
 require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
 require('Network.RouterLogic.Datagrams.RouterPropertiesDatagram')
+require('Network.RouterLogic.Datagrams.EndpointNegotiationDatagram')
 
 require('Network.RouterLogic.NetworkState.NetworkState')
 require('Network.RouterLogic.RouterMemory.RouterMemory')

@@ -25,11 +25,12 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---     and replies the assigned name, endpoint_address is nil in this case as it is not assigned yet
 
 ---@param data string
+---@return string|nil, string|nil, string|nil, string|nil
 local function parseData(data)
     local endpoint, router, sender, task =
         string.match(data, "%[END%-%((.+)%)%-%((.+)%)%-(.+)%-(.+)%]")
     if not endpoint then return nil end
-    return endpoint, router, sender == 'R', task
+    return endpoint, router, sender, task
 end
 ---[END-(ENDPOINTNAME)-(ROUTERNAME)-E-TASKTASK]
 
