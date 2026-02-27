@@ -1,14 +1,14 @@
----@class KnownEndpoint
+---@class ConnectedEndpoint
 ---@field address string
 ---@field last_updated integer
----@field isActive fun(self: KnownEndpoint): boolean
+---@field isActive fun(self: ConnectedEndpoint): boolean
 ---@field router Router
 
 ---@param router_memory RouterMemory
 ---@param network_name string
----@return KnownEndpoint
-function KnownEndpoint(router_memory,network_name)
-    ---@type KnownEndpoint
+---@return ConnectedEndpoint
+function ConnectedEndpoint(router_memory,network_name)
+    ---@type ConnectedEndpoint
     return {
         address = network_name,
         last_updated = router_memory.router.current_time_milis,

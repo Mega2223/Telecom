@@ -66,9 +66,9 @@ local function doTick(self, time_milis)
     end
 
     -- Remova da memória endpoints que não foram recebidos atualizações de status a muito tempo
-    for endpoint_name, endpoint in pairs(self.memory.known_endpoints) do
+    for endpoint_name, endpoint in pairs(self.memory.connected_endpoints) do
         if not endpoint:isActive() then
-            self.memory.known_endpoints[endpoint_name] = nil
+            self.memory.connected_endpoints[endpoint_name] = nil
         end
     end
 
