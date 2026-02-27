@@ -96,7 +96,8 @@ local function onMessageReceived(msg, router)
 
     local prefix, id = parseGiveNameTask(task)
     if prefix and id then
-        STD_OUT"GIVENAME"
+        STD_OUT "GIVENAME"
+        exit(0)
         -- endpoint is asking for a name
         local i = math.random(9000)
         while i <= 15000 do
