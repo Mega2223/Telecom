@@ -14,6 +14,7 @@ require('Network.EndpointLogic.Endpoint')
 ---@field clearAdjacencies fun(self: RouterMemory)
 ---@field toString fun(self: RouterMemory): string
 ---@field updateEndpoint fun(self: RouterMemory, name: string, time: integer)
+---@field registerEndpoint fun(self: RouterMemory, endpoint_address: string, time: integer)
 ---@field last_adjacency_ping integer
 ---@field last_adjacency_broadcast integer
 ---@field connection_manager ConnectionManager
@@ -68,13 +69,16 @@ function RouterMemory(router)
             r.last_updated = time
             self.adjacent_routers[name] = r
         end,
-        updateEndpoint = function(self, name, time)
-            ---@type RouterMemory
+        updateEndpoint = function(self, endpoint_address, time)
             local self = self
-            local e = self.connected_endpoints[name]
+            local e = self.connected_endpoints[endpoint_address]
             --- Caso esse roteador não tenha negociado com o endpoint em questão, ignorar
-            if not e then return nil end
+            if not e then return end
             e.last_updated = time
+        end,
+        registerEndpoint = function (self, endpoint_address, time)
+            self.connected_endpoints[endpoint_address] = ConnectedEndpoint(self, endpoint_address)
+            self:updateEndpoint(endpoint_address,time)
         end,
         toString = toString
     }

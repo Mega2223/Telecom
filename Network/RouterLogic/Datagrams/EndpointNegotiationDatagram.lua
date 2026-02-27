@@ -115,6 +115,7 @@ local function onMessageReceived(msg, router)
                     string.format("GIVE_NAME<(%s)-(%s)>",end_name,t_id)
                 )
                 router:transmit(reply:toString())
+                router.memory.connected_endpoints
                 --TODO: also vc deveria forçar um broadcast na rede
                 -- para o estado desse roteador ser atualizado nos demais
                 return true
