@@ -28,7 +28,7 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@return string|nil, string|nil, string|nil, string|nil
 local function parseData(data)
     local endpoint, router, sender, task =
-        string.match(data, "%[END%-%((.+)%)%-%((.+)%)%-(.+)%-(.+)%]")
+        string.match(data, "%[END%-%((.+)%)%-%((.+)%)%-([RE])%-(.+)%]")
     if not endpoint then return nil end
     return endpoint, router, sender, task
 end
@@ -70,7 +70,6 @@ function EndpointNegotiationDatagram(endpoint_address, router_address, who_sent_
         toString = toString
     }
 end
-
 
 ---@param task_data string
 ---@return string | nil, string | nil
