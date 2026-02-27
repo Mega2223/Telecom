@@ -51,7 +51,15 @@ local function onTick(self)
             for key, connection in pairs(router.connections) do
                 network_routers = network_routers .. connection .. " "
             end
-            print(string.format("%s connections -> %s ",router.name,network_routers))
+            print(string.format("%s connections -> %s ", router.name, network_routers))
+        end
+        print("\nEndpoints: ")
+        for name, endpoint in pairs(self.router.memory.connected_endpoints) do
+            print(
+                string.format("%s: last seen %d/%d", endpoint.address, endpoint.last_updated,
+                    self.router.configs.endpoint_unresponsive_milis + endpoint.last_updated
+                )
+            )
         end
         term.redirect(last_term)
         LAST_RENDER = time
