@@ -83,8 +83,8 @@ end
 ---@return boolean
 local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
+    print('dat',endpoint_address,router_name,sent_from_router,task)
     if not endpoint_address then return false end
-    print"is endpoint tho"
     if sent_from_router or router_name ~= router.name then return true end
 
     if task == "UPDATE" then
