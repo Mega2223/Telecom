@@ -5,7 +5,7 @@
 ---@type table<integer, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
----[END-endpoint_address-(router_name)-who_is_sending:R|E-task]
+---[END-(endpoint_address)-(router_name)-who_is_sending:R|E-task]
 ---
 ---task:
 ---  UPDATE -> "endpoint is still alive"
@@ -27,12 +27,49 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@param data string
 local function parseData(data)
     local endpoint, router, sender, task =
-        string.match(data, "%[END%-(.+)%-%((.+)%)%-(.+)%-(.+)%]")
+        string.match(data, "%[END%-%((.+)%)%-%((.+)%)%-(.+)%-(.+)%]")
     if not endpoint then return nil end
     return endpoint, router, sender == 'R', task
 end
+---[END-(ENDPOINTNAME)-(ROUTERNAME)-E-TASKTASK]
+
+---@param self EndpointNegotiationDatagram
+---@return string
+local function toString(self)
+    return string.format("[END-(%s)-(%s)-%s-%s]",
+        self.endpoint_address,
+        self.router_address,
+        self.who_sent_it,
+        self.task
+    )
+end
 
 -- TODO é bom ter o objeto para poder mudar o parseamento mais facil
+
+---@class EndpointNegotiationDatagram
+---@field endpoint_address string
+---@field router_address string
+---@field who_sent_it 'R'|'E'
+---@field task string
+---@field toString fun(self: EndpointNegotiationDatagram): string
+
+---comment
+---@param endpoint_address string
+---@param router_address string
+---@param who_sent_it 'R'|'E'
+---@param task string
+---@return EndpointNegotiationDatagram
+function EndpointNegotiationDatagram(endpoint_address, router_address, who_sent_it, task)
+    ---@type EndpointNegotiationDatagram
+    return {
+        endpoint_address = endpoint_address,
+        router_address = router_address,
+        who_sent_it = who_sent_it,
+        task = task,
+        toString = toString
+    }
+end
+
 
 ---@param task_data string
 ---@return string | nil, string | nil
@@ -47,7 +84,7 @@ end
 local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
     if not endpoint_address then return false end
-    if sent_from_router then return true end
+    if sent_from_router or router_name ~= router.name then return true end
 
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
@@ -60,14 +97,16 @@ local function onMessageReceived(msg, router)
         -- endpoint is asking for a name
         local i = math.random(9000)
         while i <= 15000 do
-            local name = string.format("%s_%5d", prefix, i)
+            local end_name = string.format("%s_%5d", prefix, i)
             i = i + 1
-            if not network_state:getEndpointWithName(name) then
+            if not network_state:getEndpointWithName(end_name) then
                 ---[END-endpoint_address-(router_name)-who_is_sending:R|E-task]
                 ---  GIVE_NAME<(prefix|name)-(transaction_id)>
                 --name approved, send reply
-                local reply = string.format("[END-%s-(%s)-R-GIVE_NAME<%s-%s>]",name,router.name,name,id)
-                router:transmit(reply)
+                local reply = EndpointNegotiationDatagram(
+                    end_name,router.name,'R',"GIVE_NAME<(%s)-(%s)>"
+                )
+                router:transmit(reply:toString())
                 --TODO: also vc deveria forçar um broadcast na rede
                 -- para o estado desse roteador ser atualizado nos demais
                 return true
