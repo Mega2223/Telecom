@@ -86,7 +86,7 @@ local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
     --print('dat',endpoint_address,router_name,sent_from_router,task)
     if not endpoint_address then return false end
-    if sent_from_router or router_name ~= router.name then return true end
+    if sent_from_router or router_name ~= router.name then print'notforme' return true end
 
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
@@ -97,7 +97,7 @@ local function onMessageReceived(msg, router)
     local prefix, id = parseGiveNameTask(task)
     if prefix and id then
         STD_OUT "GIVENAME"
-        exit(0)
+        
         -- endpoint is asking for a name
         local i = math.random(9000)
         while i <= 15000 do
