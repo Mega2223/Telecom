@@ -32,11 +32,48 @@ local function parseData(data)
     return endpoint, router, sender == 'R', task
 end
 
+---@param task_data string
+---@return string | nil, string | nil
+local function parseGiveNameTask(task_data)
+    local prefix, id = string.match(task_data, "GIVE_NAME<(.+)%-(%d+)>")
+    return prefix, id
+end
+
+---@param msg string
+---@param router Router
+---@return boolean
 local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
     if not endpoint_address then return false end
+    if sent_from_router then return true end
 
-    --TODO wlkelçak
+    if task == "UPDATE" then
+        router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
+    end
+
+    local network_state = router.memory.network_state
+
+    local prefix, id = parseGiveNameTask(task)
+    if prefix and id then
+        -- endpoint is asking for a name
+        local i = math.random(9000)
+        while i <= 15000 do
+            local name = string.format("%s_%5d", prefix, i)
+            i = i + 1
+            if not network_state:getEndpointWithName(name) then
+                ---[END-endpoint_address-router_name-who_is_sending:R|E-task]
+                ---  GIVE_NAME<(prefix|name)-(transaction_id)>
+                --name approved, send reply
+                local reply = string.format("[END-%s-%s-R-GIVE_NAME<%s-%s>]",name,router.name,name,id)
+                router:transmit(reply)
+                --TODO: also vc deveria forçar um broadcast na rede
+                -- para o estado desse roteador ser atualizado nos demais
+                return true
+            end
+        end
+        STD_ERR("could not create name for endpoint " .. id)
+        error("could not create name for endpoint " .. id)
+    end
 
     return true
 end

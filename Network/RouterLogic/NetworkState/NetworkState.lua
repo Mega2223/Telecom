@@ -1,8 +1,7 @@
 require('Network.RouterLogic.NetworkState.KnownNetworkRouter')
-require('Utils.Graph')
 
 ---@class NetworkState
----@field routers table<string,KnownNetworkRouter>
+---@field network_routers table<string,KnownNetworkRouter>
 ---@diagnostic disable: invisible
 ---@field router Router
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil
@@ -10,23 +9,24 @@ require('Utils.Graph')
 ---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer): nil
 ---@field toString fun(self: NetworkState): string
 ---@field updateSelf fun(self: NetworkState)
+---@field getEndpointsMatchingPattern fun(self: NetworkState, pattern: string): table<integer, NetworkEndpoint>
+---@field getEndpointWithName fun(self: NetworkState, name: string): NetworkEndpoint | nil
 ---@field type "NetworkState"
+
 ---@param router_object Router
 ---@return NetworkState
 function NetworkState(router_object)
     ---@type NetworkState
     return{
-        routers = {},
-        --connections = {},
-        --endpoints = {},
+        network_routers = {},
         router = router_object,
         getRouter = function(self,router_name,force_router)
-            if self.routers[router_name] then
-                return self.routers[router_name]
+            if self.network_routers[router_name] then
+                return self.network_routers[router_name]
             end
             if force_router then
                 local router = KnownNetworkRouter(router_name,nil,-1000,router_object.current_time_milis)
-                self.routers[router_name] = router
+                self.network_routers[router_name] = router
                 return router
             end
             return nil
@@ -56,16 +56,16 @@ function NetworkState(router_object)
             for key, value in pairs(self.router.memory.adjacent_routers) do
                 self_in_network:addConnection(key)
             end
-            for name, router in pairs(self.routers) do
+            for name, router in pairs(self.network_routers) do
                 if not router:isActive(self.router) then
-                    self.routers[name] = nil
+                    self.network_routers[name] = nil
                 end
             end
         end,
         type = 'NetworkState',
         toString = function (self)
             local ret = 'routers = (\n'
-            for name, router in pairs(self.routers) do
+            for name, router in pairs(self.network_routers) do
                 local activity = 'INACTIVE'; if router:isActive(self.router) then activity = 'ACTIVE' end
                 ret = ret .. '  router ' .. router.name ..' [' .. activity .. '] -> L('.. router.last_update ..') R(' .. router.remote_last_update ..') [ '
                 for j, dest in pairs(router.connections) do
@@ -74,6 +74,28 @@ function NetworkState(router_object)
                 ret = ret .. ']\n'
             end
             ret = ret .. ')\n'
+            return ret
+        end,
+        getEndpointWithName = function (self,address)
+            for net_router_name, network_router in pairs(self.network_routers) do
+                for net_ep_name, network_endpoint in pairs(network_router.connected_endpoints) do 
+                    if network_endpoint.address == address then
+                        return network_endpoint
+                    end
+                end
+            end
+            return nil
+        end,
+        getEndpointsMatchingPattern = function(self, pattern)
+            ---@type table<integer,NetworkEndpoint>
+            local ret = {}
+            for net_router_name, network_router in pairs(self.network_routers) do
+                for net_ep_name, network_endpoint in pairs(network_router.connected_endpoints) do 
+                    if string.match(net_ep_name, pattern) then
+                       table.insert(ret,network_endpoint)
+                    end
+                end
+            end
             return ret
         end
     }

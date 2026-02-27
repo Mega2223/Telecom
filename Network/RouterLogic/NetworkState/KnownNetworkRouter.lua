@@ -1,13 +1,20 @@
 ---@class KnownNetworkRouter
 ---@field name string
 ---@field connections table<string,string>
+---@field connected_endpoints table<string,NetworkEndpoint>
 ---@field addConnection fun(self:KnownNetworkRouter,router:string): nil
+---@field clearEndpoints fun(self: KnownNetworkRouter)
 ---@field removeAllConnections fun(self:KnownNetworkRouter)
 ---@field isActive fun(self: KnownNetworkRouter, context: Router): boolean
 ---@field type 'KnownRouter'
 ---@field remote_last_update integer
 ---@field last_update integer
 ---@field properties table<string,string|number>
+
+---@class NetworkEndpoint
+---@field parent_router KnownNetworkRouter
+---@field last_seen integer
+---@field address string
 
 ---@param name string
 ---@param remote_last_update integer
@@ -40,6 +47,10 @@ function KnownNetworkRouter(name,connections,remote_last_update,current_time)
         isActive = function (self, context)
             return context.current_time_milis - self.last_update < context.configs.known_router_unresponsive_removal_milis
         end,
-        properties = {}
+        clearEndpoints = function (self)
+            self.connected_endpoints = {}
+        end,
+        properties = {},
+        connected_endpoints = {}
     }
 end

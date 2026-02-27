@@ -46,7 +46,7 @@ local function onTick(self)
                 neigh.last_updated + self.router.configs.adjacency_unresponsive_removal_milis))
         end
         print("\nKnown Routers:")
-        for key, router in pairs(self.router.memory.network_state.routers) do
+        for key, router in pairs(self.router.memory.network_state.network_routers) do
             local network_routers = ""
             for key, connection in pairs(router.connections) do
                 network_routers = network_routers .. connection .. " "
