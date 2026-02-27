@@ -86,7 +86,11 @@ local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sent_from_router, task = parseData(msg)
     --print('dat',endpoint_address,router_name,sent_from_router,task)
     if not endpoint_address then return false end
-    if sent_from_router or router_name ~= router.name then print'notforme' return true end
+    if sent_from_router or router_name ~= router.name then
+        print 'notforme'
+        return true
+    end
+    print'forme'
 
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
