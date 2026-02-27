@@ -96,6 +96,7 @@ local function onMessageReceived(msg, router)
 
     local prefix, id = parseGiveNameTask(task)
     if prefix and id then
+        STD_OUT"GIVENAME"
         -- endpoint is asking for a name
         local i = math.random(9000)
         while i <= 15000 do
@@ -117,8 +118,9 @@ local function onMessageReceived(msg, router)
         STD_ERR("could not create name for endpoint " .. id)
         error("could not create name for endpoint " .. id)
     end
-
-    return true
+    STD_ERR "Is END datagram but no compatible task found"
+    error "Is END datagram but no compatible task found"
+    return false
 end
 
 local function onDie()
