@@ -1,6 +1,7 @@
 require('Network.RouterLogic.ConnectionManager.ConnectionManager')
 require('Network.RouterLogic.NetworkState.NetworkState')
 require('Network.RouterLogic.RouterMemory.KnownNeighbor')
+require('Network.RouterLogic.RouterMemory.ConnectedEndpoint')
 require('Network.EndpointLogic.Endpoint')
 
 ---@class RouterMemory
