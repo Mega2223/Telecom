@@ -87,7 +87,7 @@ local function onMessageReceived(msg, router)
     --print('dat',endpoint_address,router_name,sent_from_router,task)
     if not endpoint_address then return false end
     if sent_from_router or router_name ~= router.name then
-        print 'notforme'
+        print ('notforme' .. router_name)
         return true
     end
     print'forme'
