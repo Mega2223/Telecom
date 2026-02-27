@@ -83,11 +83,11 @@ end
 ---@param router Router
 ---@return boolean
 local function onMessageReceived(msg, router)
-    local endpoint_address, router_name, sent_from_router, task = parseData(msg)
+    local endpoint_address, router_name, sender, task = parseData(msg)
     --print('dat',endpoint_address,router_name,sent_from_router,task)
     if not endpoint_address then return false end
-    if sent_from_router or router_name ~= router.name then
-        print ('notforme' .. router_name)
+    if sender == 'R' or router_name ~= router.name then
+        -- not for me
         return true
     end
     print'forme'
