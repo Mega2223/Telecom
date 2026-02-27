@@ -86,6 +86,8 @@ local function onMessageReceived(msg, router)
     if not endpoint_address then return false end
     if sent_from_router or router_name ~= router.name then return true end
 
+    print"is endpoint tho"
+
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
     end
