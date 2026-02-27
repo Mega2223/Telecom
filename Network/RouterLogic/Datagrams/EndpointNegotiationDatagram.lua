@@ -75,7 +75,7 @@ end
 ---@param task_data string
 ---@return string | nil, string | nil
 local function parseGiveNameTask(task_data)
-    local prefix, id = string.match(task_data, "GIVE_NAME<(.+)%-(%d+)>")
+    local prefix, id = string.match(task_data, "GIVE_NAME<(.+)%-(.+)>")
     return prefix, id
 end
 
@@ -90,7 +90,6 @@ local function onMessageReceived(msg, router)
         -- not for me
         return true
     end
-    print'forme'
 
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
