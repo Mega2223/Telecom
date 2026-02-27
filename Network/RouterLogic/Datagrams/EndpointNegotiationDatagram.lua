@@ -104,7 +104,7 @@ local function onMessageReceived(msg, router)
         -- endpoint is asking for a name
         local i = math.random(9000)
         while i <= 15000 do
-            local end_name = string.format("%s_%5d", prefix, i)
+            local end_name = string.format("%s_%05d", prefix, i)
             i = i + 1
             if not network_state:getEndpointWithName(end_name) then
                 ---[END-endpoint_address-(router_name)-who_is_sending:R|E-task]
