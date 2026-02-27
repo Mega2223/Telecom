@@ -97,8 +97,8 @@ local function onMessageReceived(msg, router)
 
     local network_state = router.memory.network_state
 
-    local prefix, id = parseGiveNameTask(task)
-    if prefix and id then
+    local prefix, t_id = parseGiveNameTask(task)
+    if prefix and t_id then
         STD_OUT "GIVENAME"
         
         -- endpoint is asking for a name
@@ -111,7 +111,8 @@ local function onMessageReceived(msg, router)
                 ---  GIVE_NAME<(prefix|name)-(transaction_id)>
                 --name approved, send reply
                 local reply = EndpointNegotiationDatagram(
-                    end_name,router.name,'R',"GIVE_NAME<(%s)-(%s)>"
+                    end_name, router.name, 'R',
+                    string.format("GIVE_NAME<(%s)-(%s)>",end_name,t_id)
                 )
                 router:transmit(reply:toString())
                 --TODO: also vc deveria forçar um broadcast na rede
@@ -119,8 +120,8 @@ local function onMessageReceived(msg, router)
                 return true
             end
         end
-        STD_ERR("could not create name for endpoint " .. id)
-        error("could not create name for endpoint " .. id)
+        STD_ERR("could not create name for endpoint " .. t_id)
+        error("could not create name for endpoint " .. t_id)
     end
     STD_ERR "Is END datagram but no compatible task found"
     error "Is END datagram but no compatible task found"
