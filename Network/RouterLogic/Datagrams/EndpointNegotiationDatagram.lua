@@ -8,10 +8,10 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---[END-(endpoint_address)-(router_name)-who_is_sending:R|E-task]
 ---
 ---task:
----  UPDATE -> "endpoint is still alive"
+---  UPDATE<endpoint_address> -> "endpoint is still alive"
 ---     endpoint should send this frequently out of its own initiative
 
----  MSG<(destination_address)-(confirm:T|F)-(multicast:T|F)-(message_content)> -> send message to address
+---  MSG<(destination_address)-confirm:T|F-multicast:T|F-(message_content)> -> send message to address
 ---     endpoint sends this message to ask router to send message to this address
 ---     router sends this message when it receives a message to one of its endpoints
 ---     destination_address is a pattern if multicast
@@ -20,16 +20,20 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---     endpoints ask for a list of other endpoints in the network who match this pattern
 ---     router replies an array of all known names that match this pattern
 
----  GIVE_NAME<(prefix|name)-(transaction_id)>
+---  GIVE_NAME<(prefix|name)-transaction_id>
 ---     endpoint asks for a name with this given prefix, router assigns an address to the endpoint
 ---     and replies the assigned name, endpoint_address is nil in this case as it is not assigned yet
+
+--- DENY<endpoint_name>
+---     router signals that the endpoint address is no longer valid and the endpoint
+---     should ask for a new address, sent for invalid operations due to invalid adresses
 
 ---@param data string
 ---@return string|nil, string|nil, string|nil, string|nil
 local function parseData(data)
     local endpoint, router, sender, task =
         string.match(data, "%[END%-%((.+)%)%-%((.+)%)%-([RE])%-(.+)%]")
-    if not endpoint then return nil end
+    if not endpoint then return end
     return endpoint, router, sender, task
 end
 ---[END-(ENDPOINTNAME)-(ROUTERNAME)-E-TASKTASK]
@@ -73,7 +77,6 @@ end
 ---@param task_data string
 ---@return string | nil, string | nil
 local function parseGiveNameTask(task_data)
-    print("TDAT \"" .. task_data .. "\"")
     local prefix, id = string.match(task_data, "GIVE_NAME<%((.+)%)%-%((.+)%)>")
     return prefix, id
 end

@@ -1,5 +1,8 @@
 ---@class EndpointLogic.ProtocolParser
----@field parse fun(msg: string)
+---@field onReceive fun(endpoint: EndpointLogic.Endpoint, msg: string): boolean
+
+---@class EndpointLogic.Protocol
+---@field toString fun(self: EndpointLogic.Protocol): string
 
 ---@type table<integer, EndpointLogic.ProtocolParser>
 ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
@@ -8,6 +11,10 @@ ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
 function ProtocolParser()
     ---@type EndpointLogic.ProtocolParser
     return {
-        parse = function (msg) end
+        onReceive = function (endpoint, msg)
+            return false
+        end
     }
 end
+
+table.insert(ENDPOINT_PROTOCOL_STACK, ProtocolParser())
