@@ -54,7 +54,6 @@ end
 ---@field task string
 ---@field toString fun(self: EndpointNegotiationDatagram): string
 
----comment
 ---@param endpoint_address string
 ---@param router_address string
 ---@param who_sent_it 'R'|'E'
@@ -85,7 +84,7 @@ end
 local function onMessageReceived(msg, router)
     local endpoint_address, router_name, sender, task = parseData(msg)
     --print('dat',endpoint_address,router_name,sent_from_router,task)
-    if not endpoint_address then return false end
+    if not endpoint_address or not task then return false end
     if sender == 'R' or router_name ~= router.name then
         -- not for me
         return true
@@ -100,7 +99,6 @@ local function onMessageReceived(msg, router)
     local prefix, t_id = parseGiveNameTask(task)
     if prefix and t_id then
         STD_OUT "GIVENAME"
-        
         -- endpoint is asking for a name
         local i = math.random(9000)
         while i <= 15000 do
