@@ -7,7 +7,7 @@ if not PATHS then print("Could not find url paths, try running ./gen_paths.sh") 
 for url, loc in string.gmatch(PATHS, "([^\n]+)%-%->([^\n]+)\n") do
     loc = "Telecom/" .. loc
     print(string.format("installing %s at %s", url, loc))
-    shell.run(string("wget \"%s\" \"%s\""))
+    shell.run(string.format("wget \"%s\" \"%s\"",url,loc))
 end
 
 print("Library installed successfully :)")
