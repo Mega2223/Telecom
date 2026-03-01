@@ -135,7 +135,8 @@ function ModemRouter(channel, output_stream)
         should_be_running = true,
         output_stream = output_stream or function(msg) print(msg) end,
         iteration = 1,
-        last_transmition = 1
+        last_transmition = 1,
+        firmware_type_name = "ModemWrapper"
     }
     
     router_object.firmware = wrapper
