@@ -144,5 +144,3 @@ function RadioRouter(frequency)
         firmware_type_name = "RadioRouter"
     }
 end
-
-table.insert(ROUTER_FIRMWARE_WRAPPERS,RadioRouter(-1))

@@ -145,6 +145,4 @@ function ModemRouter(channel, output_stream)
     return wrapper
 end
 
-table.insert(ROUTER_FIRMWARE_WRAPPERS,ModemRouter(-1,nil))
-
 return ModemRouter
