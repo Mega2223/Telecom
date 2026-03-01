@@ -9,7 +9,8 @@ ROUTER_MODULE="./Network/RouterLogic"
 ENDPOINT_MODULE="./Network/EndpointLogic"
 UTILS_MODULE="./Utils"
 
-rm -r ./Install/
+rm ./Install/paths.lua
+rm ./Install/install.lua
 mkdir Install
 
 function rec(){
@@ -41,6 +42,5 @@ echo "PATHS = [[" >> ./Install/paths.lua
 rec "." $prefix $suffix >> ./Install/paths.lua
 echo "]]" >> ./Install/paths.lua
 
-# Puxa os URLS de roteador e cria um .lua para inicializar cada um
-# ou somente um .lua para todos
-
+cat "./Install/paths.lua" >> "./Install/install.lua"
+cat "./Install/setup.lua" >> "./Install/install.lua" 
