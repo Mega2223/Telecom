@@ -125,7 +125,7 @@ end
 ---@return RadioRouter
 function RadioRouter(frequency)
     ---@type RadioPeripheral
-    ---@diagnostic disable-next-line: assign-type-mismatch
+    ---@diagnostic disable-next-line: assign-type-mismatch, param-type-mismatch
     local radio_tower_p = peripheral.find("radio_tower")
     radio_tower_p.setFrequency(frequency)
 
@@ -144,3 +144,5 @@ function RadioRouter(frequency)
         firmware_type_name = "RadioRouter"
     }
 end
+
+table.insert(ROUTER_FIRMWARE_WRAPPERS,RadioRouter(-1))

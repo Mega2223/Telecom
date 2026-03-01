@@ -95,6 +95,7 @@ local function begin(self,delay)
     self.router:onStart()
     self.modem.open(self.channel)
     
+    ---@type ccTweaked.peripherals.Monitor
     local monitor = peripheral.find("monitor")
     
     if monitor ~= nil then
@@ -143,5 +144,7 @@ function ModemRouter(channel, output_stream)
 
     return wrapper
 end
+
+table.insert(ROUTER_FIRMWARE_WRAPPERS,ModemRouter(-1,nil))
 
 return ModemRouter

@@ -9,3 +9,7 @@
 
 ---@type table<integer,RouterFirmware>
 ROUTER_FIRMWARE_WRAPPERS = {}
+
+require('Network.RouterLogic.Firmware.ModemRouter')
+require('Network.RouterLogic.Firmware.RadioRouter')
+require('Network.RouterLogic.Firmware.DebugWrapper')
