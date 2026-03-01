@@ -5,3 +5,7 @@
 ---@field router Router
 ---@field begin fun(self: RouterFirmware)
 ---@field iteration ?integer
+---@field firmware_type_name string
+
+---@type table<integer,RouterFirmware>
+ROUTER_FIRMWARE_WRAPPERS = {}

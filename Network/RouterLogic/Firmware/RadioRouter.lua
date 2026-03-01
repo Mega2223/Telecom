@@ -140,6 +140,7 @@ function RadioRouter(frequency)
         radio_tower_peripheral = radio_tower_p,
         router = Router(getFileOrMakeEmpty('router.txt')),
         iteration = 0,
-        output_stream = print
+        output_stream = print,
+        firmware_type_name = "RadioRouter"
     }
 end

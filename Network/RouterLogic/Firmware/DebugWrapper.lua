@@ -50,7 +50,8 @@ function DebugWrapper(router_object, message_output_fun)
         iteration = 1,
         runTick = onTick,
         receiveMessage = onMessageReceived,
-        last_transmition = 0
+        last_transmition = 0,
+        firmware_type_name = "DebugWrapper"
     }
     
     router_object.firmware = wrapper
