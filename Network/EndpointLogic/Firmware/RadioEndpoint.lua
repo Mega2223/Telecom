@@ -8,6 +8,7 @@ require('Utils.CCTUtils')
 ---@field frequency integer
 ---@field monitor ?ccTweaked.peripherals.Monitor
 ---@field doTick fun(self: EndpointLogic.RadioEndpoint)
+---@field onMessageReceived fun(self:  EndpointLogic.RadioEndpoint, event, side, msg: string, distance)
 
 ---@param self EndpointLogic.RadioEndpoint
 local function doTick(self)

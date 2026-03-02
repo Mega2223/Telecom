@@ -24,7 +24,7 @@ while true do
         TASK_MANAGER:doTick(time)
         os.startTimer(.05)
     elseif event == 'radio_message' then
-        endpoint_r:onMessageReceived(msg)
+        endpoint_r:onMessageReceived(event,side,msg,distance)
     end
 end
 
