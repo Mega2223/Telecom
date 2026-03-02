@@ -33,9 +33,10 @@ end
 ---@param self NetworkPath
 ---@return NetworkPath
 local function reverse(self)
+    print('REVERTENDO' .. self:toString())
     local ret = self:clone()
     for i = 1, #self.path do
-        local mirror_index = #self.path - i + 1 
+        local mirror_index = #self.path - i + 1
         if not ret.path[mirror_index] or not ret.path[i] then
             error 'nil error'
         end
@@ -43,6 +44,7 @@ local function reverse(self)
         print(self.path[i] .. ' fica em ' .. mirror_index)
         ret.path[mirror_index] = self.path[i]
     end
+    print('RESULT' .. self:toString())
     return ret
 end
 
