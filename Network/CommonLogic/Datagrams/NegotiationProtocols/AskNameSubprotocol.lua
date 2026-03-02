@@ -27,6 +27,9 @@ local function onEndpointReceive(endpoint, task_data, END)
     endpoint.memory.connected_router = END.router_address
 end
 
+---@param router Router
+---@param task_data string
+---@param END EndpointNegotiationDatagram
 local function onRouterReceive(router, task_data, END)
     local prefix, t_id = parse(task_data)
     if not prefix or not t_id then return false end
@@ -38,7 +41,7 @@ local function onRouterReceive(router, task_data, END)
         while i <= 15000 do
             local end_name = string.format("%s_%05d", prefix, i)
             i = i + 1
-            if not router.network_state:getEndpointWithName(end_name) then
+            if not router.memory.network_state:getEndpointWithName(end_name) then
                 --name approved, send reply
                 local reply = EndpointNegotiationDatagram(
                     end_name, router.name, 'R',
