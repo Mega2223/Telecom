@@ -6,7 +6,7 @@ require('Network.RouterLogic.NetworkState.NetworkPath')
 ---@field router Router
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownNetworkRouter
----@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer, path: nil | table<integer,string>): nil
+---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer, path: nil | NetworkPath): nil
 ---@field toString fun(self: NetworkState): string
 ---@field updateSelf fun(self: NetworkState)
 ---@field getEndpointsMatchingPattern fun(self: NetworkState, pattern: string): table<integer, NetworkEndpoint>
@@ -48,7 +48,7 @@ function NetworkState(router_object)
             end
 
             if path then
-                router.path_to = NetworkPath(path)
+                router.path_to = path
             end
         end,
         updateSelf = function(self)
