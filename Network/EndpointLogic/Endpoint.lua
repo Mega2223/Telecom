@@ -73,6 +73,7 @@ local function do_logic(self, time_milis)
             self.memory.address, self.memory.connected_router, 'E', task
         )
         self:send_message(datagram:toString())
+        self.memory.last_router_request = self.time
     end
 
     if self.memory.connected_router and
