@@ -5,7 +5,7 @@
 ---@field parent Task | nil
 ---@field name string
 ---@field shouldDie boolean
----@field onDie ?fun(self: Task, deltaT: integer)
+---@field onDie ?fun(self: Task, deltaT: integer, death_cause: integer)
 ---@field toString fun()
 
 ---@param self Task
@@ -18,7 +18,7 @@ end
 ---@param name string
 ---@param maxUpdate integer
 ---@param runFunction fun(self: Task, deltaT: integer)
----@param deathFunction ?fun(self: Task, deltaT: integer)
+---@param deathFunction ?fun(self: Task, deltaT: integer, death_cause: integer)
 ---@return Task
 Task = function (name, maxUpdate, runFunction, deathFunction)
     ---@type Task

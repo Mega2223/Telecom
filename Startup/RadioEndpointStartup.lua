@@ -1,9 +1,30 @@
 require('Telecom')
 require('Network.EndpointLogic.Endpoint')
 require('Network.EndpointLogic.Firmware.RadioEndpoint')
+require('Utils.TaskManager.TaskManager')
 
-FREQUENCY = 2223
+TASK_MANAGER = TASK_MANAGER or TaskManager()
 
+FREQUENCY = FREQUENCY or 2223
 endpoint_r = RadioEndpoint(FREQUENCY)
-
 endpoint_r:begin()
+
+TASK_MANAGER:addTask(
+    Task('ENDPOINT_LOGIC', 20,
+        function (self, deltaT)
+            endpoint_r:doTick()
+        end
+    ), nil
+)
+
+while true do
+    local event, side, msg, distance = os.pullEvent()
+    if event == 'timer' then
+        local time = math.floor(1000 * os.clock())
+        TASK_MANAGER:doTick(time)
+        os.startTimer(.05)
+    elseif event == 'radio_message' then
+        endpoint_r:onMessageReceived(msg)
+    end
+end
+

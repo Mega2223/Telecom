@@ -18,7 +18,7 @@ local function doTick(self, dTMilis)
             task.shouldDie = true
         end
         if task.shouldDie then
-            task:onDie(self.time)
+            task:onDie(self.time,1)
             self.tasks[taskName] = nil
             goto continue
         end

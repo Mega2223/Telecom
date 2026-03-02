@@ -7,6 +7,7 @@ require('Utils.CCTUtils')
 ---@field radio_peripheral RadioPeripheral
 ---@field frequency integer
 ---@field monitor ?ccTweaked.peripherals.Monitor
+---@field doTick fun(self: EndpointLogic.RadioEndpoint)
 
 ---@param self EndpointLogic.RadioEndpoint
 local function doTick(self)
@@ -84,9 +85,9 @@ local function begin(self)
     ---@diagnostic disable-next-line: assign-type-mismatch
     self.monitor = peripheral.find("monitor")
 
-    while true do
-        nextEvent(self,delay)
-    end
+    -- while true do
+    --     nextEvent(self,delay)
+    -- end
 end
 
 ---@param self EndpointLogic.RadioEndpoint
