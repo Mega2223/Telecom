@@ -51,7 +51,9 @@ local function onRouterReceive(router, task_data, END)
 
     local destination = router.memory.network_state:getEndpointWithName(destination_address)
     if not destination then
+        STD_OUT('task ' .. task_data)
         STD_ERR('Got message request but could not fullfill it because the adress ' .. destination_address .. ' does not exist')
+        error'invalid msg' 
         return true
     end
     local last_router = destination.parent_router
