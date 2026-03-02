@@ -37,8 +37,9 @@ local function reverse(self)
     for i = 1, #self.path do
         local mirror_index = #self.path - i + 1 
         if not ret.path[mirror_index] or not ret.path[i] then
-            error'nil error'
+            error 'nil error'
         end
+        print(i .. ' -> ' .. mirror_index .. '[' .. i .. '/' .. #self.path .. ']')
         ret.path[mirror_index] = self.path[i]
     end
     return ret
