@@ -4,6 +4,7 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 ---@return string | nil, string | nil
 local function parse(task_data)
     local prefix_or_address, id = string.match(task_data, "GIVE_NAME<%((.*)%)%-(.+)>")
+    print(task_data,'-> PARSE ->'prefix_or_address, id)
     return prefix_or_address, id
 end
 
@@ -33,7 +34,6 @@ end
 local function onRouterReceive(router, task_data, END)
     local prefix, t_id = parse(task_data)
     if not prefix or not t_id then return false end
-
     if prefix and t_id then
         STD_OUT "GIVENAME"
         -- endpoint is asking for a name
