@@ -21,20 +21,24 @@ local function doTick(self)
 
     if self.monitor then
         local prev_term = term.current()
+        self.monitor.setTextScale(.5)
         term.redirect(self.monitor)
         term.clear()
         term.setCursorPos(1, 1)
+        print(string.format("TIME: %d PREFIX: \"%s\"",self.endpoint.time,self.endpoint.config.prefix))
         print(string.format("ADDRESS: %s TRANS_ID: %s CONN_ROUTER: %s FAV_ROUTER: %s",
         self.endpoint.memory.address, self.endpoint.memory.transaction_id,
         self.endpoint.memory.connected_router, self.endpoint.memory.favorite_to_connect
         ))
+        print('')
         print("NEARBY_ROUTERS: ")
         for name, router in pairs(self.endpoint.memory.nearby_routers) do
             print(
                 string.format("%s: %d/%d", name, router.last_seen,
-                router.last_seen + self.endpoint.config.router_forget_threashold
-            ))
+                    router.last_seen + self.endpoint.config.router_forget_threashold
+                ))
         end
+        print('')
         term.redirect(prev_term)
     end
 end
