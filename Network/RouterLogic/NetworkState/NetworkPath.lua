@@ -35,8 +35,8 @@ end
 local function reverse(self)
     local ret = self:clone()
     for i = 1, #self.path do
-        local mirror_index = #self.path - i - 1
-        if not ret.path[mirror_index] or not ret.path[#self.path - i] then
+        local mirror_index = #self.path - i + 1 
+        if not ret.path[mirror_index] or not ret.path[i] then
             error'nil error'
         end
         ret.path[mirror_index] = self.path[i]
