@@ -122,7 +122,7 @@ local function onMessageReceivedEndpoint(endpoint, msg)
             return true
         end
     end
-
+    STD_OUT("msg=" .. msg)
     error'IS END PROTOCOL BUT NO SUBPROTOCOL FOUND'
 end
 
