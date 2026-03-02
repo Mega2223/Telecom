@@ -5,6 +5,7 @@ require('Utils.CCTUtils')
 ---@class EndpointLogic.RadioEndpoint: EndpointLogic.Firmware
 ---@field firmware_type 'RadioEndpoint'
 ---@field radio_peripheral RadioPeripheral
+---@field frequency integer
 
 ---@param self EndpointLogic.Firmware
 local function doTick(self)
@@ -40,19 +41,20 @@ local function nextEvent(self,delay)
     end
 end
 
+---@param self EndpointLogic.RadioEndpoint
 local function begin(self)
     delay = delay or 0.5
-    self.router.firmware = self
-    self.router:onStart()
-    self.radio_tower_peripheral.setFrequency(self.frequency)
+    self.endpoint.firmware = self
+    --- self.endpoint:onStart()
+    self.radio_peripheral.setFrequency(self.frequency)
     
     ---@type ccTweaked.peripherals.Monitor
-    ---@diagnostic disable-next-line: assign-type-mismatch
+    ---@diagnostic disable-next-line: assign-type-mismatch, inject-field
     self.monitor = peripheral.find("monitor")
     if self.monitor then
         STD_OUT("Redirecting all output to connected monitor")
     end
-    STD_OUT("STARTING ENDPOINT " .. self.router.name .. " FOR FREQUENCY " .. self.frequency)
+    STD_OUT("STARTING ENDPOINT " .. self.endpoint.config.prefix .. " FOR FREQUENCY " .. self.frequency)
 
     os.startTimer(delay)
 
@@ -90,7 +92,8 @@ function RadioEndpoint(frequency)
         firmware_type = 'RadioEndpoint',
         begin = begin,
         endpoint = Endpoint(getFileOrMakeEmpty('endpoint.txt')),
-        send_message = sendMessage
+        send_message = sendMessage,
+        frequency = frequency
     }
     ret.endpoint.firmware = ret
     return ret
