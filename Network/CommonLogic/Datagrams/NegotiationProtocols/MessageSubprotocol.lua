@@ -4,7 +4,8 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 ---@param task_data string
 ---@return string | nil, string, 'T'|'F', 'T'|'F', string
 local function parse(task_data)
-    local destination_address, sender_address, confirm, multicast, message = string.match(task_data, "")
+    local destination_address, sender_address, confirm, multicast, message =
+        string.match(task_data, "MSG<%((.+)%)%-%((.+)%)%-([TF])%-([TF])%-%((.+)%)>")
     return destination_address, sender_address, confirm, multicast, message
 end
 
