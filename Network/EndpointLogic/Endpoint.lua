@@ -55,8 +55,20 @@ local function do_logic(self, time_milis)
         end
     end
 
-    if self:is_connected() and
-        self.time - self.memory.last_ping > self.config.update_interval then
+    if self.memory.connected_router and self.memory.nearby_routers[self.memory.connected_router] == nil then
+        self:dumpAddress()
+        return
+    end
+
+    for r_name, router in pairs(self.memory.nearby_routers) do
+        if self.time - router.last_seen > self.config.router_forget_threashold then
+            self.memory.nearby_routers[r_name] = nil
+        end
+    end
+
+    if not self:is_connected() then return end
+
+    if self.time - self.memory.last_ping > self.config.update_interval then
         local task = string.format("UPDATE")
         local datagram = EndpointNegotiationDatagram(
             self.memory.address, self.memory.connected_router,
@@ -66,8 +78,7 @@ local function do_logic(self, time_milis)
         self.memory.last_ping = self.time
     end
 
-    if self:is_connected() and 
-        self.time - self.memory.last_router_request > self.config.nearby_router_update_interval then
+    if self.time - self.memory.last_router_request > self.config.nearby_router_update_interval then
         local task = NearbyRoutersTask()
         local datagram = EndpointNegotiationDatagram(
             self.memory.address, self.memory.connected_router, 'E', task
@@ -76,17 +87,12 @@ local function do_logic(self, time_milis)
         self.memory.last_router_request = self.time
     end
 
-    if self.memory.connected_router and
-        self.memory.nearby_routers[self.memory.connected_router] == nil then
-        self:dumpAddress()
+    if self.time - self.memory.last_ask_for_endpoints < self.config.update_network_endpoints then
+        local task = GetAddressSubprotocol("(.+)")
+        local datagram = EndpointNegotiationDatagram(self.memory.address, self.memory.connected_router, 'E', task)
+        self:send_message(datagram:toString())
+        self.memory.last_ask_for_endpoints = self.time
     end
-    
-    for r_name, router in pairs(self.memory.nearby_routers) do
-        if self.time - router.last_seen > self.config.router_forget_threashold then
-            self.memory.nearby_routers[r_name] = nil
-        end
-    end
-
 end
 
 ---Sends

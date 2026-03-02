@@ -4,6 +4,7 @@
 ---@field favorite_to_connect ?string
 ---@field last_ping integer
 ---@field last_router_request integer
+---@field last_ask_for_endpoints integer
 ---@field known_network_endpoints table<string,EndpointLogic.KnownEndpoint>
 ---@field transaction_id ?string for when the endpoint has no name
 ---@field nearby_routers table<string,EndpointLogic.NearbyRouter>
@@ -33,6 +34,7 @@ function EndpointMemory()
     return {
         last_ping = -1,
         last_router_request = -1,
+        last_ask_for_endpoints = -1,
         nearby_routers = {},
         known_network_endpoints = {}
     }
