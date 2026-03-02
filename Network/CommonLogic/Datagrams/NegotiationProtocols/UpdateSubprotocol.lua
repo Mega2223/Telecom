@@ -28,7 +28,8 @@ end
 ---@type NegotiationSubprotocol
 local protocol = {
     onEndpointReceive = onEndpointReceive,
-    onRouterReceive = onRouterReceive
+    onRouterReceive = onRouterReceive,
+    name = "UpdateSubprotocol"
 }
 
 table.insert(END_NEGOTIATION_TASKS,protocol)

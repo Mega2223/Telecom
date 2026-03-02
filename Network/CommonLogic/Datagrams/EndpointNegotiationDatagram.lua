@@ -93,6 +93,7 @@ local function onMessageReceivedRouter(msg, router)
     local negotiation_d = EndpointNegotiationDatagram(endpoint_address, router_name, sender, task)
     
     for index, subprotocol in pairs(END_NEGOTIATION_TASKS) do
+        print(("trying protocol %s".format(subprotocol)))
         if subprotocol.onRouterReceive(router, task, negotiation_d) then
             return true
         end
