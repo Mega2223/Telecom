@@ -5,6 +5,7 @@
 ---@field reverse fun(self: NetworkPath): NetworkPath
 ---@field removeFirst fun(self: NetworkPath): NetworkPath
 ---@field removeLast fun(self: NetworkPath): NetworkPath
+---@field append fun(self: NetworkPath, value: string): NetworkPath
 ---@field toString fun(self: NetworkPath): string
 ---@field clone fun(self: NetworkPath): NetworkPath
 
@@ -65,6 +66,15 @@ local function clone(self)
     return NetworkPath(self.path)
 end
 
+---@param self NetworkPath
+---@param value string
+---@return NetworkPath
+function append(self, value)
+    local ret = self:clone()
+    table.insert(ret.path,value)
+    return ret
+end
+
 ---@param data string | table<integer,string>
 ---@return NetworkPath
 function NetworkPath(data)
@@ -84,6 +94,7 @@ function NetworkPath(data)
         to = path[#path],
         removeFirst = removeFirst,
         removeLast = removeLast,
-        clone = clone
+        clone = clone,
+        append = append
     }
 end

@@ -157,7 +157,7 @@ function onMessageReceived(msg, router)
                 parseConnections(connections),
                 router.current_time_milis,
                 local_time,
-                NetworkPath(parseVisitedRouters(visited_routers)):reverse()
+                NetworkPath(parseVisitedRouters(visited_routers)):append(router.name):reverse()
             )
             for property, value in pairs(connections_datagram.properties) do
                 router.memory.network_state:getRouter(origin_name).properties[property] = value
