@@ -14,6 +14,7 @@ require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 ---@field memory EndpointLogic.Memory
 ---@field firmware ?EndpointLogic.Firmware
 ---@field onReceive fun(self: EndpointLogic.Endpoint, msg:  string): boolean
+---@field dumpAddress fun(self: EndpointLogic.Endpoint)
 
 ---@class EndpointLogic.Firmware
 ---@field send_message fun(self: EndpointLogic.Firmware, message: string): boolean
@@ -64,6 +65,11 @@ local function do_logic(self, time_milis)
         self:send_message(datagram:toString())
         self.memory.last_ping = self.time
     end
+
+    if self.memory.connected_router and
+        self.memory.nearby_routers[self.memory.connected_router] == nil then
+        self:dumpAddress()
+    end
     
     for r_name, router in pairs(self.memory.nearby_routers) do
         if self.time - router.last_seen > self.config.router_forget_threashold then
@@ -107,6 +113,13 @@ local function send_message_to(self, destination_address, message)
 end
 
 ---@param self EndpointLogic.Endpoint
+local function dumpAddress(self)
+    self.memory.address = nil
+    self.memory.connected_router = nil
+    self.memory.last_ping = -1
+end
+
+---@param self EndpointLogic.Endpoint
 ---@return boolean
 local function is_connected(self)
     return type(self.memory.connected_router) == "string"
@@ -143,6 +156,7 @@ function Endpoint(configs, firmware)
         firmware = firmware,
         send_message_to = send_message_to,
         get_endpoints_at_network = get_endpoints_at_network,
-        onReceive = onReceive
+        onReceive = onReceive,
+        dumpAddress = dumpAddress
     }
 end
