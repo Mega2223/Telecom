@@ -4,7 +4,7 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 ---@return string | nil, string | nil
 local function parse(task_data)
     local prefix_or_address, id = string.match(task_data, "GIVE_NAME<%((.*)%)%-(.+)>")
-    print(task_data,'-> PARSE ->'prefix_or_address, id)
+    print(task_data,'-> PARSE ->',prefix_or_address, id)
     return prefix_or_address, id
 end
 
