@@ -117,13 +117,13 @@ local function onMessageReceivedEndpoint(endpoint, msg)
     local negotiation_d = EndpointNegotiationDatagram(endpoint_address, router_name, sender, task)
 
     for index, subprotocol in pairs(END_NEGOTIATION_TASKS) do
-        print(string.format("trying protocol %s",subprotocol.name))
+        -- print(string.format("trying protocol %s",subprotocol.name))
         if subprotocol.onEndpointReceive(endpoint, task, negotiation_d) then
             return true
         end
     end
     STD_OUT("msg=" .. msg)
-    error'IS END PROTOCOL BUT NO SUBPROTOCOL FOUND'
+    error'IS [END] PROTOCOL BUT NO TASK SUBPROTOCOL FOUND'
 end
 
 ---@type DatagramParser

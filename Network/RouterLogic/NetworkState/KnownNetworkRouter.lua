@@ -9,6 +9,7 @@
 ---@field type 'KnownRouter'
 ---@field remote_last_update integer
 ---@field last_update integer
+---@field path_to ?NetworkPath
 ---@field properties table<string,string|number>
 
 ---@class NetworkEndpoint
@@ -20,8 +21,9 @@
 ---@param remote_last_update integer
 ---@param current_time integer
 ---@param connections ?table<string,string>
+---@param path ?NetworkPath
 ---@return KnownNetworkRouter
-function KnownNetworkRouter(name,connections,remote_last_update,current_time)
+function KnownNetworkRouter(name,connections,remote_last_update,current_time,path)
     local con = {}
     if connections then
         for key, value in pairs(connections) do
@@ -51,6 +53,7 @@ function KnownNetworkRouter(name,connections,remote_last_update,current_time)
             self.connected_endpoints = {}
         end,
         properties = {},
-        connected_endpoints = {}
+        connected_endpoints = {},
+        path_to = path
     }
 end

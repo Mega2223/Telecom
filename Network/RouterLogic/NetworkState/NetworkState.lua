@@ -1,11 +1,12 @@
 require('Network.RouterLogic.NetworkState.KnownNetworkRouter')
+require('Network.RouterLogic.NetworkState.NetworkPath')
 
 ---@class NetworkState
 ---@field network_routers table<string,KnownNetworkRouter>
 ---@field router Router
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownNetworkRouter
----@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer): nil
+---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer, path: nil | table<integer,string>): nil
 ---@field toString fun(self: NetworkState): string
 ---@field updateSelf fun(self: NetworkState)
 ---@field getEndpointsMatchingPattern fun(self: NetworkState, pattern: string): table<integer, NetworkEndpoint>
@@ -34,8 +35,7 @@ function NetworkState(router_object)
             ---@diagnostic disable-next-line: return-type-mismatch
             return self:getRouter(router_name,true)
         end,
-        setRouterState = function(self, router_name, connections, time, remote_time)
-            --print('con',connections[1])
+        setRouterState = function(self, router_name, connections, time, remote_time, path)
             local router = self:getRouterSafe(router_name)
             router.last_update = time
             router.remote_last_update = remote_time
@@ -45,6 +45,10 @@ function NetworkState(router_object)
                 if connections[i] ~= router_name then
                     router:addConnection(connections[i])
                 end
+            end
+
+            if path then
+                router.path_to = NetworkPath(path)
             end
         end,
         updateSelf = function(self)

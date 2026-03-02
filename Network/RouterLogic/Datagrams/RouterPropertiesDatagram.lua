@@ -46,7 +46,6 @@ end
 ---@param data string
 ---@return integer,string,string,string,integer,string
 function parseRouterPropertiesDatagram(data)
-    ---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)-[%TIME%]-(%PROPERTIES%)]
     local time_to_die, visited_routers, origin_name, connections, local_time, properties =
         string.match(data, "%[CDT%-(%d+)%-%((.+)%)%-%[(.+)%]%-%((.*)%)%-%[(%d+)%]%-%((.*)%)%]")
     return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections, math.floor(tonumber(local_time) or -1), properties
@@ -66,7 +65,7 @@ end
 ---@param properties table<string,string|integer>
 ---@return string
 local function propertiesToString(properties)
-    -- P1=(VAL) P2=(VAL) ...
+    -- P1=(VAL);P2=(VAL); ...
     local ret = ""
     for key, value in pairs(properties) do
         ret = ret .. string.format("%s=(%s);", key, tostring(value))
@@ -142,8 +141,12 @@ function onMessageReceived(msg, router)
         local is_already_visited = false
 
         for i = 1, #connections_datagram.routers_traveled do
-            if connections_datagram.routers_traveled[i] == router.name then is_already_visited = true end
-            if local_time <= router.memory.network_state:getRouterSafe(origin_name).remote_last_update then is_already_visited = true end
+            if connections_datagram.routers_traveled[i] == router.name then
+                is_already_visited = true
+            end
+            if local_time <= router.memory.network_state:getRouterSafe(origin_name).remote_last_update then
+                is_already_visited = true
+            end
         end
 
         if (not is_already_visited) and time_to_die > 0 then
@@ -151,9 +154,10 @@ function onMessageReceived(msg, router)
             router:transmit(connections_datagram:toString())
             router.memory.network_state:setRouterState(
                 origin_name,
-                parseVisitedRouters(connections),
+                parseConnections(connections),
                 router.current_time_milis,
-                local_time
+                local_time,
+                parseVisitedRouters(visited_routers)
             )
             for property, value in pairs(connections_datagram.properties) do
                 router.memory.network_state:getRouter(origin_name).properties[property] = value

@@ -27,6 +27,7 @@ local function onTick(self)
     if self.monitor then
         local last_term = term.current()
         term.redirect(self.monitor)
+        self.monitor.setTextScale(.5)
         term.setCursorPos(1, 1)
         term.clear()
         
@@ -42,7 +43,13 @@ local function onTick(self)
             for key, connection in pairs(router.connections) do
                 network_routers = network_routers .. connection .. " "
             end
-            print(string.format("%s connections -> %s ", router.name, network_routers))
+            local path 
+            if router.path_to then
+                path = router.path_to:toString()
+            else
+                path = 'nil'
+            end
+            print(string.format("%s:\nPath:%s\nConnections -> %s ", router.name,path, network_routers))
         end
         print("\nEndpoints: ")
         for name, endpoint in pairs(self.router.memory.connected_endpoints) do
