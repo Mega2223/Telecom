@@ -6,14 +6,6 @@
 ---@field iteration integer
 ---@field monitor ?ccTweaked.peripherals.Monitor
 
----@class RadioPeripheral
----@field broadcast fun(msg: string)
----@field canBroadcast fun(): boolean
----@field getFrequency fun(): integer
----@field getHeight fun(): integer
----@field isValid fun(): boolean
----@field setFrequency fun(freq: integer)
-
 require('Utils.CCTUtils')
 require('Network.RouterLogic.Router')
 
@@ -140,6 +132,6 @@ function RadioRouter(frequency)
         router = Router(getFileOrMakeEmpty('router.txt')),
         iteration = 0,
         output_stream = print,
-        firmware_type_name = "RadioRouter"
+        firmware_type = "RadioRouter"
     }
 end

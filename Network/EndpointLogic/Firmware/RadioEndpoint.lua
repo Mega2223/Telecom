@@ -81,9 +81,10 @@ function RadioEndpoint(frequency)
     radio_tower_p.setFrequency(frequency)
 
     ---@type EndpointLogic.RadioEndpoint
-    local ret =  {
-        transmit = function (self, msg)
-            self.radio_peripheral.broadcast(msg)
+    local ret = {
+        ---@param self EndpointLogic.RadioEndpoint
+        transmitMessage = function (self, msg)
+            self.radio_peripheral.broadcast(msg) return true
         end,
         ---@diagnostic disable-next-line: param-type-mismatch, assign-type-mismatch
         radio_peripheral = radio_tower_p,

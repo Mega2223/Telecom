@@ -4,6 +4,8 @@
 
 ---@type table<integer, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
+---@type table<integer, EndpointLogic.ProtocolParser>
+ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
 
 ---[END-(endpoint_address)-(router_name)-who_is_sending:R|E-task]
 ---
@@ -36,7 +38,6 @@ local function parseData(data)
     if not endpoint then return end
     return endpoint, router, sender, task
 end
----[END-(ENDPOINTNAME)-(ROUTERNAME)-E-TASKTASK]
 
 ---@param self EndpointNegotiationDatagram
 ---@return string
@@ -73,7 +74,6 @@ function EndpointNegotiationDatagram(endpoint_address, router_address, who_sent_
         toString = toString
     }
 end
----[END-(ENDPOINTNAME)-(ROUTERNAME)-E-TASKTASK]
 
 ---@param task_data string
 ---@return string | nil, string | nil
@@ -85,21 +85,16 @@ end
 ---@param msg string
 ---@param router Router
 ---@return boolean
-local function onMessageReceived(msg, router)
+local function onMessageReceivedRouter(msg, router)
     local endpoint_address, router_name, sender, task = parseData(msg)
-    --print('dat',endpoint_address,router_name,sent_from_router,task)
     if not endpoint_address or not task then return false end
     if sender == 'R' or router_name ~= router.name then
-        -- not for me
         return true
     end
-
     if task == "UPDATE" then
         router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
     end
-
     local network_state = router.memory.network_state
-
     local prefix, t_id = parseGiveNameTask(task)
     if prefix and t_id then
         STD_OUT "GIVENAME"
@@ -131,15 +126,42 @@ local function onMessageReceived(msg, router)
     return false
 end
 
-local function onDie()
-    -- Message never dies
+---@param msg string
+---@param endpoint EndpointLogic.Endpoint
+---@return boolean
+local function onMessageReceivedEndpoint(endpoint, msg)
+    local endpoint_address, router_name, sender, task = parseData(msg)
+    if not task or not sender or not router_name or not endpoint_address then return false end
+    if sender == 'E' then return true end
+
+    datagram = EndpointNegotiationDatagram(endpoint_address,router_name,sender,task)
+
+    do
+        local new_name, trans_id = string.match(task, "GIVE_NAME<%((.+)%)%-%((.+)%)>")
+        if endpoint.memory.transaction_id == trans_id then
+            endpoint.memory.address = new_name
+            endpoint.memory.transaction_id = nil
+            endpoint.memory.connected_router = router_name
+            endpoint.memory.last_ping = -1
+            return true
+        end
+    end
+
+    return true
 end
 
-local template_parser = {
-    onDie = onDie,
-    onMessageReceived = onMessageReceived,
+---@type DatagramParser
+local parser_router = {
+    onDie = function() end,
+    onMessageReceived = onMessageReceivedRouter,
     type = 'EndpointNegotiationDatagramParser'
 }
 
+table.insert(NETWORK_DATAGRAM_PROT, parser_router)
 
-table.insert(NETWORK_DATAGRAM_PROT,template_parser)
+---@type EndpointLogic.ProtocolParser
+local parser_endpoint = {
+    onReceive = onMessageReceivedEndpoint
+}
+
+table.insert(ENDPOINT_PROTOCOL_STACK,parser_endpoint)

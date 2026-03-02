@@ -96,6 +96,7 @@ local function begin(self,delay)
     self.modem.open(self.channel)
     
     ---@type ccTweaked.peripherals.Monitor
+    ---@diagnostic disable-next-line: assign-type-mismatch
     local monitor = peripheral.find("monitor")
     
     if monitor ~= nil then
@@ -137,7 +138,9 @@ function ModemRouter(channel, output_stream)
         output_stream = output_stream or function(msg) print(msg) end,
         iteration = 1,
         last_transmition = 1,
-        firmware_type_name = "ModemWrapper"
+        firmware_type_name = "ModemWrapper",
+        onMessageReceived = onMessageReceived,
+        firmware_type = 'ModemRouter'
     }
     
     router_object.firmware = wrapper

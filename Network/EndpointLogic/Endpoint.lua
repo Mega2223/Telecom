@@ -1,7 +1,7 @@
 require('Network.EndpointLogic.Protocol')
 require('Network.EndpointLogic.EndpointConfig')
 require('Network.EndpointLogic.EndpointMemory')
-require('Network.EndpointLogic.EndpointNegotiationDatagram')
+require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 
 ---@class EndpointLogic.Endpoint
 ---@field do_logic fun(self: EndpointLogic.Endpoint, time_milis: integer)

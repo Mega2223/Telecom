@@ -7,14 +7,9 @@
 ---@type table<integer, EndpointLogic.ProtocolParser>
 ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
 
----@return EndpointLogic.ProtocolParser
-function ProtocolParser()
-    ---@type EndpointLogic.ProtocolParser
-    return {
-        onReceive = function (endpoint, msg)
-            return false
-        end
-    }
-end
+---@type EndpointLogic.ProtocolParser
+local protocol = {
+    onReceive = function (endpoint, msg) return false end
+}
 
-table.insert(ENDPOINT_PROTOCOL_STACK, ProtocolParser())
+table.insert(ENDPOINT_PROTOCOL_STACK, protocol)

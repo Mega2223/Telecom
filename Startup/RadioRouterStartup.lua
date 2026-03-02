@@ -1,4 +1,3 @@
----@diagnostic disable-next-line: different-requires
 require('Telecom')
 require('Network.RouterLogic.Firmware.RadioRouter')
 

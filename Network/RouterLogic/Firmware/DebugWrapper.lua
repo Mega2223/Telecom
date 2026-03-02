@@ -27,9 +27,9 @@ local function begin(self)
     self.output_stream("STARTING ROUTER " .. self.router.name .. " AS DEBUG")
 end
 
----@class DebugWrapper: RouterFirmware
+---@class (exact) DebugWrapper: RouterFirmware
 ---@field runTick fun(self: DebugWrapper)
----@field receiveMessage fun(self: DebugWrapper, message: string)
+---@field onMessageReceived fun(self: DebugWrapper, message: string)
 ---@field message_output_fun fun(string)
 ---@field output_stream fun(string)
 
@@ -49,9 +49,9 @@ function DebugWrapper(router_object, message_output_fun)
         output_stream = print,
         iteration = 1,
         runTick = onTick,
-        receiveMessage = onMessageReceived,
+        onMessageReceived = onMessageReceived,
         last_transmition = 0,
-        firmware_type_name = "DebugWrapper"
+        firmware_type = "DebugWrapper"
     }
     
     router_object.firmware = wrapper
