@@ -4,7 +4,7 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 ---@return string | nil, string | nil
 local function parse(task_data)
     local prefix_or_address, id = string.match(task_data, "GIVE_NAME<%((.*)%)%-(.+)>")
-    print(task_data,'-> PARSE ->',prefix_or_address, id)
+    -- print(task_data,'-> PARSE ->',prefix_or_address, id)
     return prefix_or_address, id
 end
 
@@ -18,10 +18,11 @@ end
 ---@param endpoint EndpointLogic.Endpoint 
 ---@param task_data string
 ---@param END EndpointNegotiationDatagram
+---@return boolean
 local function onEndpointReceive(endpoint, task_data, END)
     local address, t_id = parse(task_data)
     if not address or not t_id then
-        print(task_data,'somehow failed to parse',address,t_id)
+        -- print(task_data,'somehow failed to parse',address,t_id)
         return false
     end
     STD_OUT(("Got address (%s) from router (%s)").format(address,END.router_address))
@@ -29,6 +30,7 @@ local function onEndpointReceive(endpoint, task_data, END)
     endpoint.memory.address = address
     endpoint.memory.last_ping = -1
     endpoint.memory.connected_router = END.router_address
+    return true
 end
 
 ---@param router Router
