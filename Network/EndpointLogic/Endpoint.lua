@@ -13,6 +13,7 @@ require('Network.EndpointLogic.EndpointNegotiationDatagram')
 ---@field config EndpointLogic.Config
 ---@field memory EndpointLogic.Memory
 ---@field firmware ?EndpointLogic.Firmware
+---@field onReceive fun(self: EndpointLogic.Endpoint, msg:  string): boolean
 
 ---@class EndpointLogic.Firmware
 ---@field send_message fun(self: EndpointLogic.Firmware, message: string): boolean
@@ -97,6 +98,18 @@ local function get_endpoints_at_network(self)
     -- TODO
 end
 
+---@param self EndpointLogic.Endpoint
+---@param msg string
+---@return boolean
+local function onReceive(self, msg)
+    for index, protocol in pairs(ENDPOINT_PROTOCOL_STACK) do
+        if protocol.onReceive(self,msg) then
+            return true
+        end
+    end
+    return false
+end
+
 ---@param configs string | table<string,integer|string> | nil
 ---@param firmware ?EndpointLogic.Firmware
 ---@return EndpointLogic.Endpoint
@@ -111,6 +124,7 @@ function Endpoint(configs, firmware)
         memory = EndpointMemory(),
         firmware = firmware,
         send_message_to = send_message_to,
-        get_endpoints_at_network = get_endpoints_at_network
+        get_endpoints_at_network = get_endpoints_at_network,
+        onReceive = onReceive
     }
 end

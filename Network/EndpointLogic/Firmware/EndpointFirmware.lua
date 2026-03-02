@@ -1,0 +1,5 @@
+---@class EndpointLogic.Firmware
+---@field firmware_type string
+---@field begin fun(self: EndpointLogic.RadioEndpoint)
+---@field transmit fun(self: EndpointLogic.RadioEndpoint, msg: string)
+---@field endpoint EndpointLogic.Endpoint

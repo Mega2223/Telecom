@@ -1,5 +1,3 @@
----@diagnostic disable: need-check-nil
-
 ---@class (exact) RadioRouter: RouterFirmware
 ---Firmware wrapper intended for the Classic Peripherals antennas
 ---not sure why those peripherals are classic but they are pretty cool
@@ -28,6 +26,7 @@ local function onTick(self)
     self.iteration = self.iteration + 1
 
     local file = fs.open("router.txt", "w")
+    if not file then error('could not write conigs') end
     file.write(self.router.configs:toString())
     file.close()
     

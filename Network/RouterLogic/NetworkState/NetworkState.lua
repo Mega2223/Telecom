@@ -2,7 +2,6 @@ require('Network.RouterLogic.NetworkState.KnownNetworkRouter')
 
 ---@class NetworkState
 ---@field network_routers table<string,KnownNetworkRouter>
----@diagnostic disable: invisible
 ---@field router Router
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownNetworkRouter
