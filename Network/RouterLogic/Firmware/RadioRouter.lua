@@ -49,7 +49,7 @@ local function onTick(self)
             else
                 path = 'nil'
             end
-            print(string.format("%s:\nPath:%s\nConnections -> %s ", router.name,path, network_routers))
+            print(string.format("%s:\nPath:%s\nConnections -> %s\n", router.name,path, network_routers))
         end
         print("\nEndpoints: ")
         for name, endpoint in pairs(self.router.memory.connected_endpoints) do
