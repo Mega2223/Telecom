@@ -35,14 +35,12 @@ end
 local function reverse(self)
     print('REVERTENDO: ' .. self:toString())
     local ret = self:clone()
-    for i = 1, #self.path do
+    for i, path in pairs(self.path) do
         local mirror_index = #self.path - i + 1
-        if not ret.path[mirror_index] or not ret.path[i] then
-            error 'nil error'
-        end
+        if not ret.path[mirror_index] or not ret.path[i] then error 'nil error' end
         print(i .. ' -> ' .. mirror_index .. '[' .. i .. '/' .. #self.path .. ']')
         print(self.path[i] .. ' fica em ' .. mirror_index)
-        ret.path[mirror_index] = self.path[i]
+        ret.path[mirror_index] = path
     end
     print('RESULT: ' .. self:toString())
     return ret
