@@ -1,12 +1,11 @@
--- NEARBY_ROUTERS<(ROUTER_NAME|nil)>
+-- NEARBY_ROUTERS<ROUTER_NAME|nil>
 
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProtocol')
 
 ---@param task_data string
 ---@return string
 local function parse(task_data)
-    local router_name = string.match(task_data, "NEARBY_ROUTERS<%((.+)%)>")
-    print("PARSED",router_name)
+    local router_name = string.match(task_data, "NEARBY_ROUTERS<(.+)>")
     return router_name
 end
 
