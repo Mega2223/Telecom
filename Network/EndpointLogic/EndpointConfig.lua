@@ -3,6 +3,7 @@
 ---@field nearby_router_update_interval integer 
 ---@field router_forget_threashold integer
 ---@field update_network_endpoints integer
+---@field network_endpoint_forget_threashold integer
 ---@field prefix string
 ---@field toString fun(self: EndpointLogic.Config): string
 
@@ -43,6 +44,7 @@ function EndpointConfig(data)
         router_forget_threashold = 30 * 1000,
         nearby_router_update_interval = 13 * 1000,
         update_network_endpoints = 21 * 1000,
+        network_endpoint_forget_threashold = 40 * 1000,
         prefix = "EDP",
         toString = toString
     }

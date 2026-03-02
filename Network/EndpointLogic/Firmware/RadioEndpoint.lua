@@ -40,7 +40,12 @@ local function doTick(self)
                     router.last_seen + self.endpoint.config.router_forget_threashold
                 ))
         end
-        print('')
+        print('\nNETWORK_ENDPOINTS: ')
+        for name, k_endpoint in pairs(self.endpoint.memory.known_network_endpoints) do
+            print(string.format("addr \"%s\" last seen %d/%d", name, k_endpoint.last_update,
+                self.endpoint.config.network_endpoint_forget_threashold
+        ))
+        end
         term.redirect(prev_term)
     end
 end
