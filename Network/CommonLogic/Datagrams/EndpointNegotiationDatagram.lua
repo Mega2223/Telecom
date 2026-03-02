@@ -98,7 +98,7 @@ local function onMessageReceivedRouter(msg, router)
             return true
         end
     end
-    STD_OUT(msg)
+    STD_OUT("msg= "..msg)
     STD_ERR "Is END datagram but no compatible task found"
     error "Is END datagram but no compatible task found"
     return false
@@ -113,19 +113,17 @@ local function onMessageReceivedEndpoint(endpoint, msg)
     if sender == 'E' then return true end
 
     datagram = EndpointNegotiationDatagram(endpoint_address,router_name,sender,task)
+    
+    local negotiation_d = EndpointNegotiationDatagram(endpoint_address, router_name, sender, task)
 
-    do
-        local new_name, trans_id = string.match(task, "GIVE_NAME<%((.+)%)%-%((.+)%)>")
-        if endpoint.memory.transaction_id == trans_id then
-            endpoint.memory.address = new_name
-            endpoint.memory.transaction_id = nil
-            endpoint.memory.connected_router = router_name
-            endpoint.memory.last_ping = -1
+    for index, subprotocol in pairs(END_NEGOTIATION_TASKS) do
+        -- print(string.format("trying protocol %s",subprotocol.name))
+        if subprotocol.onEndpointReceive(endpoint, task, negotiation_d) then
             return true
         end
     end
 
-    return true
+    error'IS END PROTOCOL BUT NO SUBPROTOCOL FOUND'
 end
 
 ---@type DatagramParser
