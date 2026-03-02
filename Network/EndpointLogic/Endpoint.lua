@@ -87,7 +87,7 @@ local function do_logic(self, time_milis)
         self.memory.last_router_request = self.time
     end
 
-    if self.time - self.memory.last_ask_for_endpoints < self.config.update_network_endpoints then
+    if self.time - self.memory.last_ask_for_endpoints > self.config.update_network_endpoints then
         local task = GetAddressSubprotocol("(.+)")
         local datagram = EndpointNegotiationDatagram(self.memory.address, self.memory.connected_router, 'E', task)
         self:send_message(datagram:toString())
