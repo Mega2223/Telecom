@@ -7,7 +7,7 @@ require('Utils.Utils')
 ---@param task_data string
 ---@return string | table<integer,string> | nil
 local function parse(task_data)
-    local task_val = string.match(task_data, "GET_ADDRESS<([^>]+)>")
+    local task_val = string.match(task_data, "GET_ADDRESS<([^<>]+)>")
     if not task_val then return nil end
     local table_values = stringToList(task_val)
     if table_values then return table_values end
@@ -49,7 +49,10 @@ end
 local function onRouterReceive(router, task_data, END)
     local pattern = parse(task_data)
     if not pattern then return false end
-    if END.who_sent_it == 'R' or END.router_address ~= router.name then return true end
+    if END.who_sent_it == 'R' or END.router_address ~= router.name then
+        print'not for me'
+        return true
+    end
     if type(pattern) == "table" then error 'table is not a pattern' end
 
     local endpoints = router.memory.network_state:getEndpointsMatchingPattern(pattern)
