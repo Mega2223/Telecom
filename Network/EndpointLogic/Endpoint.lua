@@ -43,8 +43,9 @@ local function do_logic(self, time_milis)
 
     if self.memory.transaction_id and self.memory.favorite_to_connect then
         if self.time - self.memory.last_ping > self.config.update_interval / 2 then
-                local task = string.format("GIVE_NAME<(%s)-%s>",self.config.prefix,self.memory.transaction_id)
+                -- local task = string.format("GIVE_NAME<(%s)-%s>",self.config.prefix,self.memory.transaction_id)
                 -- GIVE_NAME<(prefix|name)-transaction_id>
+                local task = AskNameSubprotocol(self.memory.transaction_id,self.config.prefix)
                 local datagram = EndpointNegotiationDatagram(
                     self.memory.address,
                     self.memory.favorite_to_connect,

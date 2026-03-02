@@ -3,8 +3,15 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 ---@param task_data string
 ---@return string | nil, string | nil
 local function parse(task_data)
-    local prefix_or_address, id = string.match(task_data, "GIVE_NAME<%((.*)%)%-%((.+)%)>")
+    local prefix_or_address, id = string.match(task_data, "GIVE_NAME<%((.*)%)%-(.+)>")
     return prefix_or_address, id
+end
+
+---@param transaction_id string
+---@param prefix_or_address ?string
+function AskNameSubprotocol(transaction_id, prefix_or_address)
+    local prefix_or_address = prefix_or_address or ""
+    return string.format("GIVE_NAME<(%s)-%s>",prefix_or_address,transaction_id)
 end
 
 ---@param endpoint EndpointLogic.Endpoint 
