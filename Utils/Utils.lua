@@ -51,6 +51,7 @@ function stringToList(data)
     local i = 1
     local ret = {}
     for entry in string.gmatch(data, "%(([^(^)]+)%)") do
+        STD_OUT('property' .. i .. ' -> ' .. entry)
         ret[i] = entry
         i = i + 1
     end
