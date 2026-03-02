@@ -1,18 +1,21 @@
--- The EndpointNegotiationDatagram class is a datagram intended to represent all possible interactions between an router and a datagram
-
----@class EndpointNegotiationDatagram this datagram does nothing
-
 ---@type table<integer, DatagramParser>
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@type table<integer, EndpointLogic.ProtocolParser>
 ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
+---@type table<integer,NegotiationSubprotocol>
+END_NEGOTIATION_TASKS = END_NEGOTIATION_TASKS or {}
+
+require('Network.CommonLogic.Datagrams.NegotiationProtocols.AskNameSubprotocol')
+require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProtocol')
+require('Network.CommonLogic.Datagrams.NegotiationProtocols.NearbyRoutersSubprotocol')
+require('Network.CommonLogic.Datagrams.NegotiationProtocols.UpdateSubprotocol')
 
 ---[END-(endpoint_address)-(router_name)-who_is_sending:R|E-task]
 ---
 ---task:
 ---  UPDATE<endpoint_address> -> "endpoint is still alive"
 ---     endpoint should send this frequently out of its own initiative
-
+---
 ---  MSG<(destination_address)-confirm:T|F-multicast:T|F-(message_content)> -> send message to address
 ---     endpoint sends this message to ask router to send message to this address
 ---     router sends this message when it receives a message to one of its endpoints
@@ -21,14 +24,18 @@ ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
 ---  GET_HOST<(host_pattern|host_list)> -> "give me all hosts that match this pattern"
 ---     endpoints ask for a list of other endpoints in the network who match this pattern
 ---     router replies an array of all known names that match this pattern
-
+---
+---  NEARBY_ROUTERS<who_sent:R|E-(ROUTER_NAME|nil)>
+---     endpoints asks for routers withing proximity and routers answer with their names
+---
 ---  GIVE_NAME<(prefix|name)-transaction_id>
 ---     endpoint asks for a name with this given prefix, router assigns an address to the endpoint
 ---     and replies the assigned name, endpoint_address is nil in this case as it is not assigned yet
-
+---
 --- DENY<endpoint_name>
 ---     router signals that the endpoint address is no longer valid and the endpoint
 ---     should ask for a new address, sent for invalid operations due to invalid adresses
+
 
 ---@param data string
 ---@return string|nil, string|nil, string|nil, string|nil
@@ -50,9 +57,7 @@ local function toString(self)
     )
 end
 
--- TODO é bom ter o objeto para poder mudar o parseamento mais facil
-
----@class EndpointNegotiationDatagram
+---@class EndpointNegotiationDatagram The EndpointNegotiationDatagram class is a datagram intended to represent all possible interactions between an router and a datagram
 ---@field endpoint_address string
 ---@field router_address string
 ---@field who_sent_it 'R'|'E'
@@ -75,52 +80,24 @@ function EndpointNegotiationDatagram(endpoint_address, router_address, who_sent_
     }
 end
 
----@param task_data string
----@return string | nil, string | nil
-local function parseGiveNameTask(task_data)
-    local prefix, id = string.match(task_data, "GIVE_NAME<%((.+)%)%-%((.+)%)>")
-    return prefix, id
-end
-
 ---@param msg string
 ---@param router Router
 ---@return boolean
 local function onMessageReceivedRouter(msg, router)
     local endpoint_address, router_name, sender, task = parseData(msg)
-    if not endpoint_address or not task then return false end
+    if not endpoint_address or not task or not router_name or not sender then return false end
     if sender == 'R' or router_name ~= router.name then
         return true
     end
-    if task == "UPDATE" then
-        router.memory:updateEndpoint(endpoint_address,router.current_time_milis)
-    end
-    local network_state = router.memory.network_state
-    local prefix, t_id = parseGiveNameTask(task)
-    if prefix and t_id then
-        STD_OUT "GIVENAME"
-        -- endpoint is asking for a name
-        local i = math.random(9000)
-        while i <= 15000 do
-            local end_name = string.format("%s_%05d", prefix, i)
-            i = i + 1
-            if not network_state:getEndpointWithName(end_name) then
-                ---[END-endpoint_address-(router_name)-who_is_sending:R|E-task]
-                ---  GIVE_NAME<(prefix|name)-(transaction_id)>
-                --name approved, send reply
-                local reply = EndpointNegotiationDatagram(
-                    end_name, router.name, 'R',
-                    string.format("GIVE_NAME<(%s)-(%s)>",end_name,t_id)
-                )
-                router:transmit(reply:toString())
-                router.memory:registerEndpoint(end_name,router.current_time_milis)
-                --TODO: also vc deveria forçar um broadcast na rede
-                -- para o estado desse roteador ser atualizado nos demais
-                return true
-            end
+
+    local negotiation_d = EndpointNegotiationDatagram(endpoint_address, router_name, sender, task)
+    
+    for index, subprotocol in pairs(END_NEGOTIATION_TASKS) do
+        if subprotocol.onRouterReceive(router, task, negotiation_d) then
+            return true
         end
-        STD_ERR("could not create name for endpoint " .. t_id)
-        error("could not create name for endpoint " .. t_id)
     end
+    STD_OUT(msg)
     STD_ERR "Is END datagram but no compatible task found"
     error "Is END datagram but no compatible task found"
     return false

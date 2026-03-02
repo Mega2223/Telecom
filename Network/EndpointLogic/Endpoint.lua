@@ -25,7 +25,7 @@ ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
 local function do_logic(self, time_milis)
     self.time = time_milis
     if not self.memory.address and not self.memory.transaction_id then
-        self.memory.transaction_id = string.format("T%03d",math.random(999))
+        self.memory.transaction_id = string.format("TID%03d",math.random(999))
     end
 
     if self.memory.transaction_id then
