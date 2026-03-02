@@ -117,6 +117,7 @@ local function dumpAddress(self)
     self.memory.address = nil
     self.memory.connected_router = nil
     self.memory.last_ping = -1
+    self.memory.favorite_to_connect = nil
 end
 
 ---@param self EndpointLogic.Endpoint

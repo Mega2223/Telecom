@@ -30,6 +30,7 @@ local function onEndpointReceive(endpoint, task_data, END)
     endpoint.memory.address = address
     endpoint.memory.last_ping = -1
     endpoint.memory.connected_router = END.router_address
+    endpoint.memory.favorite_to_connect = nil
     return true
 end
 
