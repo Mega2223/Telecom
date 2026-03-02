@@ -41,7 +41,7 @@ end
 ---@return string
 function NearbyRoutersTask(router_name)
     router_name = router_name or 'nil'
-    return string.format("NEARBY_ROUTERS<%S>",router_name)
+    return string.format("NEARBY_ROUTERS<%s>",router_name)
 end
 
 ---@type NegotiationSubprotocol
