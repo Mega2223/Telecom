@@ -35,10 +35,10 @@ end
 local function reverse(self)
     local ret = self:clone()
     for i = 1, #self.path do
-        if not ret.path[#self.path - i] or not ret.path[#self.path - i] then
+        if not ret.path[#self.path - i + 1] or not ret.path[#self.path - i] then
             error'nil error'
         end
-        ret.path[#self.path - i] = self.path[i]
+        ret.path[#self.path - i + 1] = self.path[i]
     end
     return ret
 end
