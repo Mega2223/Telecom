@@ -39,7 +39,7 @@ local function reverse(self)
     for i, path in pairs(self.path) do
         ret.path[#self.path - i + 1] = path
     end
-    print('RESULT: ' .. self:toString())
+    print('RESULT: ' .. ret:toString())
     return ret
 end
 
