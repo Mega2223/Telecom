@@ -45,10 +45,8 @@ local function do_logic(self, time_milis)
     if self.time - self.memory.last_ping > self.config.update_interval then
         local task = string.format("UPDATE<%s>",self.memory.address)
         local datagram = EndpointNegotiationDatagram(
-            self.memory.address,
-            self.memory.connected_router,
-            'E',
-            task
+            self.memory.address, self.memory.connected_router,
+            'E', task
         )
         self:send_message(datagram:toString())
         self.memory.last_ping = self.time
