@@ -20,7 +20,10 @@ end
 ---@param END EndpointNegotiationDatagram
 local function onEndpointReceive(endpoint, task_data, END)
     local address, t_id = parse(task_data)
-    if not address or not t_id then return false end
+    if not address or not t_id then
+        print(task_data,'somehow failed to parse',address,t_id)
+        return false
+    end
     STD_OUT(("Got address (%s) from router (%s)").format(address,END.router_address))
     endpoint.memory.transaction_id = nil
     endpoint.memory.address = address
