@@ -45,7 +45,7 @@ local function onRouterReceive(router, task_data, END)
                 --name approved, send reply
                 local reply = EndpointNegotiationDatagram(
                     end_name, router.name, 'R',
-                    string.format("GIVE_NAME<(%s)-(%s)>",end_name,t_id)
+                    AskNameSubprotocol(t_id,end_name)
                 )
                 router:transmit(reply:toString())
                 router.memory:registerEndpoint(end_name,router.current_time_milis)
