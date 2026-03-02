@@ -40,6 +40,7 @@ local function reverse(self)
             error 'nil error'
         end
         print(i .. ' -> ' .. mirror_index .. '[' .. i .. '/' .. #self.path .. ']')
+        print(self.path[i] .. ' fica em ' .. mirror_index)
         ret.path[mirror_index] = self.path[i]
     end
     return ret
