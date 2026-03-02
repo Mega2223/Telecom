@@ -23,7 +23,7 @@ function GetAddressSubprotocol(pattern_or_list)
     else
         data = pattern_or_list
     end
-    return string.format("GET_ADDRESS<%s>",pattern_or_list)
+    return string.format("GET_ADDRESS<%s>",data)
 end
 
 ---@param endpoint EndpointLogic.Endpoint 
