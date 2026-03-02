@@ -55,7 +55,7 @@ local function do_logic(self, time_milis)
         end
     end
 
-    if self.memory.address and
+    if self:is_connected() and
         self.time - self.memory.last_ping > self.config.update_interval then
         local task = string.format("UPDATE")
         local datagram = EndpointNegotiationDatagram(
@@ -64,6 +64,15 @@ local function do_logic(self, time_milis)
         )
         self:send_message(datagram:toString())
         self.memory.last_ping = self.time
+    end
+
+    if self:is_connected() and 
+        self.time - self.memory.last_router_request > self.config.nearby_router_update_interval then
+        local task = NearbyRoutersTask()
+        local datagram = EndpointNegotiationDatagram(
+            self.memory.address, self.memory.connected_router, 'E', task
+        )
+        self:send_message(datagram:toString())
     end
 
     if self.memory.connected_router and
