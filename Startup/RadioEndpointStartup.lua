@@ -14,7 +14,15 @@ TASK_MANAGER:addTask(
         function (self, deltaT)
             endpoint_r:doTick()
         end
-    ), nil
+    )
+)
+
+TASK_MANAGER:addTask(
+    Task('SEND_TO_RANDOM_ENDPOINT', 1000 * 15,
+        function (self, deltaT)
+            endpoint_r.endpoint:get_endpoints_at_network()
+        end
+    )
 )
 
 while true do

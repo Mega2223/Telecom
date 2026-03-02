@@ -22,7 +22,7 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.MessageSubprotocol')
 ---     router sends this message when it receives a message to one of its endpoints
 ---     destination_address is a pattern if multicast
 
----  GET_HOST<(host_pattern|host_list)> -> "give me all hosts that match this pattern"
+---  GET_ADDRESS<(host_pattern|host_list)> -> "give me all hosts that match this pattern"
 ---     endpoints ask for a list of other endpoints in the network who match this pattern
 ---     router replies an array of all known names that match this pattern
 ---

@@ -29,8 +29,31 @@ function getTableAsConfig(table_to)
 end
 
 ---@param data string
----@return table
+---@return table|nil
 function getConfigFromData(data)
     local ret = textutils.unserialise(data)
+    return ret
+end
+
+---@param data table<integer,string>
+---@return string
+function listToString(data)
+    local ret = ""
+    for i = 1, #data do
+        ret = ret .. "(" .. data[i] .. ")"
+    end
+    return ret
+end
+
+---@param data string
+---@return table<integer,string> | nil
+function stringToList(data)
+    local i = 1
+    local ret = {}
+    for entry in string.gmatch(data, "%(([^(^)]+)%)") do
+        ret[i] = entry
+        i = i + 1
+    end
+    if ret[1] == nil then return nil end
     return ret
 end
