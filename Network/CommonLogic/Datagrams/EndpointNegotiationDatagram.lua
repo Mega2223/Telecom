@@ -86,7 +86,7 @@ end
 local function onMessageReceivedRouter(msg, router)
     local endpoint_address, router_name, sender, task = parseData(msg)
     if not endpoint_address or not task or not router_name or not sender then return false end
-    if sender == 'R' or router_name ~= router.name then
+    if sender == 'R' or (router_name ~= router.name and router_name ~= 'nil') then
         return true
     end
 

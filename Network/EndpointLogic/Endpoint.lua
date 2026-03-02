@@ -24,9 +24,22 @@ ENDPOINT_PROTOCOL_STACK = ENDPOINT_PROTOCOL_STACK or {}
 ---@param time_milis integer
 local function do_logic(self, time_milis)
     self.time = time_milis
+
     if not self.memory.address and not self.memory.transaction_id then
         self.memory.transaction_id = string.format("TID%03d",math.random(999))
     end
+
+    if self.memory.transaction_id and not self.memory.favorite_to_connect then
+        for rt_name, router in pairs(self.memory.nearby_routers) do
+            self.memory.favorite_to_connect = rt_name
+            goto found_router
+        end
+        -- No routers in memory, ask for nearby routers
+        local task = NearbyRoutersTask()
+        local datagram = EndpointNegotiationDatagram('nil', 'nil', 'E', task)
+        self:send_message(datagram:toString())
+    end
+    ::found_router::
 
     if self.memory.transaction_id then
         if self.time - self.memory.last_ping > self.config.update_interval / 2 then
@@ -34,7 +47,7 @@ local function do_logic(self, time_milis)
                 -- GIVE_NAME<(prefix|name)-transaction_id>
                 local datagram = EndpointNegotiationDatagram(
                     self.memory.address,
-                    self.memory.connected_router,
+                    self.memory.favorite_to_connect,
                     'E', task
             )
             self:send_message(datagram:toString())
@@ -42,8 +55,9 @@ local function do_logic(self, time_milis)
         end
     end
 
-    if self.time - self.memory.last_ping > self.config.update_interval then
-        local task = string.format("UPDATE<%s>",self.memory.address)
+    if self.memory.address and
+        self.time - self.memory.last_ping > self.config.update_interval then
+        local task = string.format("UPDATE<%s>", self.memory.address)
         local datagram = EndpointNegotiationDatagram(
             self.memory.address, self.memory.connected_router,
             'E', task
@@ -51,6 +65,13 @@ local function do_logic(self, time_milis)
         self:send_message(datagram:toString())
         self.memory.last_ping = self.time
     end
+    
+    for r_name, router in pairs(self.memory.nearby_routers) do
+        if self.time - router.last_seen > self.config.router_forget_threashold then
+            self.memory.nearby_routers[r_name] = nil
+        end
+    end
+
 end
 
 ---Sends

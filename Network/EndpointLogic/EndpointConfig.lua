@@ -1,5 +1,6 @@
 ---@class EndpointLogic.Config
 ---@field update_interval integer interval in which the endpoint affirms it's existance to the router
+---@field router_forget_threashold integer
 ---@field prefix string
 ---@field toString fun(self: EndpointLogic.Config): string
 
@@ -36,7 +37,8 @@ function EndpointConfig(data)
 
     ---@type EndpointLogic.Config
     local ret = {
-        update_interval = 2000,
+        update_interval = 3 * 1000,
+        router_forget_threashold = 30 * 1000,
         prefix = "",
         toString = toString
     }

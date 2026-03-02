@@ -1,6 +1,7 @@
 ---@class EndpointLogic.Memory
 ---@field address ?string
 ---@field connected_router ?string
+---@field favorite_to_connect ?string
 ---@field last_ping integer
 ---@field transaction_id ?string for when the endpoint has no name
 ---@field nearby_routers table<string,EndpointLogic.NearbyRouter>
