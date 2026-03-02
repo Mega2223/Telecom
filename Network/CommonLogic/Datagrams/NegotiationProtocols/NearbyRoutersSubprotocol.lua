@@ -1,6 +1,5 @@
 -- NEARBY_ROUTERS<(ROUTER_NAME|nil)>
 
-require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProtocol')
 
 ---@param task_data string

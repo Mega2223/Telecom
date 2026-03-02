@@ -1,4 +1,3 @@
-require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProtocol')
 
 -- Talvez seja interessante ter um montador em classes similar as classes dos datagramas

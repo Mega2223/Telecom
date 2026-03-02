@@ -1,4 +1,3 @@
-require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProtocol')
 
 ---@param task_data string
