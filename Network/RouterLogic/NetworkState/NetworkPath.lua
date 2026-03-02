@@ -45,7 +45,6 @@ local function reverse(self)
         ret.path[mirror_index] = self.path[i]
     end
     print('RESULT: ' .. self:toString())
-    error(self:toString())
     return ret
 end
 
