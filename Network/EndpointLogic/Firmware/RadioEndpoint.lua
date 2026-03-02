@@ -2,12 +2,13 @@ require('Utils.CCTUtils')
 
 --- TODO reunir funções similares entre o endpoint e o router
 
----@class EndpointLogic.RadioEndpoint: EndpointLogic.Firmware
+---@class (exact) EndpointLogic.RadioEndpoint: EndpointLogic.Firmware
 ---@field firmware_type 'RadioEndpoint'
 ---@field radio_peripheral RadioPeripheral
 ---@field frequency integer
+---@field monitor ?ccTweaked.peripherals.Monitor
 
----@param self EndpointLogic.Firmware
+---@param self EndpointLogic.RadioEndpoint
 local function doTick(self)
     local time = math.floor(1000 * os.clock())
     self.endpoint:do_logic(time)
@@ -17,6 +18,25 @@ local function doTick(self)
     if not file then error("could not write configs") end
     file.write(self.endpoint.config:toString())
     file.close()
+
+    if self.monitor then
+        local prev_term = term.current()
+        term.redirect(self.monitor)
+        term.clear()
+        term.setCursorPos(1, 1)
+        print(string.format("ADDRESS: %s TRANS_ID: %s CONN_ROUTER: %s FAV_ROUTER: %s",
+        self.endpoint.memory.address, self.endpoint.memory.transaction_id,
+        self.endpoint.memory.connected_router, self.endpoint.memory.favorite_to_connect
+        ))
+        print("NEARBY_ROUTERS: ")
+        for name, router in pairs(self.endpoint.memory.nearby_routers) do
+            print(
+                string.format("%s: %d/%d", name, router.last_seen,
+                router.last_seen + self.endpoint.config.router_forget_threashold
+            ))
+        end
+        term.redirect(prev_term)
+    end
 end
 
 ---@param self EndpointLogic.RadioEndpoint
@@ -57,6 +77,8 @@ local function begin(self)
     STD_OUT("STARTING ENDPOINT " .. self.endpoint.config.prefix .. " FOR FREQUENCY " .. self.frequency)
 
     os.startTimer(delay)
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    self.monitor = peripheral.find("monitor")
 
     while true do
         nextEvent(self,delay)
