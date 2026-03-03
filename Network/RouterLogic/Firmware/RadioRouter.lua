@@ -40,8 +40,12 @@ local function onTick(self)
         print("\nKnown Routers:")
         for key, router in pairs(self.router.memory.network_state.network_routers) do
             local network_routers = ""
+            local router_endpoints = ""
             for key, connection in pairs(router.connections) do
                 network_routers = network_routers .. connection .. " "
+            end
+            for key, endpoint in pairs(router.connected_endpoints) do
+                router_endpoints = router_endpoints .. endpoint.address .. ' '
             end
             local path 
             if router.path_to then
@@ -49,9 +53,10 @@ local function onTick(self)
             else
                 path = 'nil'
             end
-            print(string.format("%s:\nPath:%s\nConnections -> %s\n", router.name,path, network_routers))
+            print(string.format("%s:\nPath:%s\nConnections: %s\nEndpoints: %s\n", router.name,path, network_routers,router_endpoints))
+            
         end
-        print("\nEndpoints: ")
+        print("\nConnected Endpoints: ")
         for name, endpoint in pairs(self.router.memory.connected_endpoints) do
             print(
                 string.format("%s: last seen %d/%d", endpoint.address, endpoint.last_updated,

@@ -34,13 +34,11 @@ end
 ---@param self NetworkPath
 ---@return NetworkPath
 local function reverse(self)
-    print('REVERTENDO: ' .. self:toString())
     local ret = self:clone()
     ret.path = {}
     for i, path in pairs(self.path) do
         ret.path[#self.path - i + 1] = path
     end
-    print('RESULT: ' .. ret:toString())
     return ret
 end
 
