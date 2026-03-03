@@ -69,6 +69,10 @@ function NetworkState(router_object)
                     self.network_routers[name] = nil
                 end
             end
+            for index, endpoint in pairs(self:getEndpointsMatchingPattern("(.+)")) do
+                self_in_network.connected_endpoints[endpoint.address] =
+                    NetworkEndpoint(self_in_network,self.router.current_time_milis,endpoint.address)
+            end
         end,
         type = 'NetworkState',
         toString = function (self) -- FIXME que horror
