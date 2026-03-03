@@ -18,9 +18,17 @@ TASK_MANAGER:addTask(
 )
 
 TASK_MANAGER:addTask(
-    Task('SEND_TO_RANDOM_ENDPOINT', 1000 * 15,
+    Task('SEND_PING', 10 * 1000,
         function (self, deltaT)
-            endpoint_r.endpoint:get_endpoints_at_network()
+            if not endpoint_r.endpoint.memory.address then
+                STD_ERR("Endpoint not connected, cannot send message")
+            else
+                local ends = endpoint_r.endpoint:get_endpoints_at_network()
+                for name, endpoint in pairs(ends) do
+                    STD_OUT('sending msg to ' .. name)
+                    endpoint_r.endpoint:send_message_to(name,'TESTE123')
+                end
+            end
         end
     )
 )

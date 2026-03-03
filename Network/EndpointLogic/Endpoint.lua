@@ -7,7 +7,7 @@ require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 ---@field do_logic fun(self: EndpointLogic.Endpoint, time_milis: integer)
 ---@field send_message fun(self: EndpointLogic.Endpoint, full_message: string): boolean
 ---@field send_message_to fun(self: EndpointLogic.Endpoint, destination_address: string, message: string)
----@field get_endpoints_at_network fun(self: EndpointLogic.Endpoint, pattern: nil|string): table<integer,string>
+---@field get_endpoints_at_network fun(self: EndpointLogic.Endpoint, pattern: nil|string): table<string,EndpointLogic.KnownEndpoint>
 ---@field is_connected fun(self: EndpointLogic.Endpoint): boolean
 ---@field time integer
 ---@field config EndpointLogic.Config
@@ -142,8 +142,14 @@ local function is_connected(self)
     return type(self.memory.connected_router) == "string"
 end
 
+---@param self EndpointLogic.Endpoint
+---@return table<string,EndpointLogic.KnownEndpoint>
 local function get_endpoints_at_network(self)
-    -- TODO
+    local ret = {}
+    for key, value in pairs(self.memory.known_network_endpoints) do
+        ret[key] = value
+    end
+    return ret
 end
 
 ---@param self EndpointLogic.Endpoint
