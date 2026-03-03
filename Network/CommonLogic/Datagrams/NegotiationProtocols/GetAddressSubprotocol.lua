@@ -16,7 +16,7 @@ end
 local function parse_for_list(task_data)
     local task_val = parse_for_string(task_data) 
     if not task_val then return nil end -- is from subprotcol
-    local table_values = stringToList(task_val) or {} -- can be a 'nil' string
+    local table_values = stringToList(task_val) -- can be a 'nil' string
     return table_values
 end
 

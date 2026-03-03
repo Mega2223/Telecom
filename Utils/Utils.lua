@@ -50,6 +50,7 @@ end
 function stringToList(data)
     local i = 1
     local ret = {}
+    if data == 'nil' then return ret end
     STD_OUT"STRINGANDO PARA LISTANDO"
     for entry in string.gmatch(data, "%(([^(^)]+)%)") do
         STD_OUT('property' .. i .. ' -> ' .. entry)
