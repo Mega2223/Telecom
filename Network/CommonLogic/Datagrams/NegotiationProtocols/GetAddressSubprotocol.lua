@@ -5,7 +5,7 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 require('Utils.Utils')
 
 ---@param task_data string
----@return string | nil
+---@return string | 'nil' | nil
 local function parse_for_string(task_data)
     local task_val = string.match(task_data, "GET_ADDRESS<([^<>]*)>")
     return task_val
@@ -25,7 +25,11 @@ end
 function GetAddressSubprotocol(pattern_or_list)
     local data
     if type(pattern_or_list) == "table" then
-        data = listToString(pattern_or_list)
+        if pattern_or_list[1] == nil then
+            data = "nil" -- is empty
+        else
+            data = listToString(pattern_or_list)
+        end
     else
         data = pattern_or_list
     end
@@ -40,11 +44,9 @@ local function onEndpointReceive(endpoint, task_data, END)
     local values = parse_for_list(task_data)
     if not values then return false end
     if END.who_sent_it == 'E' or END.endpoint_address ~= endpoint.memory.address then return true end
-    if type(values) == "table" then
-        for key, address in pairs(values) do
-            endpoint.memory.known_network_endpoints[key] =
-                EndpointMemoryKnownEndpoint(address, endpoint.time)
-        end
+    for key, address in pairs(values) do
+        endpoint.memory.known_network_endpoints[key] =
+            EndpointMemoryKnownEndpoint(address, endpoint.time)
     end
     return true
 end
@@ -65,7 +67,6 @@ local function onRouterReceive(router, task_data, END)
     for index, value in pairs(endpoints) do
         endpoint_str[index] = value.address
     end
-
     local task = GetAddressSubprotocol(endpoint_str)
     local datagram = EndpointNegotiationDatagram(END.endpoint_address, END.router_address, 'R', task)
     router:transmit(datagram:toString())
