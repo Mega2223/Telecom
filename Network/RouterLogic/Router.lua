@@ -84,11 +84,16 @@ local function doTick(self, time_milis)
 
     -- Mande o status desse roteador para os demais via broadcast
     if time_milis - self.memory.last_adjacency_broadcast >= self.configs.adjacency_broadcast_milis then
+        local endpoint_ilist = {}
+        for name, endpoint in pairs(self.memory.connected_endpoints) do
+            table.insert(endpoint_ilist, endpoint.address)
+        end
         local broadcast = RouterPropertiesDatagram( --RouterStatusDatagram?
             40,
             string.format("(%s)", self.configs.name),
             self.configs.name,
             compileConnectionsIntoString(self.memory.adjacent_routers), -- Eu a caminho de errar todos os jargons kkk
+            listToString(endpoint_ilist),
             self.current_time_milis,
             properties
         )

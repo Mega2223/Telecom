@@ -141,7 +141,6 @@ function onMessageReceived(msg, router)
     -- Action taken upon an router receiving this datagram
     -- Returns false if message does not parse into this type of datagram
     local time_to_die, visited_routers, origin_name, connections, endpoints, local_time, properties = parseRouterPropertiesDatagram(msg)
-    print('parsegroup\n',parseRouterPropertiesDatagram(msg))
     if time_to_die and visited_routers and origin_name and connections and endpoints and properties then
         local connections_datagram = RouterPropertiesDatagram(time_to_die-1,visited_routers,origin_name,connections,endpoints,local_time,properties)
         local is_already_visited = false
