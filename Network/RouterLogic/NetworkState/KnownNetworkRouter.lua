@@ -17,6 +17,17 @@
 ---@field last_seen integer
 ---@field address string
 
+---@param parent_router KnownNetworkRouter
+---@param last_seen integer
+---@param address string
+---@return NetworkEndpoint
+function NetworkEndpoint(parent_router, last_seen, address)
+    ---@type NetworkEndpoint
+    return {
+        parent_router = parent_router, last_seen = last_seen, address = address
+    }
+end
+
 ---@param name string
 ---@param remote_last_update integer
 ---@param current_time integer

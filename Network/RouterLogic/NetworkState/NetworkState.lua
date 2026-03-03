@@ -49,7 +49,7 @@ function NetworkState(router_object)
             end
 
             for i = 1, #endpoints do
-                router.connected_endpoints[i] = endpoints[i]
+                router.connected_endpoints[i] = NetworkEndpoint(router, self.router.current_time_milis, endpoints[i])
             end
 
             if path then
