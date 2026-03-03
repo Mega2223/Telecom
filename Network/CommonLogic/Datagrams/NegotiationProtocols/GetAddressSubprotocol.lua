@@ -5,13 +5,19 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.BaseNegotiationProto
 require('Utils.Utils')
 
 ---@param task_data string
----@return string | table<integer,string> | nil
-local function parse(task_data)
+---@return string | nil
+local function parse_for_string(task_data)
     local task_val = string.match(task_data, "GET_ADDRESS<([^<>]+)>")
+    return task_val
+end
+
+---@param task_data string
+---@return table<integer,string> | nil
+local function parse_for_list(task_data)
+    local task_val = parse_for_string(task_data)
     if not task_val then return nil end
     local table_values = stringToList(task_val)
-    if table_values then return table_values end
-    return task_val
+    return table_values
 end
 
 ---@param pattern_or_list string | table<integer,string>
@@ -31,7 +37,7 @@ end
 ---@param END EndpointNegotiationDatagram
 ---@return boolean
 local function onEndpointReceive(endpoint, task_data, END)
-    local values = parse(task_data)
+    local values = parse_for_list(task_data)
     if not values then return false end
     if END.who_sent_it == 'E' or END.endpoint_address ~= endpoint.memory.address then return true end
     if type(values) == "table" then
@@ -47,13 +53,11 @@ end
 ---@param task_data string
 ---@param END EndpointNegotiationDatagram
 local function onRouterReceive(router, task_data, END)
-    local pattern = parse(task_data)
+    local pattern = parse_for_string(task_data)
     if not pattern then return false end
     if END.who_sent_it == 'R' or END.router_address ~= router.name then
-        print'not for me'
-        return true
+        return true --not for me
     end
-    if type(pattern) == "table" then error 'table is not a pattern' end
 
     local endpoints = router.memory.network_state:getEndpointsMatchingPattern(pattern)
     ---@type table<integer,string>
