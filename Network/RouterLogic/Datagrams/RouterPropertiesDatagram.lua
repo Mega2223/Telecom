@@ -73,13 +73,22 @@ end
 ---@param self RouterPropertiesDatagram
 ---@return string
 local function toString(self)
-    return string.format("[CDT-%d-(%s)-%s-(%s)-(%s)-[%d]-(%s)]",
-        tonumber(self.time_to_die),
+    print(
+        self.time_to_die,
         listToString(self.routers_traveled),
         self.origin_name,
         listToString(self.connections),
         listToString(self.endpoints),
-        tonumber(self.local_time),
+        self.local_time,
+        propertiesToString(self.properties)
+    )
+    return string.format("[CDT-%d-(%s)-%s-(%s)-(%s)-[%d]-(%s)]",
+        self.time_to_die,
+        listToString(self.routers_traveled),
+        self.origin_name,
+        listToString(self.connections),
+        listToString(self.endpoints),
+        self.local_time,
         propertiesToString(self.properties)
     )
 end
