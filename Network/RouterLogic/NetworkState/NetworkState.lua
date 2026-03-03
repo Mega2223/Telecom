@@ -11,6 +11,7 @@ require('Network.RouterLogic.NetworkState.NetworkPath')
 ---@field updateSelf fun(self: NetworkState)
 ---@field getEndpointsMatchingPattern fun(self: NetworkState, pattern: string): table<integer, NetworkEndpoint>
 ---@field getEndpointWithName fun(self: NetworkState, name: string): NetworkEndpoint | nil
+---@field getEndpoints fun(self: NetworkState): table<string,NetworkEndpoint>
 ---@field type "NetworkState"
 
 ---@param router_object Router
@@ -69,7 +70,7 @@ function NetworkState(router_object)
                     self.network_routers[name] = nil
                 end
             end
-            for index, endpoint in pairs(self:getEndpointsMatchingPattern("(.+)")) do
+            for index, endpoint in pairs(self:getEndpoints()) do
                 self_in_network.connected_endpoints[endpoint.address] =
                     NetworkEndpoint(self_in_network,self.router.current_time_milis,endpoint.address)
             end
@@ -86,6 +87,15 @@ function NetworkState(router_object)
                 ret = ret .. ']\n'
             end
             ret = ret .. ')\n'
+            return ret
+        end,
+        getEndpoints = function (self)
+            local ret = {}
+            for net_router_name, network_router in pairs(self.network_routers) do
+                for net_ep_name, network_endpoint in pairs(network_router.connected_endpoints) do 
+                    ret[net_ep_name] = network_endpoint
+                end
+            end
             return ret
         end,
         getEndpointWithName = function (self,address)
