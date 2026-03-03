@@ -1,5 +1,3 @@
---- FIXME propriedades entram várias e saem uma
-
 --- The connections datagram expresses some router and all it's adjacent routers
 --- It is transmitted through the network via a tree broadcast algorithm
 
@@ -15,9 +13,10 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 ---@field toString fun(self: RouterPropertiesDatagram): string
 ---@field local_time integer
 ---@field properties table<string,string|integer>
+---@field endpoints table<integer,string>
 
----[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)-[%TIME%]-(%PROPERTIES%)]
----[CDT-1-(ABC)-ORIGIN-(CONNECTIONS)-(P1=(VAL);P2=(VAL); ... ))]
+---[CDT-%TTD%-(%VISITED_ROUTERS%)-%ORIGIN_NAME%-(%ROUTER_KNOWN_CONNECTIONS%)-(%ENDPOINTS%)-[%TIME%]-(%PROPERTIES%)]
+---[CDT-1-(ABC)-ORIGIN-(CONNECTIONS)-(ENDPOINTS)-[LOC_TIME]-(P1=(VAL);P2=(VAL); ... ))]
 
 ---parses router string into table
 ---@param data string
@@ -42,24 +41,12 @@ local function parseConnections(data)
 end
 
 ---gets the parameters from the datagram's string form
----time_to_die, visited_routers, origin_name, connections, local_time, properties
 ---@param data string
----@return integer,string,string,string,integer,string
+---@return integer,string,string,string,string,integer,string
 function parseRouterPropertiesDatagram(data)
-    local time_to_die, visited_routers, origin_name, connections, local_time, properties =
-        string.match(data, "%[CDT%-(%d+)%-%((.+)%)%-%[(.+)%]%-%((.*)%)%-%[(%d+)%]%-%((.*)%)%]")
-    return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections, math.floor(tonumber(local_time) or -1), properties
-end
-
----converts a list of connections into a string that goes into the datagram string form
----@param data table<integer,string>
----@return string
-local function listToString(data)
-    local ret = ""
-    for i = 1, #data do
-        ret = ret .. "(" .. data[i] .. ")"
-    end
-    return ret
+    local time_to_die, visited_routers, origin_name, connections, endpoints, local_time, properties =
+        string.match(data, "%[CDT%-(%d+)%-%((.+)%)%-(.+)%-%((.*)%)%-%((.*)%)%-%[(%d+)%]%-%((.*)%)%]")
+    return math.floor( tonumber(time_to_die) or 0 ), visited_routers, origin_name, connections, endpoints, math.floor(tonumber(local_time) or -1), properties
 end
 
 ---@param properties table<string,string|integer>
@@ -86,13 +73,15 @@ end
 ---@param self RouterPropertiesDatagram
 ---@return string
 local function toString(self)
-    return "[CDT-" .. self.time_to_die ..
-            "-(" .. listToString(self.routers_traveled) ..
-            ")-[" .. self.origin_name .. 
-            "]-(" .. listToString(self.connections) ..
-            ")-[" .. self.local_time ..
-            "]-(" .. propertiesToString(self.properties) ..
-            ")]"
+    return string.format("[CDT-%d-(%s)-%s-(%s)-(%s)-[%d]-(%s)]",
+        self.time_to_die,
+        listToString(self.routers_traveled),
+        self.origin_name,
+        listToString(self.connections),
+        listToString(self.endpoints),
+        self.local_time,
+        propertiesToString(self.properties)
+    )
 end
 
 ---@param known_adjacencies table<string,KnownNeighbor>
@@ -110,20 +99,22 @@ end
 ---@param visited_routers string
 ---@param origin_name string
 ---@param connections string
+---@param endpoints string
 ---@param local_time integer
 ---@param properties ? string | table<string,string|integer>
 ---@return RouterPropertiesDatagram
-function RouterPropertiesDatagram(time_to_die, visited_routers, origin_name, connections, local_time, properties)
-    ---@type RouterPropertiesDatagram
+function RouterPropertiesDatagram(time_to_die, visited_routers, origin_name, connections, endpoints, local_time, properties)
     if type(properties) == "string" then
         properties = stringToProperties(properties)
     end
+    ---@type RouterPropertiesDatagram
     return {
         toString = toString,
         time_to_die = time_to_die,
         routers_traveled = parseVisitedRouters(visited_routers),
         origin_name = origin_name,
         connections = parseConnections(connections),
+        endpoints = stringToList(endpoints) or {},
         local_time = local_time,
         properties = properties or {}
     }
@@ -135,9 +126,9 @@ end
 function onMessageReceived(msg, router)
     -- Action taken upon an router receiving this datagram
     -- Returns false if message does not parse into this type of datagram
-    local time_to_die, visited_routers, origin_name, connections, local_time, properties = parseRouterPropertiesDatagram(msg)
-    if time_to_die and visited_routers and origin_name and connections and properties then
-        local connections_datagram = RouterPropertiesDatagram(time_to_die-1,visited_routers,origin_name,connections,local_time,properties)
+    local time_to_die, visited_routers, origin_name, connections, endpoints, local_time, properties = parseRouterPropertiesDatagram(msg)
+    if time_to_die and visited_routers and origin_name and connections and endpoints and properties then
+        local connections_datagram = RouterPropertiesDatagram(time_to_die-1,visited_routers,origin_name,connections,endpoints,local_time,properties)
         local is_already_visited = false
 
         for i = 1, #connections_datagram.routers_traveled do
@@ -155,6 +146,7 @@ function onMessageReceived(msg, router)
             router.memory.network_state:setRouterState(
                 origin_name,
                 parseConnections(connections),
+                stringToList(endpoints) or {},
                 router.current_time_milis,
                 local_time,
                 NetworkPath(parseVisitedRouters(visited_routers)):append(router.name):reverse()

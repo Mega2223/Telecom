@@ -6,7 +6,7 @@ require('Network.RouterLogic.NetworkState.NetworkPath')
 ---@field router Router
 ---@field getRouter fun(self: NetworkState, router_name: string,force_router: boolean | nil): KnownNetworkRouter | nil
 ---@field getRouterSafe fun(self: NetworkState, router_name: string): KnownNetworkRouter
----@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, time: integer, remote_time: integer, path: nil | NetworkPath): nil
+---@field setRouterState fun(self: NetworkState, router_name: string, connections: table<integer,string>, endpoints: table<integer,string>, time: integer, remote_time: integer, path: nil | NetworkPath): nil
 ---@field toString fun(self: NetworkState): string
 ---@field updateSelf fun(self: NetworkState)
 ---@field getEndpointsMatchingPattern fun(self: NetworkState, pattern: string): table<integer, NetworkEndpoint>
@@ -35,16 +35,21 @@ function NetworkState(router_object)
             ---@diagnostic disable-next-line: return-type-mismatch
             return self:getRouter(router_name,true)
         end,
-        setRouterState = function(self, router_name, connections, time, remote_time, path)
+        setRouterState = function(self, router_name, connections, endpoints, time, remote_time, path)
             local router = self:getRouterSafe(router_name)
             router.last_update = time
             router.remote_last_update = remote_time
             router:removeAllConnections()
+            router:clearEndpoints()
             
             for i = 1, #connections do
                 if connections[i] ~= router_name then
                     router:addConnection(connections[i])
                 end
+            end
+
+            for i = 1, #endpoints do
+                router.connected_endpoints[i] = endpoints[i]
             end
 
             if path then
@@ -66,7 +71,7 @@ function NetworkState(router_object)
             end
         end,
         type = 'NetworkState',
-        toString = function (self)
+        toString = function (self) -- FIXME que horror
             local ret = 'routers = (\n'
             for name, router in pairs(self.network_routers) do
                 local activity = 'INACTIVE'; if router:isActive(self.router) then activity = 'ACTIVE' end
