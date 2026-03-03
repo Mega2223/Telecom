@@ -82,6 +82,7 @@ local function toString(self)
         self.local_time,
         propertiesToString(self.properties)
     )
+    print('the fuck',self.endpoints,listToString(self.endpoints))
     return string.format("[CDT-%d-(%s)-%s-(%s)-(%s)-[%d]-(%s)]",
         self.time_to_die,
         listToString(self.routers_traveled),
