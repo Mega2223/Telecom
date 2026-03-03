@@ -7,7 +7,7 @@ require('Utils.Utils')
 ---@param task_data string
 ---@return string | nil
 local function parse_for_string(task_data)
-    local task_val = string.match(task_data, "GET_ADDRESS<([^<>]+)>")
+    local task_val = string.match(task_data, "GET_ADDRESS<([^<>]*)>")
     return task_val
 end
 
