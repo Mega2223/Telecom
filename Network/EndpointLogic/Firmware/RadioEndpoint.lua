@@ -29,8 +29,8 @@ local function doTick(self)
         term.setCursorPos(1, 1)
         print(string.format("TIME: %d PREFIX: \"%s\"",self.endpoint.time,self.endpoint.config.prefix))
         print(string.format("ADDRESS: %s TRANS_ID: %s\nCONN_ROUTER: %s FAV_ROUTER: %s",
-        self.endpoint.memory.address, self.endpoint.memory.transaction_id,
-        self.endpoint.memory.connected_router, self.endpoint.memory.favorite_to_connect
+            self.endpoint.memory.address, self.endpoint.memory.transaction_id,
+            self.endpoint.memory.connected_router, self.endpoint.memory.favorite_to_connect
         ))
         print('')
         print("NEARBY_ROUTERS: ")

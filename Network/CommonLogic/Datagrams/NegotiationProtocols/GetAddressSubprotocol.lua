@@ -45,7 +45,7 @@ local function onEndpointReceive(endpoint, task_data, END)
     if not values then return false end
     if END.who_sent_it == 'E' or END.endpoint_address ~= endpoint.memory.address then return true end
     for key, address in pairs(values) do
-        endpoint.memory.known_network_endpoints[key] =
+        endpoint.memory.known_network_endpoints[address] =
             EndpointMemoryKnownEndpoint(address, endpoint.time)
     end
     return true
