@@ -74,12 +74,12 @@ end
 ---@return string
 local function toString(self)
     return string.format("[CDT-%d-(%s)-%s-(%s)-(%s)-[%d]-(%s)]",
-        self.time_to_die,
+        tonumber(self.time_to_die),
         listToString(self.routers_traveled),
         self.origin_name,
         listToString(self.connections),
         listToString(self.endpoints),
-        self.local_time,
+        tonumber(self.local_time),
         propertiesToString(self.properties)
     )
 end
