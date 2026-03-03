@@ -83,7 +83,10 @@ local function toString(self)
         propertiesToString(self.properties)
     )
     print('the fuck', self.endpoints, ' ->tostr->', listToString(self.endpoints))
-    print(listToString(self.endpoints),'q')
+    print(listToString(self.endpoints), '<- endpoints')
+    print('local_time', self.local_time)
+    print('props', propertiesToString(self.properties))
+    
     return string.format("[CDT-%d-(%s)-%s-(%s)-(%s)-[%d]-(%s)]",
         self.time_to_die,
         listToString(self.routers_traveled),
