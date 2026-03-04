@@ -19,8 +19,8 @@ NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 local function toString(self)
     local con = 'F'
     if self.confirm then con = 'T' end
-    return string.format("[MSG-[%s]-[%s]-[%s]-%s-%s-%s-(%s)-(%s)]",
-    self.sender_address, self.next_router, self.final_router, self.destination, tostring(self.time_to_die), con, self.path:toString(), self.message
+    return string.format("[MSG-[%s]-[%s]-[%s]-[%s]-%d-%s-(%s)-(%s)]",
+    self.sender_address, self.next_router, self.final_router, self.destination, self.time_to_die, con, self.path:toString(), self.message
 )
 end
 
@@ -47,8 +47,8 @@ end
 ---@return string|nil, string, string, string, string, string, string, string
 local function parse(data)
     local sender, next_router, final_router, destination, time_to_die, confirm, path, message =
-        string.match(data, "%[MSG%-%[(.+)%]%-%[(.+)%]%-%[(.+)%]%-(.+)%-(%d+)%-([TF])-%((.+)%)%-%((.+)%)%]")
-    --[MSG-%SENDER_ROUTER%-%NEXT_ROUTER%-%FINAL_ROUTER%-%DESTINATION-%TIME_TO_DIE%-%CONFIRM%:T|F-(%PATH%)-(%MESSAGE%)]
+        string.match(data, "%[MSG%-%[(.+)%]%-%[(.+)%]%-%[(.+)%]%-%[(.+)%]%-(%d+)%-([TF])-%((.+)%)%-%((.+)%)%]")
+    --[MSG-%SENDER%-%NEXT_ROUTER%-%FINAL_ROUTER%-%DESTINATION-%TIME_TO_DIE%-%CONFIRM%:T|F-(%PATH%)-(%MESSAGE%)]
     return sender, next_router, final_router, destination, time_to_die, confirm, path, message
 end
 
