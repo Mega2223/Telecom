@@ -63,10 +63,17 @@ local function onMessageReceived(msg, router)
     if not data[1] then return false end
     local msg_dat = MessageDatagram(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
 
-    if msg_dat.next_router == router.name and msg_dat.final_router == router.name then 
-        -- É pra um endpoint já nesse router
-        -- TODO
+    if msg_dat.next_router == router.name and msg_dat.final_router == router.name then
+        -- is final router
+        local confirm = 'F'
+        if msg_dat.confirm then confirm = 'T' end
+        local task = MessageSubprotocol(
+            msg_dat.destination, msg_dat.sender_address, confirm, 'F', msg_dat.message)
+        local to_send = EndpointNegotiationDatagram(msg_dat.destination,router.name,'R',task)
+        router:transmit(to_send:toString())
+
     elseif msg_dat.next_router == router.name then
+        -- pass to next router
         local new_path = msg_dat.path:removeFirst()
         local new_next = new_path.path[1]
         local to_send = MessageDatagram(
