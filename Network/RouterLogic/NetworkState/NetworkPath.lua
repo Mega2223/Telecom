@@ -89,7 +89,10 @@ function NetworkPath(data)
     if type(data) ~= "table" then
         path = parse(data)
     else
-        path = data
+        path = {}
+        for key, value in pairs(data) do
+            path[key] = value
+        end
     end
 
     ---@type NetworkPath
