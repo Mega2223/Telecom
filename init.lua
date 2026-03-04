@@ -11,8 +11,8 @@ STD_ERR = function(data)
         term.setTextColor(col)
         shell.run("rm .git")
         local f = fs.open("error.txt", "w")
-        if not f then error 'nostream' end
-        f.write(data)
-        f.close()
+        if not f then return end
+        -- f.write(data) uer
+        -- f.close()
     end
 end
