@@ -1,10 +1,8 @@
 package.path = package.path .. ";Telecom/?;Telecom/?.lua"
 
----@class OutputStream: function<string>
-
----@type OutputStream<string>
+---@type fun(msg: string)
 STD_OUT = print
----@type OutputStream<string>
+---@type fun(msg: string)
 STD_ERR = function(data)
     if os and term and fs then
         local col = term.getTextColor()

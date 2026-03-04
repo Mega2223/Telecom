@@ -52,11 +52,14 @@ local function parse(data)
     return sender, next_router, final_router, destination, time_to_die, confirm, path, message
 end
 
+-- [MSG-[EDP_03722]-[RT-VILA2]-[RT-VILA5]-[EDP_01285]-30-F-(RT-VILA2=>RT-VILA3=>RT-VILA4=>RT-VILA5=>)-(TESTE123)]
+
 ---@param msg string
 ---@param router Router
 ---@return boolean
 local function onMessageReceived(msg, router)
     local data = { parse(msg) }
+    STD_OUT ('parsin\'' .. msg .. '\n=>\n' .. msg)
     if not data[1] then return false end
     local msg_dat = MessageDatagram(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
 
