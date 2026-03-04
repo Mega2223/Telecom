@@ -20,7 +20,7 @@ local function toString(self)
     local con = 'F'
     if self.confirm then con = 'T' end
     return string.format("[MSG-%s-%s-%s-%s-%s-%s-(%s)-(%s)]",
-    self.sender_address, self.next_router, self.final_router, self.destination, tostring(self.time_to_die), con, self.path, self.message
+    self.sender_address, self.next_router, self.final_router, self.destination, tostring(self.time_to_die), con, self.path:toString(), self.message
 )
 end
 
