@@ -32,7 +32,11 @@ local function onEndpointReceive(endpoint, task_data, END)
         return true
     end
     
-    endpoint:onReceive(message)
+    endpoint:pullArrivedMessage({
+        from = sender_address,
+        to = destination_address,
+        message = message
+    })
     return true
 end
 

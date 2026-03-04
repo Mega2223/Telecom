@@ -15,6 +15,14 @@ require('Network.CommonLogic.Datagrams.EndpointNegotiationDatagram')
 ---@field firmware ?EndpointLogic.Firmware
 ---@field onReceive fun(self: EndpointLogic.Endpoint, msg:  string): boolean
 ---@field dumpAddress fun(self: EndpointLogic.Endpoint)
+---@field getMessage fun(self: EndpointLogic.Endpoint): EndpointLogic.ArrivedMessage | nil
+---@field pullArrivedMessage fun(self: EndpointLogic.Endpoint, msg: EndpointLogic.ArrivedMessage)
+---@field protected arrived_messages table<integer,EndpointLogic.ArrivedMessage>
+
+---@class EndpointLogic.ArrivedMessage
+---@field from string
+---@field to string
+---@field message string
 
 ---@class EndpointLogic.Firmware
 ---@field send_message fun(self: EndpointLogic.Firmware, message: string): boolean
@@ -93,6 +101,24 @@ local function do_logic(self, time_milis)
         self:send_message(datagram:toString())
         self.memory.last_ask_for_endpoints = self.time
     end
+end
+
+---@param self EndpointLogic.Endpoint
+---@return EndpointLogic.ArrivedMessage
+local function getMessage(self)
+    ---@diagnostic disable-next-line: invisible
+    local arrived = self.arrived_messages
+    local msg = arrived[1]
+    table.remove(arrived, 1)
+    return msg
+end
+
+---@param self EndpointLogic.Endpoint
+---@param msg EndpointLogic.ArrivedMessage
+local function pullArrivedMessage(self, msg)
+    ---@diagnostic disable-next-line: invisible
+    local arrived = self.arrived_messages
+    table.insert(arrived,msg)
 end
 
 ---Sends
@@ -182,6 +208,9 @@ function Endpoint(configs, firmware)
         send_message_to = send_message_to,
         get_endpoints_at_network = get_endpoints_at_network,
         onReceive = onReceive,
-        dumpAddress = dumpAddress
+        dumpAddress = dumpAddress,
+        getMessage = getMessage,
+        pullArrivedMessage = pullArrivedMessage,
+        arrived_messages = {}
     }
 end
