@@ -51,14 +51,14 @@ function stringToList(data)
     local i = 1
     local ret = {}
     if data == 'nil' then return ret end
-    STD_OUT"STRINGANDO PARA LISTANDO"
+    --STD_OUT"STRINGANDO PARA LISTANDO"
     for entry in string.gmatch(data, "%(([^(^)]+)%)") do
-        STD_OUT('property' .. i .. ' -> ' .. entry)
+    --    STD_OUT('property' .. i .. ' -> ' .. entry)
         ret[i] = entry
         i = i + 1
     end
     if ret[1] == nil then
-        STD_OUT "RETORNANDO NADA"
+    --    STD_OUT "RETORNANDO NADA"
         return nil
     end
     return ret
