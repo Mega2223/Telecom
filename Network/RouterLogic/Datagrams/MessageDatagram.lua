@@ -64,10 +64,11 @@ local function onMessageReceived(msg, router)
     local msg_dat = MessageDatagram(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
 
     if msg_dat.next_router == router.name and msg_dat.final_router == router.name then 
-        
+        -- É pra um endpoint já nesse router
+        -- TODO
     elseif msg_dat.next_router == router.name then
         local new_path = msg_dat.path:removeFirst()
-        local new_next = msg_dat.path.path[1]
+        local new_next = new_path.path[1]
         local to_send = MessageDatagram(
             msg_dat.sender_address, new_next, msg_dat.final_router, msg_dat.destination, msg_dat.time_to_die - 1,
             msg_dat.confirm, new_path:toString(), msg_dat.message
