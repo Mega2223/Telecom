@@ -26,7 +26,8 @@ TASK_MANAGER:addTask(
                 local ends = endpoint_r.endpoint:get_endpoints_at_network()
                 for name, endpoint in pairs(ends) do
                     STD_OUT('sending msg to ' .. name)
-                    endpoint_r.endpoint:send_message_to(name,'TESTE123')
+                    local msg = endpoint_r.endpoint.memory.address ..  ' TESTE ' .. tostring(endpoint_r.endpoint.time)
+                    endpoint_r.endpoint:send_message_to(name,msg)
                 end
             end
         end

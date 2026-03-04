@@ -44,11 +44,23 @@ local function doTick(self)
         for name, k_endpoint in pairs(self.endpoint.memory.known_network_endpoints) do
             print(string.format("addr \"%s\" last seen %d/%d", name, k_endpoint.last_update,
                 self.endpoint.config.network_endpoint_forget_threashold
-        ))
+            ))
+        end
+        print('\nMSG_QUEUE: ')
+        for key, msg in pairs(MSG_QUEUE) do
+            print(msg.from .. ': ' .. msg.message)
+        end
+        while true do
+            local pulled = self.endpoint:getMessage()
+            if not pulled then break end
+            table.insert(MSG_QUEUE,pulled)
         end
         term.redirect(prev_term)
     end
 end
+
+---@type table<integer, EndpointLogic.ArrivedMessage>
+MSG_QUEUE = {}
 
 ---@param self EndpointLogic.RadioEndpoint
 ---@param msg string
