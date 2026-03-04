@@ -59,6 +59,9 @@ function NetworkState(router_object)
         end,
         updateSelf = function(self)
             local self_in_network = self:getRouterSafe(self.router.configs.name)
+            if self_in_network.path_to == nil then
+                self_in_network.path_to = NetworkPath({self.router.configs.name})
+            end
             self_in_network.last_update = self.router.current_time_milis
             self_in_network.remote_last_update = self.router.current_time_milis
             self_in_network:removeAllConnections()

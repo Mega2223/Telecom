@@ -41,24 +41,37 @@ end
 ---@param END EndpointNegotiationDatagram
 ---@return boolean
 local function onRouterReceive(router, task_data, END)
-    local destination_address, sender_address, confirm, multicast, message = parse(task_data)
+    local destination_address, sender_address, confirm_s, multicast_s, message = parse(task_data)
     if not destination_address then return false end
     if END.who_sent_it == 'R' or END.router_address ~= router.name then
         return true
     end
 
-    local multicast = multicast == 'T'
-    local confirm = confirm == 'T' -- TODO
+    local multicast = multicast_s == 'T'
+    local confirm = confirm_s == 'T' -- TODO
 
     local destination = router.memory.network_state:getEndpointWithName(destination_address)
     if not destination then
-        STD_OUT('task ' .. task_data)
+        STD_ERR('task ' .. task_data)
         STD_ERR('Got message request but could not fullfill it because the adress ' .. destination_address .. ' does not exist')
         error'invalid msg' 
         return true
     end
     local last_router = destination.parent_router
     local path = last_router.path_to:removeFirst()
+    
+    if router.name == last_router.name then
+        local new_task = MessageSubprotocol(destination_address,sender_address,confirm_s,multicast_s,message)
+        local negotiation_d = EndpointNegotiationDatagram(destination_address, router.name, 'R', new_task)
+        router:transmit(negotiation_d:toString())
+        return true
+    end
+
+    if path:isEmpty() then
+        STD_ERR('message ' .. END:toString())
+        STD_ERR('task ' .. task_data)
+        error'path for message is empty but still not at final router'
+    end
 
     require('Network.RouterLogic.Datagrams.MessageDatagram')
     local to_send = MessageDatagram(END.endpoint_address,

@@ -5,6 +5,7 @@
 ---@field reverse fun(self: NetworkPath): NetworkPath
 ---@field removeFirst fun(self: NetworkPath): NetworkPath
 ---@field removeLast fun(self: NetworkPath): NetworkPath
+---@field isEmpty fun(self: NetworkPath): boolean
 ---@field append fun(self: NetworkPath, value: string): NetworkPath
 ---@field toString fun(self: NetworkPath): string
 ---@field clone fun(self: NetworkPath): NetworkPath
@@ -19,6 +20,13 @@ local function parse(data)
         i = i + 1
     end
     return ret
+end
+
+
+---@param self NetworkPath
+---@return boolean
+local function isEmpty(self)
+    return self.path[1] == nil
 end
 
 ---@param self NetworkPath
@@ -76,6 +84,7 @@ end
 ---@param data string | table<integer,string>
 ---@return NetworkPath
 function NetworkPath(data)
+    ---@type table<integer,string>
     local path
     if type(data) ~= "table" then
         path = parse(data)
@@ -93,6 +102,7 @@ function NetworkPath(data)
         removeFirst = removeFirst,
         removeLast = removeLast,
         clone = clone,
-        append = append
+        append = append,
+        isEmpty = isEmpty
     }
 end
