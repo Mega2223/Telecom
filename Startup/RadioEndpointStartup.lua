@@ -37,7 +37,7 @@ while true do
     local event, side, msg, distance = os.pullEvent()
     if event == 'timer' then
         local time = math.floor(1000 * os.clock())
-        TASK_MANAGER:doTick(time)
+        TASK_MANAGER:doTick(1000 * 0.05)
         os.startTimer(.05)
     elseif event == 'radio_message' then
         endpoint_r:onMessageReceived(event,side,msg,distance)

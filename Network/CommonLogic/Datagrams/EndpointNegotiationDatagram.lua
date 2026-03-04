@@ -101,6 +101,8 @@ local function onMessageReceivedRouter(msg, router)
         end
     end
     STD_OUT("msg= "..msg)
+    STD_OUT("task= " .. task)
+    -- should not continue under a invalid state
     STD_ERR "Is END datagram but no compatible task found"
     error "Is END datagram but no compatible task found"
     return false
