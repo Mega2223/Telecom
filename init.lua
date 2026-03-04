@@ -12,7 +12,7 @@ STD_ERR = function(data)
         print(data)
         term.setTextColor(col)
         local f = fs.open("error.txt", "w")
-        if not f then return end
+        if not f then error'nostream' end
         f.write(data)
         f.close()
     end
