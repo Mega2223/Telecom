@@ -116,8 +116,10 @@ local function send_message_to(self, destination_address, message)
         error('endpoint currently is not connected to a router')
     end
     ---MSG<(destination_address)-confirm:T|F-multicast:T|F-(message_content)> 
-    local datagram_task = string.format("MSG<(%s)-%s-%s-(%s)>",
-        destination_address,'F','F',message
+    local datagram_task = MessageSubprotocol(
+        destination_address,
+        self.memory.address,
+        'F', 'F', message
     )
 
     local datagram = EndpointNegotiationDatagram(
