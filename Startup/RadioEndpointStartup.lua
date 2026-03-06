@@ -25,20 +25,20 @@ TASK_MANAGER:addTask(
             else
                 local ends = endpoint_r.endpoint:get_endpoints_at_network()
                 for name, endpoint in pairs(ends) do
-                    if name == endpoint_r.endpoint.memory.address then
+                    if endpoint.address == endpoint_r.endpoint.memory.address then
                         goto continue
                     end
                     STD_OUT('sending ping to ' .. name)
                     local msg = endpoint_r.endpoint.memory.address ..  ' says hi :) ' .. tostring(endpoint_r.endpoint.time)
-                    endpoint_r.endpoint:send_message_to(name,msg)
+                    endpoint_r.endpoint:send_message_to(name, msg)
+                    ::continue::
                 end
-                ::continue::
             end
         end
     )
 )
 
-os.startTimer(3)
+os.startTimer(1)
 
 while true do
     local event, side, msg, distance = os.pullEvent()
