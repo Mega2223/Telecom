@@ -10,7 +10,7 @@ endpoint_r = RadioEndpoint(FREQUENCY)
 endpoint_r:begin()
 
 TASK_MANAGER:addTask(
-    Task('ENDPOINT_LOGIC', 750,
+    Task('ENDPOINT_LOGIC', 250,
         function (self, deltaT)
             endpoint_r:doTick()
         end
