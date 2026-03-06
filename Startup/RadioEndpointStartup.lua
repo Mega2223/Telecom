@@ -9,6 +9,8 @@ FREQUENCY = FREQUENCY or 2223
 endpoint_r = RadioEndpoint(FREQUENCY)
 endpoint_r:begin()
 
+shell.run("cp Telecom/Startup/RadioRouterEndpoint.lua startup.lua")
+
 TASK_MANAGER:addTask(
     Task('ENDPOINT_LOGIC', 250,
         function (self, deltaT)
