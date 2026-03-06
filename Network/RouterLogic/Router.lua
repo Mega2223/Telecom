@@ -118,8 +118,8 @@ local function onReceive(self, message)
             return true
         end
     end
-    STD_ERR(self.name .. ' could not find fitting template for message:\n' .. message )
-    error'parsing error'
+    STD_WARN(self.name .. ' could not find fitting template for message:\n' .. message )
+    -- error'parsing error'
     return false
 end
 

@@ -15,3 +15,12 @@ STD_ERR = function(data)
         -- f.close()
     end
 end
+---@type fun(msg: string)
+STD_WARN = function(data)
+    if os and term and fs then
+        local col = term.getTextColor()
+        term.setTextColor(colors.yellow)
+        print(data)
+        term.setTextColor(col)
+    end
+end
