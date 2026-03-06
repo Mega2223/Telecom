@@ -19,6 +19,8 @@ TASK_MANAGER:addTask(
     )
 )
 
+SEQ = 1
+
 TASK_MANAGER:addTask(
     Task('SEND_PING', 10 * 1000,
         function (self, deltaT)
@@ -31,10 +33,12 @@ TASK_MANAGER:addTask(
                         goto continue
                     end
                     STD_OUT('sending ping to ' .. name)
-                    local msg = endpoint_r.endpoint.memory.address ..  ' says hi :) ' .. tostring(endpoint_r.endpoint.time)
+                    local msg = endpoint_r.endpoint.memory.address ..
+                    ' says hi :) [' .. SEQ .. ']' .. tostring(endpoint_r.endpoint.time)
                     endpoint_r.endpoint:send_message_to(name, msg)
                     ::continue::
                 end
+                SEQ = SEQ + 1
             end
         end
     )

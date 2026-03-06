@@ -4,6 +4,7 @@
 function getFileOrMakeEmpty(path)
     if not fs.exists(path) then
         local f = fs.open(path, "w")
+        if not f then STD_ERR'COULD NOT CREATE FILE, INVALID STATE' end
         f.write("")
         f.close()
     end
