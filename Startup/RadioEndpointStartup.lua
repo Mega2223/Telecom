@@ -10,7 +10,7 @@ endpoint_r = RadioEndpoint(FREQUENCY)
 endpoint_r:begin()
 
 TASK_MANAGER:addTask(
-    Task('ENDPOINT_LOGIC', 20,
+    Task('ENDPOINT_LOGIC', 750,
         function (self, deltaT)
             endpoint_r:doTick()
         end
@@ -25,14 +25,20 @@ TASK_MANAGER:addTask(
             else
                 local ends = endpoint_r.endpoint:get_endpoints_at_network()
                 for name, endpoint in pairs(ends) do
-                    STD_OUT('sending msg to ' .. name)
-                    local msg = endpoint_r.endpoint.memory.address ..  ' TESTE ' .. tostring(endpoint_r.endpoint.time)
+                    if name == endpoint_r.endpoint.memory.address then
+                        goto continue
+                    end
+                    STD_OUT('sending ping to ' .. name)
+                    local msg = endpoint_r.endpoint.memory.address ..  ' says hi :) ' .. tostring(endpoint_r.endpoint.time)
                     endpoint_r.endpoint:send_message_to(name,msg)
                 end
+                ::continue::
             end
         end
     )
 )
+
+os.startTimer(3)
 
 while true do
     local event, side, msg, distance = os.pullEvent()

@@ -95,11 +95,11 @@ local function begin(self)
     ---@diagnostic disable-next-line: assign-type-mismatch, inject-field
     self.monitor = peripheral.find("monitor")
     if self.monitor then
-        STD_OUT("Redirecting all output to connected monitor")
+        STD_OUT("Printing output interface to connected monitor")
     end
     STD_OUT("STARTING ENDPOINT " .. self.endpoint.config.prefix .. " FOR FREQUENCY " .. self.frequency)
 
-    os.startTimer(delay)
+    --os.startTimer(delay)
     ---@diagnostic disable-next-line: assign-type-mismatch
     self.monitor = peripheral.find("monitor")
 
