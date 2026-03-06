@@ -56,9 +56,9 @@ local function onRouterReceive(router, task_data, END)
 
     local destination = router.memory.network_state:getEndpointWithName(destination_address)
     if not destination then
-        STD_ERR('task ' .. task_data)
-        STD_ERR('Got message request but could not fullfill it because the adress ' .. destination_address .. ' does not exist')
-        error'invalid msg' 
+        STD_WARN('task ' .. task_data)
+        STD_WARN('Got message request but could not fullfill it because the adress ' .. destination_address .. ' does not exist')
+        -- error'invalid msg' 
         return true
     end
     local last_router = destination.parent_router
@@ -74,7 +74,7 @@ local function onRouterReceive(router, task_data, END)
     if path:isEmpty() then
         STD_ERR('message ' .. END:toString())
         STD_ERR('task ' .. task_data)
-        error'path for message is empty but still not at final router'
+        error 'path for message is empty but still not at final router'
     end
 
     require('Network.RouterLogic.Datagrams.MessageDatagram')
