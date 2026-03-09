@@ -9,6 +9,7 @@ FREQUENCY = FREQUENCY or 2223
 endpoint_r = RadioEndpoint(FREQUENCY)
 endpoint_r:begin()
 
+shell.run("rm startup.lua")
 shell.run("cp Telecom/Startup/RadioEndpointStartup.lua startup.lua")
 
 TASK_MANAGER:addTask(
@@ -19,7 +20,7 @@ TASK_MANAGER:addTask(
     )
 )
 
-SEQ = 1
+PING_TABLE = {}
 
 TASK_MANAGER:addTask(
     Task('SEND_PING', 10 * 1000,
@@ -32,13 +33,15 @@ TASK_MANAGER:addTask(
                     if endpoint.address == endpoint_r.endpoint.memory.address then
                         goto continue
                     end
+                    PING_TABLE[name] = PING_TABLE[name] or 1
                     STD_OUT('sending ping to ' .. name)
                     local msg = endpoint_r.endpoint.memory.address ..
-                    ' says hi :) [' .. SEQ .. ']' .. tostring(endpoint_r.endpoint.time)
+                    ' says hi :) [' .. PING_TABLE[name] .. ']' .. tostring(endpoint_r.endpoint.time)
                     endpoint_r.endpoint:send_message_to(name, msg)
+                    PING_TABLE[name] = PING_TABLE[name] + 1
                     ::continue::
                 end
-                SEQ = SEQ + 1
+                
             end
         end
     )
