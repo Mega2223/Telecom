@@ -101,6 +101,12 @@ local function do_logic(self, time_milis)
         self:send_message(datagram:toString())
         self.memory.last_ask_for_endpoints = self.time
     end
+
+    for address, k_endpoint in pairs(self.memory.known_network_endpoints) do
+        if self.time - k_endpoint.last_update > self.config.network_endpoint_forget_threashold then
+            self.memory.known_network_endpoints[address] = nil
+        end
+    end
 end
 
 ---@param self EndpointLogic.Endpoint

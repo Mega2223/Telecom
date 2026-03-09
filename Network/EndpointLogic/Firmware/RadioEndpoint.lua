@@ -43,7 +43,7 @@ local function doTick(self)
         print('\nNETWORK_ENDPOINTS: ')
         for name, k_endpoint in pairs(self.endpoint.memory.known_network_endpoints) do
             print(string.format("addr \"%s\" last seen %d/%d", name, k_endpoint.last_update,
-                self.endpoint.config.network_endpoint_forget_threashold
+                self.endpoint.config.network_endpoint_forget_threashold + k_endpoint.last_update
             ))
         end
         print('\nMSG_QUEUE: ')
