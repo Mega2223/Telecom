@@ -32,7 +32,9 @@ local function onTick(self)
         term.clear()
         
         print(string.format("Name: %s\nCurrent time: %d\n", self.router.name, time))
-        print(string.format("Sent: %d   Read %d",self.router.memory.sent_messages, self.router.memory.received_messages))
+        print(string.format("Sent: %d   Read %d   Queue %d",
+        self.router.memory.sent_messages, self.router.memory.received_messages,
+        #self.router.transmition_queue.messages))
         print("Neighbors:")
         for key, neigh in pairs(self.router.memory.adjacent_routers) do
             print(string.format("%s: last seen %d/%d", neigh.name, neigh.last_updated,

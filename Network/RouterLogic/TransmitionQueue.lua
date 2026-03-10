@@ -29,17 +29,20 @@ function TransmitionQueue(router)
             time = time or self.router.current_time_milis
             table.insert(self.messages, ScheduledMessage(message,time))
         end,
-        refresh = function (self, time, max_transmitions)
-            for key, message in pairs(self.messages) do
+        refresh = function(self, time, max_transmitions)
+            local i = 1
+            while max_transmitions > 0 do
+                local message = self.messages[i]
+                if message == nil then break end
                 if time >= message.transmition_time then
                     local success = self.router.firmware:transmitMessage(message.data)
                     if success then
                         max_transmitions = max_transmitions - 1
-                        self.messages[key] = nil
+                        table.remove(self.messages,i)
                         self.router.memory.sent_messages = self.router.memory.sent_messages + 1
                     end
                 end
-                if max_transmitions <= 0 then break end
+                i = i + 1
             end
         end
     }
