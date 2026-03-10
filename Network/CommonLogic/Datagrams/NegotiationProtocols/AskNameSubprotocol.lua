@@ -25,6 +25,9 @@ local function onEndpointReceive(endpoint, task_data, END)
         -- print(task_data,'somehow failed to parse',address,t_id)
         return false
     end
+    if t_id ~= endpoint.memory.transaction_id then
+        return true
+    end
     STD_OUT(("Got address (%s) from router (%s)").format(address,END.router_address))
     endpoint.memory.transaction_id = nil
     endpoint.memory.address = address

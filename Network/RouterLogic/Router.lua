@@ -1,5 +1,8 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
+-- FIXME roteador nao tira seus proprios endpoints depreciados na topologia da rede
+-- endpoints no mesmo roteador nao se comunicam
+
 require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
 require('Network.RouterLogic.Datagrams.NetworkStateDatagram')
 require('Network.RouterLogic.Datagrams.RouterPropertiesDatagram')

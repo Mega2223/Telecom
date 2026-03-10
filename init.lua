@@ -13,6 +13,8 @@ STD_ERR = function(data)
         if not f then return end
         -- f.write(data) uer
         -- f.close()
+    else
+        print(data)
     end
 end
 ---@type fun(msg: string)
@@ -22,5 +24,10 @@ STD_WARN = function(data)
         term.setTextColor(colors.yellow)
         print(data)
         term.setTextColor(col)
+    else
+        print(data)
     end
 end
+
+---@type fun(msg: string)
+STD_EVENT = print

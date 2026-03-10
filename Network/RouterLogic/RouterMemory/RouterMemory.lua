@@ -25,6 +25,7 @@ require('Network.EndpointLogic.Endpoint')
 ---@field x number
 ---@field y number
 ---@field z number
+---@field dist ?number
 
 ---Converts object to string
 ---@param self RouterMemory
