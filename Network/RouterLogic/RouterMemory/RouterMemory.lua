@@ -16,10 +16,13 @@ require('Network.EndpointLogic.Endpoint')
 ---@field toString fun(self: RouterMemory): string
 ---@field updateEndpoint fun(self: RouterMemory, name: string, time: integer)
 ---@field registerEndpoint fun(self: RouterMemory, endpoint_address: string, time: integer)
+---@field hasEndpoint fun(self: RouterMemory, addr: string): boolean
 ---@field last_adjacency_ping integer
 ---@field last_adjacency_broadcast integer
 ---@field connection_manager ConnectionManager
 ---@field position ?RouterPosition
+---@field sent_messages integer
+---@field received_messages integer
 
 ---@class RouterPosition
 ---@field x number
@@ -60,6 +63,7 @@ function RouterMemory(router)
         network_state = NetworkState(router),
         connection_manager = ConnectionManager(router),
         type = 'RouterMemory',
+        sent_messages = 0, received_messages = 0,
         clearAdjacencies = function(self)
             local n = #self.adjacent_routers
             for i = 1, n do
@@ -81,6 +85,9 @@ function RouterMemory(router)
         registerEndpoint = function (self, endpoint_address, time)
             self.connected_endpoints[endpoint_address] = ConnectedEndpoint(self, endpoint_address)
             self:updateEndpoint(endpoint_address,time)
+        end,
+        hasEndpoint = function (self, addr)
+            return self.connected_endpoints[addr] ~= nil
         end,
         toString = toString
     }

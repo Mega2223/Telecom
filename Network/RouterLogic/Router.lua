@@ -65,7 +65,7 @@ local function doTick(self, time_milis)
     -- Se não houve resposta de um roteador adjacente a muito tempo, o esqueça
     for router_name, known_neighbor in pairs(self.memory.adjacent_routers) do
         if time_milis - known_neighbor.last_updated >= self.configs.adjacency_unresponsive_removal_milis then
-            print('NEIGHBOR UNRESPONSIVE: ',known_neighbor.name,time_milis,known_neighbor.last_updated,self.configs.adjacency_unresponsive_removal_milis)
+            STD_EVENT('NEIGHBOR UNRESPONSIVE: '.. known_neighbor.name)
             self.memory.adjacent_routers[router_name] = nil
         end
     end
@@ -117,7 +117,8 @@ local function onReceive(self, message)
     local datagram = message
     for i = 1, #NETWORK_DATAGRAM_PROT do
         local k = NETWORK_DATAGRAM_PROT[i]
-        if k.onMessageReceived(datagram,self) then 
+        if k.onMessageReceived(datagram, self) then
+            self.memory.received_messages = self.memory.received_messages + 1
             return true
         end
     end

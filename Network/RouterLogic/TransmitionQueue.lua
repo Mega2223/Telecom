@@ -36,6 +36,7 @@ function TransmitionQueue(router)
                     if success then
                         max_transmitions = max_transmitions - 1
                         self.messages[key] = nil
+                        self.router.memory.sent_messages = self.router.memory.sent_messages + 1
                     end
                 end
                 if max_transmitions <= 0 then break end

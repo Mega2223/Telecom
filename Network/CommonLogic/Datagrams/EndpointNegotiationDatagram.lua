@@ -11,6 +11,7 @@ require('Network.CommonLogic.Datagrams.NegotiationProtocols.NearbyRoutersSubprot
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.UpdateSubprotocol')
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.MessageSubprotocol')
 require('Network.CommonLogic.Datagrams.NegotiationProtocols.GetAddressSubprotocol')
+require('Network.CommonLogic.Datagrams.NegotiationProtocols.DenySubprotocol')
 
 ---[END-(endpoint_address)-(router_name)-who_is_sending:R|E-task]
 ---
