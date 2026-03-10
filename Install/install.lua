@@ -7,6 +7,7 @@ https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/LICENSE-->./L
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/EndpointNegotiationDatagram.lua-->./Network/CommonLogic/Datagrams/EndpointNegotiationDatagram.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/NegotiationProtocols/AskNameSubprotocol.lua-->./Network/CommonLogic/Datagrams/NegotiationProtocols/AskNameSubprotocol.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/NegotiationProtocols/BaseNegotiationProtocol.lua-->./Network/CommonLogic/Datagrams/NegotiationProtocols/BaseNegotiationProtocol.lua
+https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/NegotiationProtocols/DenySubprotocol.lua-->./Network/CommonLogic/Datagrams/NegotiationProtocols/DenySubprotocol.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/NegotiationProtocols/GetAddressSubprotocol.lua-->./Network/CommonLogic/Datagrams/NegotiationProtocols/GetAddressSubprotocol.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/NegotiationProtocols/MessageSubprotocol.lua-->./Network/CommonLogic/Datagrams/NegotiationProtocols/MessageSubprotocol.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/CommonLogic/Datagrams/NegotiationProtocols/NearbyRoutersSubprotocol.lua-->./Network/CommonLogic/Datagrams/NegotiationProtocols/NearbyRoutersSubprotocol.lua
@@ -38,6 +39,8 @@ https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/Route
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/RouterLogic/RouterMemory/ConnectedEndpoint.lua-->./Network/RouterLogic/RouterMemory/ConnectedEndpoint.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/RouterLogic/RouterMemory/KnownNeighbor.lua-->./Network/RouterLogic/RouterMemory/KnownNeighbor.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/RouterLogic/RouterMemory/RouterMemory.lua-->./Network/RouterLogic/RouterMemory/RouterMemory.lua
+https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/RouterLogic/RouterTasks/CoordinateTask.lua-->./Network/RouterLogic/RouterTasks/CoordinateTask.lua
+https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/RouterLogic/RouterTasks/RouterTask.lua-->./Network/RouterLogic/RouterTasks/RouterTask.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Network/RouterLogic/TransmitionQueue.lua-->./Network/RouterLogic/TransmitionQueue.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/PROTOCOLS.txt-->./PROTOCOLS.txt
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/README.md-->./README.md
@@ -48,6 +51,7 @@ https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Startup/Radio
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/CCTUtils.lua-->./Utils/CCTUtils.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/Debug.lua-->./Utils/Debug.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/Graph.lua-->./Utils/Graph.lua
+https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/Math/Vector.lua-->./Utils/Math/Vector.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/TaskManager/Task.lua-->./Utils/TaskManager/Task.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/TaskManager/TaskManager.lua-->./Utils/TaskManager/TaskManager.lua
 https://raw.githubusercontent.com/Mega2223/Telecom/refs/heads/main/Utils/Utils.lua-->./Utils/Utils.lua
