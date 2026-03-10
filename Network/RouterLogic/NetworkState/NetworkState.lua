@@ -73,6 +73,7 @@ function NetworkState(router_object)
                     self.network_routers[name] = nil
                 end
             end
+            self_in_network.connected_endpoints = {}
             for index, endpoint in pairs(self.router.memory.connected_endpoints) do
                 self_in_network.connected_endpoints[endpoint.address] =
                     NetworkEndpoint(self_in_network,self.router.current_time_milis,endpoint.address)
