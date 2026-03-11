@@ -15,7 +15,7 @@
 ---@field modem ccTweaked.peripherals.Modem
 
 require('Network.RouterLogic.Router')
-require('Utils.CCTUtils')
+require('Utils.CCTUtils.CCTUtils')
 
 LAST_RENDER = 0
 

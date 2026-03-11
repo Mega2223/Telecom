@@ -14,3 +14,7 @@ function getFileOrMakeEmpty(path)
     f.close()
     return r or ''
 end
+
+function trilaterate()
+    
+end

@@ -9,11 +9,43 @@
 ---@field getMinus fun(self: Vec3, vecb: Vec3): Vec3
 ---@field getMultiplied fun(self: Vec3, value: number): Vec3
 ---@field getCopy fun(self: Vec3): Vec3
+---@field getDotProduct fun(self: Vec3, vecb: Vec3): number
+---@field getCrossProduct fun(self: Vec3, vecb: Vec3): Vec3
+---@field getRounded fun(self: Vec3, tolerance: number): Vec3
 
 ---@param self Vec3
 ---@return Vec3
 local function getCopy(self)
-    return Vec3(self.x,self.y,self.z)
+    return Vec3(self.x, self.y, self.z)
+end
+
+---@param self Vec3
+---@param tolerance number
+---@return Vec3
+local function getRound(self, tolerance)
+    return Vec3(
+        math.floor((self.x + tolerance * 0.5) / tolerance) * tolerance,
+        math.floor((self.y + tolerance * 0.5) / tolerance) * tolerance,
+        math.floor((self.z + tolerance * 0.5) / tolerance) * tolerance
+    )
+end
+
+---@param a Vec3
+---@param b Vec3
+---@return number
+local function dotProduct(a, b)
+    return a.x * b.x + a.y * b.y + a.z * b.z
+end
+
+---@param a Vec3
+---@param b Vec3
+---@return Vec3
+local function crossProduct(a,b)
+    return Vec3(
+        a.y * b.z - a.z - b.y,
+        a.z * b.x - a.x - b.z,
+        a.x * b.y - a.y - b.x
+    )
 end
 
 ---@param self Vec3
@@ -76,7 +108,10 @@ function Vec3(x, y, z)
         getCopy = getCopy,
         getMultiplied = getMultiplied,
         getFlipped = getFlipped,
-        getNormalized = getNormalized
+        getNormalized = getNormalized,
+        getDotProduct = dotProduct,
+        getCrossProduct = crossProduct,
+        getRounded = getRound
     }
     setmetatable(ret,metat)
     return ret

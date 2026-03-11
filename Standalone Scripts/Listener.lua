@@ -1,3 +1,5 @@
+---@type ccTweaked.peripherals.Monitor
+---@diagnostic disable-next-line: assign-type-mismatch
 monitor = peripheral.find('monitor')
 modem = peripheral.find('modem')
 

@@ -1,6 +1,6 @@
 NETWORK_DATAGRAM_PROT = NETWORK_DATAGRAM_PROT or {}
 
--- FIXME roteador nao tira seus proprios endpoints depreciados na topologia da rede
+-- FIXME 
 -- endpoints no mesmo roteador nao se comunicam
 
 require('Network.RouterLogic.Datagrams.DiscoveryDatagram')
@@ -13,6 +13,9 @@ require('Network.RouterLogic.NetworkState.NetworkState')
 require('Network.RouterLogic.RouterMemory.RouterMemory')
 require('Network.RouterLogic.RouterConfig')
 require('Network.RouterLogic.TransmitionQueue')
+
+require('Network.RouterLogic.RouterTasks.RouterTask')
+require('Network.RouterLogic.RouterTasks.CoordinateTask')
 
 ---@class Router Describes a router entity, which must be bound to a Wrapper entity
 ---@field transmit fun(self: Router,data: string, time_from_now: integer | nil): boolean
@@ -27,7 +30,6 @@ require('Network.RouterLogic.TransmitionQueue')
 ---@field memory RouterMemory
 ---@field configs RouterConfig
 ---@field current_time_milis integer
---/-@field task_manager TaskManager (acho q é mais uma responsabilidade do firmware)
 
 ---@param self Router
 ---@param time integer
@@ -109,6 +111,11 @@ local function doTick(self, time_milis)
     end
 
     self.transmition_queue:refresh(self.current_time_milis,1)
+
+    for t = 1, #ROUTER_TASKS do
+        local task = ROUTER_TASKS[t]
+        task.doLogic(self,time_milis)
+    end
 end
 
 ---@param self Router

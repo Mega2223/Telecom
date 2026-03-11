@@ -40,7 +40,7 @@ end
 
 ---@param data string
 ---@return string, string, string
-local function parseDiscoveryDatagram(data)
+function parseDiscoveryDatagram(data)
     --local time_to_die, broadcaster_name, type, isReply = string.match(data,"%[DDT%-(%d+)%-%((.*)%)%-(%w+)%-%((.*)%)%]")
     local ask, reply, identifier = string.match(data,"%[DDT%-%((.+)%)%-%((.+)%)%-%((.+)%)%]")
     return ask, reply, identifier

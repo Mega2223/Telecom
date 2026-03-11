@@ -6,7 +6,7 @@
 ---@field iteration integer
 ---@field monitor ?ccTweaked.peripherals.Monitor
 
-require('Utils.CCTUtils')
+require('Utils.CCTUtils.CCTUtils')
 require('Network.RouterLogic.Router')
 
 LAST_RENDER = 0
@@ -35,6 +35,12 @@ local function onTick(self)
         print(string.format("Sent: %d   Read %d   Queue %d",
         self.router.memory.sent_messages, self.router.memory.received_messages,
         #self.router.transmition_queue.messages))
+        
+        local pos = self.router.memory.position
+        if pos then
+            print(string.format("Position: (%d %d %d)", pos.x, pos.y, pos.z))
+        end
+        
         print("Neighbors:")
         for key, neigh in pairs(self.router.memory.adjacent_routers) do
             print(string.format("%s: last seen %d/%d", neigh.name, neigh.last_updated,
@@ -50,15 +56,24 @@ local function onTick(self)
             for key, endpoint in pairs(router.connected_endpoints) do
                 router_endpoints = router_endpoints .. endpoint.address .. ' '
             end
-            local path 
+            local path
             if router.path_to then
                 path = router.path_to:toString()
             else
                 path = 'nil'
             end
-            print(string.format("%s:\nPath:%s\nConnections: %s\nEndpoints: %s\n", router.name,path, network_routers,router_endpoints))
+
+            local pos = ''
+            if router.properties.x and router.properties.y and router.properties.z then
+                local x, y, z = router.properties.x, router.properties.y, router.properties.z
+                pos = (string.format("\nPosition: (%.2f %.2f %.2f)",x,y,z))
+            end
+
+            -- print(string.format("%s:\nPath:%s\nConnections: %s\nEndpoints: %s\n", router.name,path, network_routers,router_endpoints))
+            print(string.format("%s:\nConnections: %s%s\nEndpoints: %s\n", router.name, network_routers, pos, router_endpoints))
             
         end
+        
         print("\nConnected Endpoints: ")
         for name, endpoint in pairs(self.router.memory.connected_endpoints) do
             print(
@@ -74,6 +89,22 @@ end
 
 ---@param self RadioRouter
 local function onMessageReceived(self, event, side, message, distance)
+
+    if DiscoveryDatagram then
+        local asker_name, replier_name, identifier = parseDiscoveryDatagram(message)
+        if not asker_name then goto continue end
+        local datagram = DiscoveryDatagram(asker_name,replier_name,identifier)
+        if datagram.isReply and datagram.asker_name == self.router.configs.name then
+            STD_OUT('setting distance for router coord')
+            local memory_router = self.router.memory.network_state:getRouter(replier_name)
+            if memory_router then
+                STD_OUT('setup up distance for ' .. memory_router.name .. ': ' .. tostring(distance))
+                memory_router.properties.distance = distance
+            end
+        end
+        ::continue::
+    end
+
     if self.router:onReceive(message) then
         STD_OUT('SUCCESSFULLY PROCESSED MESSAGE:')
         STD_OUT(message)
@@ -104,7 +135,7 @@ end
 --- @param self RadioRouter
 --- @param delay ?integer
 local function begin(self,delay)
-    delay = delay or 0.5
+    delay = delay or 0.1
     self.router.firmware = self
     self.router:onStart()
     self.radio_tower_peripheral.setFrequency(self.frequency)

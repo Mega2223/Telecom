@@ -47,6 +47,8 @@ TASK_MANAGER:addTask(
     )
 )
 
+--- add tasks here :3
+
 os.startTimer(1)
 
 while true do

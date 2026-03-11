@@ -1,4 +1,4 @@
-require('Utils.CCTUtils')
+require('Utils.CCTUtils.CCTUtils')
 
 --- TODO reunir funções similares entre o endpoint e o router
 
